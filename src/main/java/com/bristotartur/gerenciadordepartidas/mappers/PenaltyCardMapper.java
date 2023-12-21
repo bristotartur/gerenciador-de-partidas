@@ -12,9 +12,7 @@ public interface PenaltyCardMapper {
     PenaltyCardMapper INSTANCE = Mappers.getMapper(PenaltyCardMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "color", source = "penaltyCardDto.color")
     PenaltyCard toNewPenaltyCard(PenaltyCardDto penaltyCardDto);
 
-    @Mapping(target = "color", source = "penaltyCardDto.color")
     PenaltyCard toExistingPenaltyCard(Long id, PenaltyCardDto penaltyCardDto);
 }

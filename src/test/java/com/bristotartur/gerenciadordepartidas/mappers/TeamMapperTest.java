@@ -30,8 +30,8 @@ class TeamMapperTest {
         match1 = Match.builder().build();
         match2 = Match.builder().build();
         teamDto = new TeamDto(TeamName.ATOMICA, 1000);
-        existingTeam1 = new Team(1L, "papa-léguas", 1500, List.of(match1), List.of(match2));
-        existingTeam2 = new Team(2L, "twister", 300, List.of(match2), List.of(match1));
+        existingTeam1 = new Team(1L, "papa-léguas", 1500, List.of(match1), List.of(match2), null);
+        existingTeam2 = new Team(2L, "twister", 300, List.of(match2), List.of(match1), null);
     }
 
     @Test

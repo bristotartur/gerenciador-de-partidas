@@ -12,9 +12,9 @@ public interface MatchMapper {
     MatchMapper INSTANCE = Mappers.getMapper(MatchMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "matchSport", expression = "java(MatchMapperUtil.matchSportConversor(matchDto))")
-    @Mapping(target = "teamA", expression = "java(MatchMapperUtil.findTeamById(matchDto.getTeamAId()))")
-    @Mapping(target = "teamB", expression = "java(MatchMapperUtil.findTeamById(matchDto.getTeamBId()))")
+    @Mapping(target = "matchSport", expression = "java(MapperUtil.matchSportConversor(matchDto.sport()))")
+    @Mapping(target = "teamA", expression = "java(MapperUtil.findTeamById(matchDto.teamAId()))")
+    @Mapping(target = "teamB", expression = "java(MapperUtil.findTeamById(matchDto.teamBId()))")
     @Mapping(target = "teamScoreA", constant = "0")
     @Mapping(target = "teamScoreB", constant = "0")
     @Mapping(target = "matchStatus", constant = "SCHEDULED")
@@ -23,9 +23,9 @@ public interface MatchMapper {
     Match toNewMatch(MatchDto matchDto);
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "matchSport", expression = "java(MatchMapperUtil.matchSportConversor(matchDto))")
-    @Mapping(target = "teamA", expression = "java(MatchMapperUtil.findTeamById(matchDto.getTeamAId()))")
-    @Mapping(target = "teamB", expression = "java(MatchMapperUtil.findTeamById(matchDto.getTeamBId()))")
+    @Mapping(target = "matchSport", expression = "java(MapperUtil.matchSportConversor(matchDto.sport()))")
+    @Mapping(target = "teamA", expression = "java(MapperUtil.findTeamById(matchDto.teamAId()))")
+    @Mapping(target = "teamB", expression = "java(MapperUtil.findTeamById(matchDto.teamBId()))")
     Match toExistingMatch(Long id, MatchDto matchDto);
 
 }

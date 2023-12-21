@@ -12,7 +12,9 @@ public interface GoalMapper {
     GoalMapper INSTANCE = Mappers.getMapper(GoalMapper.class);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "matchSport", expression = "java(MapperUtil.matchSportConversor(goalDto.sport()))")
     Goal toNewGoal(GoalDto goalDto);
 
+    @Mapping(target = "matchSport", expression = "java(MapperUtil.matchSportConversor(goalDto.sport()))")
     Goal toExistingGoal(Long id, GoalDto goalDto);
 }

@@ -1,7 +1,9 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
+import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.TeamMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;

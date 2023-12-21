@@ -23,8 +23,8 @@ public class Goal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "goal_minute")
-    private LocalTime goalMinute;
+    @Column(name = "goal_time")
+    private LocalTime goalTime;
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)

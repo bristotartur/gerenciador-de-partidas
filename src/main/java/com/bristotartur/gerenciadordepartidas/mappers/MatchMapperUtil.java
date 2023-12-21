@@ -5,7 +5,7 @@ import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;
-import com.bristotartur.gerenciadordepartidas.services.MatchSportFactory;
+import com.bristotartur.gerenciadordepartidas.utils.MatchSportFactory;
 
 public class MatchMapperUtil {
 

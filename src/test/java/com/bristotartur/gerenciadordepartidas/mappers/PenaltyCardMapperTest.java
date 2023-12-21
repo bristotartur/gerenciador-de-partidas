@@ -48,7 +48,7 @@ class PenaltyCardMapperTest {
     }
 
     @Test
-    @DisplayName("Should update PenaltyCard field when new values are passed")
+    @DisplayName("Should update PenaltyCard fields when new values are passed")
     void Should_UpdatePenaltyCardFields_When_NewValuesArePassed() {
 
         var team = PenaltyCardMapper.INSTANCE.toExistingPenaltyCard(1L, penaltyCardDto);

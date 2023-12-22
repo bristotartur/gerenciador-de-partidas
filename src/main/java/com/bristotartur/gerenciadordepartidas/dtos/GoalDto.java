@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 public record GoalDto(@NotNull @JsonProperty("goal_time") LocalTime goalTime,
-                      @NotNull Team team,
+                      @NotNull @JsonProperty("team_id") Long teamId,
+                      @NotNull @JsonProperty("match_sport_id") Long matchSportId,
                       @NotNull Sports sport) {
 }

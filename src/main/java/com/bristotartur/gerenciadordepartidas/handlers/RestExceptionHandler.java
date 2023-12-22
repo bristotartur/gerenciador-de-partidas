@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.handlers;
 
+import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.exceptions.ExceptionDetails;
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,26 @@ import java.time.LocalDateTime;
 public class RestExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ExceptionDetails> handleBadRequestException(NotFoundException badRequestException) {
+    public ResponseEntity<ExceptionDetails> handleNotFoundException(NotFoundException notFoundException) {
 
         return new ResponseEntity<>(ExceptionDetails.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
                 .tittle("NotFoundException.")
+                .details(notFoundException.getMessage())
+                .developerMessage(notFoundException.getClass().getName())
+                .build(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionDetails> handleBadRequestException(BadRequestException badRequestException) {
+
+        return new ResponseEntity<>(ExceptionDetails.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .tittle("BadRequestException.")
                 .details(badRequestException.getMessage())
                 .developerMessage(badRequestException.getClass().getName())
-                .build(), HttpStatus.NOT_FOUND);
+                .build(), HttpStatus.BAD_REQUEST);
     }
 }

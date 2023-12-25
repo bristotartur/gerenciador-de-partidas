@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.domain.team;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.Match;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -47,5 +48,10 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Goal> goals; // guarda tanto os gols de futebol quanto os de handebol
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<PenaltyCard> penaltyCards;
 
 }

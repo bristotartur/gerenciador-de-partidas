@@ -1,11 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.utils;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.*;
+import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import lombok.experimental.UtilityClass;
 
 public class MatchSportFactory {
-
-    private static final String UNSUPPORTED_SPORT_MESSAGE = "Modalidade esportiva não suportada";
 
     public static MatchSport newMatchSport(Sports sports) {
 
@@ -20,7 +20,7 @@ public class MatchSportFactory {
             case TABLE_TENNIS -> matchSport = new TableTennisMatch();
             case CHESS -> matchSport = new ChessMatch();
 
-            default -> throw new IllegalArgumentException(UNSUPPORTED_SPORT_MESSAGE);
+            default -> throw new IllegalArgumentException(ExceptionMessages.UNSUPPORTED_SPORT.message);
         }
         return matchSport;
     }

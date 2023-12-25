@@ -8,7 +8,8 @@ public enum ExceptionMessages {
     FOOTBALL_MATCH_NOT_FOUND("Partida de futebol não encontrada"),
     HANDBALL_MATCH_NOT_FOUND("Partida de handebol não encontrada"),
     UNSUPPORTED_FOR_GOALS("Esporte não suportado para gols"),
-    UNSUPPORTED_FOR_PENALTY_CARDS("Esporte não suportado para cartões");
+    UNSUPPORTED_FOR_PENALTY_CARDS("Esporte não suportado para cartões"),
+    UNSUPPORTED_SPORT("Modalidade esportiva não suportada");
 
     public final String message;
 }

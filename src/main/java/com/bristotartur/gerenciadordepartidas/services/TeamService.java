@@ -3,12 +3,14 @@ package com.bristotartur.gerenciadordepartidas.services;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
+import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.TeamMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -20,33 +22,32 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private static final String NOT_FOUND_MESSAGE = "Equipe não encontrada";
 
     public List<Team> findAllTeams() {
         return teamRepository.findAll();
     }
 
-    public Team findTeamById(@PathVariable Long id) {
+    public Team findTeamById( Long id) {
 
         var team = teamRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
 
         return team;
     }
 
-    public Team saveTeam(@RequestBody @Valid TeamDto teamDto) {
+    public Team saveTeam(TeamDto teamDto) {
 
         var savedTeam = teamRepository.save(TeamMapper.INSTANCE.toNewTeam(teamDto));
 
         return savedTeam;
     }
 
-    public void deleteTeamById(@PathVariable Long id) {
+    public void deleteTeamById(Long id) {
         teamRepository.deleteById(id);
     }
 
     @Transactional
-    public Team replaceTeam(@PathVariable Long id, @RequestBody @Valid TeamDto teamDto) {
+    public Team replaceTeam(Long id, TeamDto teamDto) {
 
         this.findTeamById(id);
 

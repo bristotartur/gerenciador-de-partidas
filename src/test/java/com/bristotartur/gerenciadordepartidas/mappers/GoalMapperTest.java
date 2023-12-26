@@ -7,58 +7,103 @@ import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.TeamService;
+import com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
+@ActiveProfiles("test")
 class GoalMapperTest {
 
-    GoalDto goalDto;
-    Goal existingGoal;
-    LocalTime goalTimeA;
-    LocalTime goalTimeB;
-    Team team;
-    MatchSport matchSport;
+    @Autowired
+    private EntityManager entityManager;
+
+    @Mock
+    private TeamService teamService;
+    @Mock
+    private GeneralMatchSportService generalMatchSportService;
+    @InjectMocks
+    private GoalMapper goalMapper;
+
+    private GoalDto goalDtoA;
+    private Goal existingGoal;
+    private LocalTime goalTimeA;
+    private Team existingTeamA;
+    private FootballMatch existingMatchSportA;
 
     @BeforeEach
     void setUp() {
+
+        MockitoAnnotations.openMocks(this);
+
         goalTimeA = LocalTime.of(13, 35, 00);
-        goalTimeB = LocalTime.of(13, 40, 00);
 
-        team = Team.builder()
-                .id(1L)
-                .name(TeamName.MESTRES_DE_OBRAS.name)
-                .build();
+        existingTeamA = Team.builder().id(1L).name(TeamName.MESTRES_DE_OBRAS.name).build();
 
-        matchSport = FootballMatch.builder()
-                .id(1L)
-                .build();
+        existingMatchSportA = FootballMatch.builder().id(1L).build();
 
         existingGoal = Goal.builder()
                 .id(1L)
-                .goalTime(goalTimeA).build();
+                .goalTime(goalTimeA)
+                .team(existingTeamA)
+                .matchSport(existingMatchSportA).build();
 
-        goalDto = new GoalDto(goalTimeB, team, Sports.FOOTBALL);
+        goalDtoA = new GoalDto(goalTimeA, existingTeamA.getId(), 1L, Sports.FOOTBALL);
+    }
+
+    private Team createTeam() {
+        return Team.builder().id(RandomIdUtil.getRandomLongId()).build();
+    }
+
+    private MatchSport createMatchSport() {
+        return FootballMatch.builder().id(RandomIdUtil.getRandomLongId()).build();
     }
 
     @Test
-    void Should_ConvertSportFieldToMatchSport_When_MappedToGoal() {
+    @DisplayName("Should map entities to their referent fields in Goal when they exist in the database")
+    void Should_MapEntitiesToTheirReferentFields_When_TheyExistInTheDatabase() {
 
-        var goal = GoalMapper.INSTANCE.toNewGoal(goalDto);
+        entityManager.merge(existingTeamA);
+        entityManager.merge(existingMatchSportA);
 
-        assertThat(goal.getMatchSport()).isInstanceOf(MatchSport.class);
+        var goal = goalMapper.toNewGoal(goalDtoA);
+
+        assertThat(goal.getTeam()).isEqualTo(teamService.findTeamById(existingTeamA.getId()));
+        assertThat(goal.getMatchSport())
+                .isEqualTo(generalMatchSportService.findMatchSportForGoal(existingMatchSportA.getId(), Sports.FOOTBALL));
     }
 
     @Test
     @DisplayName("Should update Goal fields when new values are passed")
     void Should_UpdateGoalFields_When_NewValuesArePassed() {
 
-        var goal = GoalMapper.INSTANCE.toExistingGoal(1L, goalDto);
+        when(teamService.findTeamById(229L)).thenReturn(this.createTeam());
+        when(generalMatchSportService.findMatchSportForGoal(837L, Sports.FOOTBALL))
+                .thenReturn(this.createMatchSport());
+
+        var goal = goalMapper.toExistingGoal(existingGoal.getId(), goalDtoA);
 
         assertThat(goal.getGoalTime()).isNotEqualTo(existingGoal.getGoalTime());
+        assertThat(goal.getTeam()).isNotEqualTo(existingGoal.getTeam());
+        assertThat(goal.getMatchSport()).isNotEqualTo(existingGoal.getMatchSport());
     }
+
 }

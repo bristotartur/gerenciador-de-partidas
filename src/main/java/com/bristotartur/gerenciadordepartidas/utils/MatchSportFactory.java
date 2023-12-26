@@ -3,10 +3,14 @@ package com.bristotartur.gerenciadordepartidas.utils;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.*;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 
+@Component
+@UtilityClass
 public class MatchSportFactory {
 
-    public MatchSport newMatchSport(Sports sports) {
+    public static MatchSport newMatchSport(Sports sports) {
 
         MatchSport matchSport;
 

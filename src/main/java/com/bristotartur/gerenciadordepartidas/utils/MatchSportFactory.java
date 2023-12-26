@@ -3,11 +3,10 @@ package com.bristotartur.gerenciadordepartidas.utils;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.*;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import lombok.experimental.UtilityClass;
 
 public class MatchSportFactory {
 
-    public static MatchSport newMatchSport(Sports sports) {
+    public MatchSport newMatchSport(Sports sports) {
 
         MatchSport matchSport;
 

@@ -41,11 +41,4 @@ public class HandballMatch extends MatchSport {
     @JsonIgnore
     private List<PenaltyCard> penaltyCards;
 
-//    @JsonProperty("yellow_cards")
-//    @Column(name = "yellow_cards")
-//    private Integer yellowCards;
-//
-//    @JsonProperty("red_cards")
-//    @Column(name = "red_cards")
-//    private Integer redCards;
 }

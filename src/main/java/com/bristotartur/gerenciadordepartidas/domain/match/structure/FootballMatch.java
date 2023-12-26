@@ -5,7 +5,6 @@ import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,11 +40,4 @@ public class FootballMatch extends MatchSport {
     @JsonIgnore
     private List<PenaltyCard> penaltyCards;
 
-//    @JsonProperty("yellow_cards")
-//    @Column(name = "yellow_cards")
-//    private Integer yellowCards;
-//
-//    @JsonProperty("red_cards")
-//    @Column(name = "red_cards")
-//    private Integer redCards;
 }

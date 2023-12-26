@@ -40,10 +40,6 @@ public class Team {
     @JsonIgnore
     private List<Match> matchesAsTeamB;
 
-//    @OneToOne
-//    @JoinColumn(name = "team_score_id")
-//    private TeamScore teamScore;
-
     @JsonManagedReference
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonIgnore

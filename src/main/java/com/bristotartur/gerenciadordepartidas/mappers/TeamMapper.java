@@ -6,10 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface TeamMapper {
-
-    public static final TeamMapper INSTANCE = Mappers.getMapper(TeamMapper.class);
 
     /**
      * Realiza o mapeamento de um um objeto do tipo TeamDto para um novo objeto do tipo Team.

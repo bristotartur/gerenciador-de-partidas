@@ -1,0 +1,13 @@
+server:
+  error:
+    include-stacktrace: on_param
+
+spring:
+  data-source:
+    url: jdbc:h2:mem:test_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect

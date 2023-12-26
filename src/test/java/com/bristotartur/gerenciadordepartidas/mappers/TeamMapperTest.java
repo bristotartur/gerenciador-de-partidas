@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.Match;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
@@ -8,65 +7,65 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-
-// TODO - atualizar a classe de testes de TeamMapper para testar a sobrecarga do método toExistingTeam()
 
 class TeamMapperTest {
 
     private TeamMapper teamMapper = TeamMapper.INSTANCE;
 
-    private TeamDto teamDto;
-    private Team existingTeam1;
-    private Team existingTeam2;
-    private Match match1;
-    private Match match2;
+    private TeamDto teamDto1;
+    private TeamDto teamDto2;
+    private Team existingTeam;
 
     @BeforeEach
     void setUp() {
 
-        match1 = Match.builder().build();
-        match2 = Match.builder().build();
-        teamDto = new TeamDto(TeamName.ATOMICA, 1000);
-        existingTeam1 = new Team(1L, "papa-léguas", 1500, List.of(match1), List.of(match2), null);
-        existingTeam2 = new Team(2L, "twister", 300, List.of(match2), List.of(match1), null);
+        teamDto1 = new TeamDto(TeamName.ATOMICA, 1000);
+        teamDto2 = new TeamDto(TeamName.PAPA_LEGUAS, 1500);
+
+        existingTeam = Team.builder()
+                .id(1L)
+                .name(TeamName.PAPA_LEGUAS.name)
+                .points(1500)
+                .build();
     }
 
     @Test
     @DisplayName("Should map parsed enum value to String field when a valid enum is passed")
     void Should_MapParsedEnumValue_When_ValidEnumIsPassed() {
 
-        var team = teamMapper.toNewTeam(teamDto);
+        var team = teamMapper.toNewTeam(teamDto1);
 
-        assertThat(team.getName()).isEqualTo(teamDto.teamName().name);
+        assertThat(team.getName()).isEqualTo(teamDto1.teamName().name);
     }
 
     @Test
     @DisplayName("Should map points field to 0 when TeamDto is mapped to a new team")
     void Should_MapPointsFieldTo0_When_TeamDtoIsMappedToNewTeam() {
 
-        var team = teamMapper.toNewTeam(teamDto);
+        var team = teamMapper.toNewTeam(teamDto1);
 
         assertThat(team.getPoints()).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("Should update Team name field when TeamDto with different name is passed")
-    void Should_UpdateTeamNameField_When_TeamDtoWithDifferentNameIsPassed() {
+    @DisplayName("Should update Team fields when TeamDto with different values is passed")
+    void Should_UpdateTeamFields_When_TeamDtoWithDifferentValuesIsPassed() {
 
-        var team = teamMapper.toExistingTeam(1L, teamDto);
+        var team = teamMapper.toExistingTeam(1L, teamDto1);
 
-        assertThat(team.getName()).isNotEqualTo(existingTeam1.getName());
+        assertThat(team.getName()).isNotEqualTo(existingTeam.getName());
+        assertThat(team.getPoints()).isNotEqualTo(existingTeam.getPoints());
     }
 
     @Test
-    @DisplayName("Should update Team points field when TeamDto with different points is passed")
-    void Should_UpdateTeamPointsField_When_TeamDtoWithDifferentPointsIsPassed() {
+    @DisplayName("Should not update Team fields when TeamDto with the same values is passed")
+    void Should_UpdateTeamFields_When_TeamDtoWithSameValuesIsPassed() {
 
-        var team = teamMapper.toExistingTeam(2L, teamDto);
+        var team = teamMapper.toExistingTeam(1L, teamDto2);
 
-        assertThat(team.getPoints()).isNotEqualTo(existingTeam2.getPoints());
+        assertThat(team.getPoints()).isEqualTo(existingTeam.getPoints());
+        assertThat(team.getName()).isEqualTo(existingTeam.getName());
     }
+
 }

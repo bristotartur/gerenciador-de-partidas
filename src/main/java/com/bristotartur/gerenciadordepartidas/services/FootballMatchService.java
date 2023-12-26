@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.FootballMatch;
+import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.FootballMatchRepository;
 import lombok.AllArgsConstructor;
@@ -11,11 +12,10 @@ import org.springframework.stereotype.Service;
 public class FootballMatchService {
 
     private final FootballMatchRepository footballMatchRepository;
-    private static final String NOT_FOUND_MESSAGE = "Partida de futebol não encontrada";
 
-    private FootballMatch findFootballMatchById(Long id) {
+    public FootballMatch findFootballMatchById(Long id) {
 
         return footballMatchRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessages.FOOTBALL_MATCH_NOT_FOUND.message));
     }
 }

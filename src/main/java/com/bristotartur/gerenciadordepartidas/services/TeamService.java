@@ -21,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TeamService {
 
+    private final TeamMapper teamMapper;
     private final TeamRepository teamRepository;
 
     public List<Team> findAllTeams() {
@@ -37,7 +38,7 @@ public class TeamService {
 
     public Team saveTeam(TeamDto teamDto) {
 
-        var savedTeam = teamRepository.save(TeamMapper.INSTANCE.toNewTeam(teamDto));
+        var savedTeam = teamRepository.save(teamMapper.toNewTeam(teamDto));
 
         return savedTeam;
     }
@@ -51,7 +52,7 @@ public class TeamService {
 
         this.findTeamById(id);
 
-        var team = TeamMapper.INSTANCE.toExistingTeam(id, teamDto);
+        var team = teamMapper.toExistingTeam(id, teamDto);
         var updatedTeam = teamRepository.save(team);
 
         return updatedTeam;

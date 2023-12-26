@@ -20,15 +20,15 @@ class TeamMapperTest {
     @Autowired
     private TeamMapper teamMapper;
 
-    private TeamDto teamDto1;
-    private TeamDto teamDto2;
+    private TeamDto teamDtoA;
+    private TeamDto teamDtoB;
     private Team existingTeam;
 
     @BeforeEach
     void setUp() {
 
-        teamDto1 = new TeamDto(TeamName.ATOMICA, 1000);
-        teamDto2 = new TeamDto(TeamName.PAPA_LEGUAS, 1500);
+        teamDtoA = new TeamDto(TeamName.ATOMICA, 1000);
+        teamDtoB = new TeamDto(TeamName.PAPA_LEGUAS, 1500);
 
         existingTeam = Team.builder()
                 .id(1L)
@@ -41,16 +41,16 @@ class TeamMapperTest {
     @DisplayName("Should map parsed enum value to String field when a valid enum is passed")
     void Should_MapParsedEnumValue_When_ValidEnumIsPassed() {
 
-        var team = teamMapper.toNewTeam(teamDto1);
+        var team = teamMapper.toNewTeam(teamDtoA);
 
-        assertThat(team.getName()).isEqualTo(teamDto1.teamName().name);
+        assertThat(team.getName()).isEqualTo(teamDtoA.teamName().name);
     }
 
     @Test
     @DisplayName("Should map points field to 0 when TeamDto is mapped to a new team")
     void Should_MapPointsFieldTo0_When_TeamDtoIsMappedToNewTeam() {
 
-        var team = teamMapper.toNewTeam(teamDto1);
+        var team = teamMapper.toNewTeam(teamDtoA);
 
         assertThat(team.getPoints()).isEqualTo(0);
     }
@@ -59,7 +59,7 @@ class TeamMapperTest {
     @DisplayName("Should update Team fields when TeamDto with different values is passed")
     void Should_UpdateTeamFields_When_TeamDtoWithDifferentValuesIsPassed() {
 
-        var team = teamMapper.toExistingTeam(1L, teamDto1);
+        var team = teamMapper.toExistingTeam(1L, teamDtoA);
 
         assertThat(team.getName()).isNotEqualTo(existingTeam.getName());
         assertThat(team.getPoints()).isNotEqualTo(existingTeam.getPoints());
@@ -69,7 +69,7 @@ class TeamMapperTest {
     @DisplayName("Should not update Team fields when TeamDto with the same values is passed")
     void Should_UpdateTeamFields_When_TeamDtoWithSameValuesIsPassed() {
 
-        var team = teamMapper.toExistingTeam(1L, teamDto2);
+        var team = teamMapper.toExistingTeam(1L, teamDtoB);
 
         assertThat(team.getPoints()).isEqualTo(existingTeam.getPoints());
         assertThat(team.getName()).isEqualTo(existingTeam.getName());

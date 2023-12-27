@@ -6,19 +6,10 @@ import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
 class TeamMapperTest {
-
-    @Autowired
-    private TeamMapper teamMapper;
 
     private TeamDto teamDtoA;
     private TeamDto teamDtoB;
@@ -41,7 +32,7 @@ class TeamMapperTest {
     @DisplayName("Should map parsed enum value to String field when a valid enum is passed")
     void Should_MapParsedEnumValue_When_ValidEnumIsPassed() {
 
-        var team = teamMapper.toNewTeam(teamDtoA);
+        var team = TeamMapper.INSTANCE.toNewTeam(teamDtoA);
 
         assertThat(team.getName()).isEqualTo(teamDtoA.teamName().name);
     }
@@ -50,7 +41,7 @@ class TeamMapperTest {
     @DisplayName("Should map points field to 0 when TeamDto is mapped to a new team")
     void Should_MapPointsFieldTo0_When_TeamDtoIsMappedToNewTeam() {
 
-        var team = teamMapper.toNewTeam(teamDtoA);
+        var team = TeamMapper.INSTANCE.toNewTeam(teamDtoA);
 
         assertThat(team.getPoints()).isEqualTo(0);
     }
@@ -59,7 +50,7 @@ class TeamMapperTest {
     @DisplayName("Should update Team fields when TeamDto with different values is passed")
     void Should_UpdateTeamFields_When_TeamDtoWithDifferentValuesIsPassed() {
 
-        var team = teamMapper.toExistingTeam(1L, teamDtoA);
+        var team = TeamMapper.INSTANCE.toExistingTeam(1L, teamDtoA);
 
         assertThat(team.getName()).isNotEqualTo(existingTeam.getName());
         assertThat(team.getPoints()).isNotEqualTo(existingTeam.getPoints());
@@ -69,7 +60,7 @@ class TeamMapperTest {
     @DisplayName("Should not update Team fields when TeamDto with the same values is passed")
     void Should_UpdateTeamFields_When_TeamDtoWithSameValuesIsPassed() {
 
-        var team = teamMapper.toExistingTeam(1L, teamDtoB);
+        var team = TeamMapper.INSTANCE.toExistingTeam(1L, teamDtoB);
 
         assertThat(team.getPoints()).isEqualTo(existingTeam.getPoints());
         assertThat(team.getName()).isEqualTo(existingTeam.getName());

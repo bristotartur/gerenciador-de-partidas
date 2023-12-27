@@ -19,4 +19,8 @@ public class HandballMatchService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.HANDBALL_MATCH_NOT_FOUND.message));
     }
 
+    public HandballMatch saveHandballMatch(HandballMatch handballMatch) {
+        return handballMatchRepository.save(handballMatch);
+    }
+
 }

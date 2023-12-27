@@ -1,11 +1,9 @@
 package com.bristotartur.gerenciadordepartidas.domain.match.structure;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.Match;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

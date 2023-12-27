@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.domain.match.structure;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.Match;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;

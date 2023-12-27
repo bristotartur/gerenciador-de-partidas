@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.domain.match.structure;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.Match;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;

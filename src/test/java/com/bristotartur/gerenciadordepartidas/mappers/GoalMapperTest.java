@@ -43,35 +43,44 @@ class GoalMapperTest {
     @InjectMocks
     private GoalMapper goalMapper;
 
-    private GoalDto goalDto;
+    private GoalDto goalDtoA;
+    private GoalDto goalDtoB;
     private Goal existingGoal;
-    private LocalTime goalTime;
-    private Team existingTeam;
-    private FootballMatch existingMatchSport;
+    private LocalTime goalTimeA;
+    private LocalTime goalTimeB;
+    private Team existingTeamA;
+    private Team existingTeamB;
+    private FootballMatch existingMatchSportA;
+    private FootballMatch existingMatchSportB;
 
     @BeforeEach
     void setUp() {
 
         MockitoAnnotations.openMocks(this);
 
-        goalTime = LocalTime.of(13, 35, 00);
-        existingTeam = Team.builder().id(1L).name(TeamName.MESTRES_DE_OBRAS.name).build();
-        existingMatchSport = FootballMatch.builder().id(1L).build();
+        goalTimeA = LocalTime.of(13, 35, 00);
+        goalTimeB = LocalTime.of(13, 36, 00);
+
+        existingTeamA = createTeam();
+        existingTeamB = createTeam();
+        existingMatchSportA = createFootballMatch();
+        existingMatchSportB = createFootballMatch();
 
         existingGoal = Goal.builder()
                 .id(1L)
-                .goalTime(goalTime)
-                .team(existingTeam)
-                .matchSport(existingMatchSport).build();
+                .goalTime(goalTimeA)
+                .team(existingTeamA)
+                .matchSport(existingMatchSportA).build();
 
-        goalDto = new GoalDto(goalTime, existingTeam.getId(), 1L, Sports.FOOTBALL);
+        goalDtoA = new GoalDto(goalTimeA, existingTeamA.getId(), existingMatchSportA.getId(), Sports.FOOTBALL);
+        goalDtoB = new GoalDto(goalTimeB, existingTeamB.getId(), existingMatchSportB.getId(), Sports.FOOTBALL);
     }
 
     private Team createTeam() {
         return Team.builder().id(RandomIdUtil.getRandomLongId()).build();
     }
 
-    private MatchSport createMatchSport() {
+    private FootballMatch createFootballMatch() {
         return FootballMatch.builder().id(RandomIdUtil.getRandomLongId()).build();
     }
 
@@ -79,25 +88,26 @@ class GoalMapperTest {
     @DisplayName("Should map entities to their referent fields in Goal when they exist in the database")
     void Should_MapEntitiesToTheirReferentFields_When_TheyExistInTheDatabase() {
 
-        entityManager.merge(existingTeam);
-        entityManager.merge(existingMatchSport);
+        entityManager.merge(existingTeamA);
+        entityManager.merge(existingMatchSportA);
 
-        var goal = goalMapper.toNewGoal(goalDto);
+        var goal = goalMapper.toNewGoal(goalDtoA);
 
-        assertThat(goal.getTeam()).isEqualTo(teamService.findTeamById(existingTeam.getId()));
+        assertThat(goal.getTeam()).isEqualTo(teamService.findTeamById(existingTeamA.getId()));
         assertThat(goal.getMatchSport())
-                .isEqualTo(generalMatchSportService.findMatchSportForGoal(existingMatchSport.getId(), Sports.FOOTBALL));
+                .isEqualTo(generalMatchSportService.findMatchSportForGoal(existingMatchSportA.getId(), Sports.FOOTBALL));
     }
 
     @Test
     @DisplayName("Should update Goal fields when new values are passed")
     void Should_UpdateGoalFields_When_NewValuesArePassed() {
 
-        when(teamService.findTeamById(229L)).thenReturn(this.createTeam());
-        when(generalMatchSportService.findMatchSportForGoal(837L, Sports.FOOTBALL))
-                .thenReturn(this.createMatchSport());
+        when(teamService.findTeamById(existingTeamB.getId())).thenReturn(existingTeamB);
 
-        var goal = goalMapper.toExistingGoal(existingGoal.getId(), goalDto);
+        when(generalMatchSportService.findMatchSportForGoal(existingTeamB.getId(), Sports.FOOTBALL))
+                .thenReturn(existingMatchSportB);
+
+        var goal = goalMapper.toExistingGoal(existingGoal.getId(), goalDtoB);
 
         assertThat(goal.getGoalTime()).isNotEqualTo(existingGoal.getGoalTime());
         assertThat(goal.getTeam()).isNotEqualTo(existingGoal.getTeam());

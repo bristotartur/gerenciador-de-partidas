@@ -1,31 +1,50 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.Match;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
+import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.TeamService;
+import com.bristotartur.gerenciadordepartidas.utils.DateTimeUtil;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Mapper
-public interface MatchMapper {
+import java.time.LocalDateTime;
 
-    MatchMapper INSTANCE = Mappers.getMapper(MatchMapper.class);
+@Component
+@AllArgsConstructor
+public class MatchMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "matchSport", expression = "java(MapperUtil.matchSportConversor(matchDto.sport()))")
-    @Mapping(target = "teamA", expression = "java(MapperUtil.findTeamById(matchDto.teamAId()))")
-    @Mapping(target = "teamB", expression = "java(MapperUtil.findTeamById(matchDto.teamBId()))")
-    @Mapping(target = "teamScoreA", constant = "0")
-    @Mapping(target = "teamScoreB", constant = "0")
-    @Mapping(target = "matchStatus", constant = "SCHEDULED")
-    @Mapping(target = "matchStart", constant = "0000-00-00 00:00:00")
-    @Mapping(target = "matchEnd", constant = "0000-00-00 00:00:00")
-    Match toNewMatch(MatchDto matchDto);
+    private final TeamService teamService;
+    private final GeneralMatchSportService generalMatchSportService;
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "matchSport", expression = "java(MapperUtil.matchSportConversor(matchDto.sport()))")
-    @Mapping(target = "teamA", expression = "java(MapperUtil.findTeamById(matchDto.teamAId()))")
-    @Mapping(target = "teamB", expression = "java(MapperUtil.findTeamById(matchDto.teamBId()))")
-    Match toExistingMatch(Long id, MatchDto matchDto);
+    public Match toNewMatch(MatchDto matchDto) {
+
+        return Match.builder()
+                .matchSport(generalMatchSportService.newMatchSport(matchDto.sport()))
+                .teamA(teamService.findTeamById(matchDto.teamAId()))
+                .teamB(teamService.findTeamById(matchDto.teamBId()))
+                .teamScoreA(0)
+                .teamScoreB(0)
+                .matchStatus(MatchStatus.SCHEDULED)
+                .matchStart(DateTimeUtil.toNewMatchTime(matchDto.matchStart()))
+                .matchEnd(DateTimeUtil.toNewMatchTime(matchDto.matchEnd()))
+                .build();
+    }
+
+    public Match toExistingMatch(Long id, MatchDto matchDto) {
+
+        return Match.builder()
+                .id(id)
+                .matchSport(generalMatchSportService.newMatchSport(matchDto.sport()))
+                .teamA(teamService.findTeamById(matchDto.teamAId()))
+                .teamB(teamService.findTeamById(matchDto.teamBId()))
+                .teamScoreA(matchDto.teamScoreA())
+                .teamScoreB(matchDto.teamScoreB())
+                .matchStatus(matchDto.matchStatus())
+                .matchStart(matchDto.matchStart())
+                .matchEnd(matchDto.matchEnd())
+                .build();
+    }
 
 }

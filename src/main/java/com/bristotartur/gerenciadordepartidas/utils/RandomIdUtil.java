@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.util.Random;
 
 @Component
-@UtilityClass
 public class RandomIdUtil {
 
     public static Long getRandomLongId() {

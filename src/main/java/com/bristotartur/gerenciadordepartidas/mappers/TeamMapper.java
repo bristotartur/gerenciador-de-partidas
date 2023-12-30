@@ -5,7 +5,9 @@ import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
+@Component
 @Mapper
 public interface TeamMapper {
 

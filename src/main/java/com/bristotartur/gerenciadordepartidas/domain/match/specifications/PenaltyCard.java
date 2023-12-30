@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,8 @@ public class PenaltyCard {
     private Long id;
 
     private String color;
+
+    private LocalTime penaltyCardTime;
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)

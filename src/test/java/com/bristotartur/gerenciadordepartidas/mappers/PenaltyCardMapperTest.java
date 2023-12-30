@@ -7,9 +7,9 @@ import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
 import com.bristotartur.gerenciadordepartidas.services.TeamService;
+import com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,12 +17,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -31,6 +33,7 @@ class PenaltyCardMapperTest {
 
     @Autowired
     private EntityManager entityManager;
+
     @Mock
     private GeneralMatchSportService generalMatchSportService;
     @Mock
@@ -46,16 +49,39 @@ class PenaltyCardMapperTest {
     @BeforeEach
     void setUp() {
 
-        existingTeam = Team.builder().id(1L).name(TeamName.PAPA_LEGUAS.name).build();
-        existingMatchSport = FootballMatch.builder().id(1L).build();
+        MockitoAnnotations.openMocks(this);
 
-        existingPenaltyCard = PenaltyCard.builder()
+        existingTeam = createTeam();
+        existingMatchSport = createFootballMatch();
+        existingPenaltyCard = createPenaltyCard(PenaltyCardColor.YELLOW, existingTeam, existingMatchSport);
+        penaltyCardDto = createPenaltyCardDto(PenaltyCardColor.RED, Sports.FOOTBALL);
+    }
+
+    private Team createTeam() {
+        return Team.builder().id(RandomIdUtil.getRandomLongId()).build();
+    }
+
+    private FootballMatch createFootballMatch() {
+        return FootballMatch.builder().id(RandomIdUtil.getRandomLongId()).build();
+    }
+
+    private PenaltyCard createPenaltyCard(PenaltyCardColor color, Team team, MatchSport matchSport) {
+
+        return PenaltyCard.builder()
                 .id(1L)
-                .color(PenaltyCardColor.YELLOW.name())
+                .color(color.name())
                 .matchSport(existingMatchSport)
                 .team(existingTeam).build();
+    }
 
-        penaltyCardDto = new PenaltyCardDto(PenaltyCardColor.RED, 89L, 26L, Sports.FOOTBALL);
+    private PenaltyCardDto createPenaltyCardDto(PenaltyCardColor color, Sports sport) {
+
+        return PenaltyCardDto.builder()
+                .color(color)
+                .penaltyCardTime(any())
+                .teamId(RandomIdUtil.getRandomLongId())
+                .matchSportId(RandomIdUtil.getRandomLongId())
+                .sport(sport).build();
     }
 
     @Test
@@ -89,5 +115,6 @@ class PenaltyCardMapperTest {
 
         assertThat(penaltyCard.getColor()).isNotEqualTo(existingPenaltyCard.getColor());
         assertThat(penaltyCard.getTeam()).isNotEqualTo(existingPenaltyCard.getTeam());
+        assertThat(penaltyCard.getMatchSport()).isNotEqualTo(existingPenaltyCard.getMatchSport());
     }
 }

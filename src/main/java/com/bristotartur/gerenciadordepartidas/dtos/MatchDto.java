@@ -10,6 +10,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 public record MatchDto(@NotNull Sports sport,
+                       @NotNull @JsonProperty("match_sport_id") Long matchSportId,
                        @NotNull @JsonProperty("team_a_id") Long teamAId,
                        @NotNull @JsonProperty("team_b_id") Long teamBId,
                        @JsonProperty("team_a_score") Integer teamScoreA,

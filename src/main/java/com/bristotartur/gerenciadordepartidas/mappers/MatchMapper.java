@@ -26,7 +26,8 @@ public class MatchMapper {
                 .teamB(teamService.findTeamById(matchDto.teamBId()))
                 .teamScoreA(0)
                 .teamScoreB(0)
-                .matchStatus(MatchStatus.SCHEDULED)
+                .modality(matchDto.modality().name)
+                .matchStatus(MatchStatus.SCHEDULED.name)
                 .matchStart(DateTimeUtil.toNewMatchTime(matchDto.matchStart()))
                 .matchEnd(DateTimeUtil.toNewMatchTime(matchDto.matchEnd()))
                 .build();
@@ -36,12 +37,13 @@ public class MatchMapper {
 
         return Match.builder()
                 .id(id)
-                .matchSport(generalMatchSportService.newMatchSport(matchDto.sport()))
+                .matchSport(generalMatchSportService.findMatchSport(matchDto.sport(), matchDto.matchSportId()))
                 .teamA(teamService.findTeamById(matchDto.teamAId()))
                 .teamB(teamService.findTeamById(matchDto.teamBId()))
                 .teamScoreA(matchDto.teamScoreA())
                 .teamScoreB(matchDto.teamScoreB())
-                .matchStatus(matchDto.matchStatus())
+                .modality(matchDto.modality().name)
+                .matchStatus(matchDto.matchStatus().name)
                 .matchStart(matchDto.matchStart())
                 .matchEnd(matchDto.matchEnd())
                 .build();

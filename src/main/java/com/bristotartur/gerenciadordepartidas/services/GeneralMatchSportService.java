@@ -36,6 +36,24 @@ public class GeneralMatchSportService {
         return matchSport;
     }
 
+    public MatchSport findMatchSport(Sports sport, Long id) {
+
+        MatchSport matchSport;
+
+        switch (sport) {
+
+            case FOOTBALL -> matchSport = footballMatchService.findFootballMatchById(id);
+            case HANDBALL -> matchSport = handballMatchService.findHandballMatchById(id);
+            case BASKETBALL -> matchSport = basketballMatchService.findBasketballMatchById(id);
+            case VOLLEYBALL -> matchSport = volleyballMatchService.findVolleyballMatchById(id);
+            case TABLE_TENNIS -> matchSport = tableTennisMatchService.findTableTennisMatchById(id);
+            case CHESS -> matchSport = chessMatchService.findChessMatchById(id);
+
+            default -> throw new BadRequestException(ExceptionMessages.UNSUPPORTED_SPORT.message);
+        }
+        return matchSport;
+    }
+
     public MatchSport findMatchSportForGoal(Long id, Sports sport) {
 
         if (sport.equals(Sports.FOOTBALL))

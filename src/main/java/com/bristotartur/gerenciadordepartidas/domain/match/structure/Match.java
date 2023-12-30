@@ -49,11 +49,11 @@ public class Match {
     @Column(name = "team_b_score")
     private Integer teamScoreB;
 
-    private Modality modality;
+    private String modality;
 
     @JsonProperty("match_status")
     @Column(name = "match_status")
-    private MatchStatus matchStatus;
+    private String matchStatus;
 
     @JsonProperty("match_start")
     @Column(name = "match_start")

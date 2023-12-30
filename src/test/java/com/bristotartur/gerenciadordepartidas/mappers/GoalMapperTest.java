@@ -6,7 +6,6 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
 import com.bristotartur.gerenciadordepartidas.services.TeamService;
 import com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil;
@@ -26,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -65,12 +65,7 @@ class GoalMapperTest {
         existingTeamB = createTeam();
         existingMatchSportA = createFootballMatch();
         existingMatchSportB = createFootballMatch();
-
-        existingGoal = Goal.builder()
-                .id(1L)
-                .goalTime(goalTimeA)
-                .team(existingTeamA)
-                .matchSport(existingMatchSportA).build();
+        existingGoal = createGoal(existingTeamA, existingMatchSportA);
 
         goalDtoA = new GoalDto(goalTimeA, existingTeamA.getId(), existingMatchSportA.getId(), Sports.FOOTBALL);
         goalDtoB = new GoalDto(goalTimeB, existingTeamB.getId(), existingMatchSportB.getId(), Sports.FOOTBALL);
@@ -82,6 +77,15 @@ class GoalMapperTest {
 
     private FootballMatch createFootballMatch() {
         return FootballMatch.builder().id(RandomIdUtil.getRandomLongId()).build();
+    }
+
+    private Goal createGoal(Team team, MatchSport matchSport) {
+
+        return Goal.builder()
+                .id(RandomIdUtil.getRandomLongId())
+                .goalTime(any())
+                .team(team)
+                .matchSport(matchSport).build();
     }
 
     @Test
@@ -103,7 +107,6 @@ class GoalMapperTest {
     void Should_UpdateGoalFields_When_NewValuesArePassed() {
 
         when(teamService.findTeamById(existingTeamB.getId())).thenReturn(existingTeamB);
-
         when(generalMatchSportService.findMatchSportForGoal(existingTeamB.getId(), Sports.FOOTBALL))
                 .thenReturn(existingMatchSportB);
 

@@ -86,7 +86,8 @@ class GeneralMatchSportServiceTest {
     void Should_FindMatchSportForPenaltyCard_When_ValidArgumentIsPassed() {
 
         BasketballMatch mockBasketballMatch = new BasketballMatch();
-        when(generalMatchSportService.findMatchSportForCard(anyLong(), Sports.BASKETBALL)).thenReturn(mockBasketballMatch);
+        when(generalMatchSportService.findMatchSportForCard(anyLong(), Sports.BASKETBALL))
+                .thenReturn(mockBasketballMatch);
 
         MatchSport resultBasket = generalMatchSportService.findMatchSportForCard(1L, Sports.BASKETBALL);
         verify(basketballMatchService).findBasketballMatchById(1L);

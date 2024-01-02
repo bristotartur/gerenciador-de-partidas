@@ -13,7 +13,8 @@ public enum ExceptionMessages {
     VOLLEYBALL_MATCH_NOT_FOUND("Partida de vôlei não encontrada"),
     UNSUPPORTED_FOR_GOALS("Esporte não suportado para gols"),
     UNSUPPORTED_FOR_PENALTY_CARDS("Esporte não suportado para cartões"),
-    UNSUPPORTED_SPORT("Modalidade esportiva não suportada");
+    UNSUPPORTED_SPORT("Modalidade esportiva não suportada"),
+    INVALID_PATTERN("Padrão inválido");
 
     public final String message;
 }

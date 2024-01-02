@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class DateTimeUtil {
 
     public static LocalDateTime parseToPattern(LocalDateTime dateTime) {
-        return LocalDateTime.parse(dateTime.format(DateTimeFormatter.ofPattern(Patterns.DATE_TIME.name())));
+        return LocalDateTime.parse(dateTime.format(DateTimeFormatter.ofPattern(Patterns.DATE_TIME.value)));
     }
 
     public static LocalDateTime toNewMatchTime(LocalDateTime dateTime) {
@@ -25,6 +25,14 @@ public class DateTimeUtil {
         LocalDate date = LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth());
 
         return LocalDateTime.of(date, LocalTime.MIN);
+    }
+
+    public static boolean checkPattern(Patterns pattern, LocalDateTime dateTime) {
+
+        if (pattern.equals(Patterns.DATE_TIME))
+            return dateTime.toString().matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
+
+        throw new BadRequestException(ExceptionMessages.INVALID_PATTERN.message);
     }
 
 }

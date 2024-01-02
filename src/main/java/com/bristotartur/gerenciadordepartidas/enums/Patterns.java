@@ -7,5 +7,5 @@ public enum Patterns {
 
     DATE_TIME("yyyy-MM-dd HH:mm:ss");
 
-    private final String value;
+    public final String value;
 }

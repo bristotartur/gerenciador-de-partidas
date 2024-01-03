@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.TableTennisMatch;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -9,18 +10,30 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class TableTennisMatchService {
+public class TableTennisMatchService implements MatchSportStrategy<TableTennisMatch> {
 
     private final TableTennisMatchRepository tableTennisMatchRepository;
 
-    public TableTennisMatch findTableTennisMatchById(Long id) {
+//    public TableTennisMatch findTableTennisMatchById(Long id) {
+//
+//        return tableTennisMatchRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TABLE_TENNIS_MATCH_NOT_FOUND.message));
+//    }
+//
+//    public TableTennisMatch saveTableTennisMatch(TableTennisMatch tableTennisMatch) {
+//        return tableTennisMatchRepository.save(tableTennisMatch);
+//    }
+
+    @Override
+    public MatchSport findMatchSportById(Long id) {
 
         return tableTennisMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TABLE_TENNIS_MATCH_NOT_FOUND.message));
+
     }
 
-    public TableTennisMatch saveTableTennisMatch(TableTennisMatch tableTennisMatch) {
-        return tableTennisMatchRepository.save(tableTennisMatch);
+    @Override
+    public MatchSport saveMatchSport(TableTennisMatch matchSport) {
+        return tableTennisMatchRepository.save(matchSport);
     }
-
 }

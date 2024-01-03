@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.FootballMatch;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.FootballMatchRepository;
@@ -9,18 +10,30 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class FootballMatchService {
+public class FootballMatchService implements MatchSportStrategy<FootballMatch>{
 
     private final FootballMatchRepository footballMatchRepository;
 
-    public FootballMatch findFootballMatchById(Long id) {
+//    public FootballMatch findFootballMatchById(Long id) {
+//
+//        return footballMatchRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.FOOTBALL_MATCH_NOT_FOUND.message));
+//    }
+//
+//    public FootballMatch saveFootballMatch(FootballMatch footballMatch) {
+//        return footballMatchRepository.save(footballMatch);
+//    }
+
+    @Override
+    public MatchSport findMatchSportById(Long id) {
 
         return footballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.FOOTBALL_MATCH_NOT_FOUND.message));
     }
 
-    public FootballMatch saveFootballMatch(FootballMatch footballMatch) {
-        return footballMatchRepository.save(footballMatch);
+    @Override
+    public MatchSport saveMatchSport(FootballMatch matchSport) {
+        return footballMatchRepository.save(matchSport);
     }
 
 }

@@ -14,16 +14,6 @@ public class TableTennisMatchService implements MatchSportStrategy<TableTennisMa
 
     private final TableTennisMatchRepository tableTennisMatchRepository;
 
-//    public TableTennisMatch findTableTennisMatchById(Long id) {
-//
-//        return tableTennisMatchRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TABLE_TENNIS_MATCH_NOT_FOUND.message));
-//    }
-//
-//    public TableTennisMatch saveTableTennisMatch(TableTennisMatch tableTennisMatch) {
-//        return tableTennisMatchRepository.save(tableTennisMatch);
-//    }
-
     @Override
     public MatchSport findMatchSportById(Long id) {
 
@@ -33,7 +23,7 @@ public class TableTennisMatchService implements MatchSportStrategy<TableTennisMa
     }
 
     @Override
-    public MatchSport saveMatchSport(TableTennisMatch matchSport) {
-        return tableTennisMatchRepository.save(matchSport);
+    public TableTennisMatch createNewMatchSport() {
+        return tableTennisMatchRepository.save(new TableTennisMatch());
     }
 }

@@ -10,19 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class FootballMatchService implements MatchSportStrategy<FootballMatch>{
+public class FootballMatchService implements MatchSportStrategy<FootballMatch> {
 
     private final FootballMatchRepository footballMatchRepository;
-
-//    public FootballMatch findFootballMatchById(Long id) {
-//
-//        return footballMatchRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.FOOTBALL_MATCH_NOT_FOUND.message));
-//    }
-//
-//    public FootballMatch saveFootballMatch(FootballMatch footballMatch) {
-//        return footballMatchRepository.save(footballMatch);
-//    }
 
     @Override
     public MatchSport findMatchSportById(Long id) {
@@ -32,8 +22,8 @@ public class FootballMatchService implements MatchSportStrategy<FootballMatch>{
     }
 
     @Override
-    public MatchSport saveMatchSport(FootballMatch matchSport) {
-        return footballMatchRepository.save(matchSport);
+    public FootballMatch createNewMatchSport() {
+        return footballMatchRepository.save(new FootballMatch());
     }
 
 }

@@ -14,16 +14,6 @@ public class BasketballMatchService implements MatchSportStrategy<BasketballMatc
 
     private final BasketballMatchRepository basketballMatchRepository;
 
-//    public BasketballMatch findBasketballMatchById(Long id) {
-//
-//        return basketballMatchRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.BASKETBALL_MATCH_NOT_FOUND.message));
-//    }
-//
-//    public BasketballMatch saveBasketballMatch(BasketballMatch basketballMatch) {
-//        return basketballMatchRepository.save(basketballMatch);
-//    }
-
     @Override
     public MatchSport findMatchSportById(Long id) {
 
@@ -32,7 +22,7 @@ public class BasketballMatchService implements MatchSportStrategy<BasketballMatc
     }
 
     @Override
-    public MatchSport saveMatchSport(BasketballMatch matchSport) {
-        return basketballMatchRepository.save(matchSport);
+    public BasketballMatch createNewMatchSport() {
+        return basketballMatchRepository.save(new BasketballMatch());
     }
 }

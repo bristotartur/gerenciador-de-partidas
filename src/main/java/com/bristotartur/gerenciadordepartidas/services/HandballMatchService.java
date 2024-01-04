@@ -14,16 +14,6 @@ public class HandballMatchService implements MatchSportStrategy<HandballMatch> {
 
     private final HandballMatchRepository handballMatchRepository;
 
-//    public HandballMatch findHandballMatchById(Long id) {
-//
-//        return handballMatchRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.HANDBALL_MATCH_NOT_FOUND.message));
-//    }
-//
-//    public HandballMatch saveHandballMatch(HandballMatch handballMatch) {
-//        return handballMatchRepository.save(handballMatch);
-//    }
-
     @Override
     public MatchSport findMatchSportById(Long id) {
 
@@ -32,7 +22,7 @@ public class HandballMatchService implements MatchSportStrategy<HandballMatch> {
     }
 
     @Override
-    public MatchSport saveMatchSport(HandballMatch matchSport) {
-        return handballMatchRepository.save(matchSport);
+    public HandballMatch createNewMatchSport() {
+        return handballMatchRepository.save(new HandballMatch());
     }
 }

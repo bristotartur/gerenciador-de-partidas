@@ -14,16 +14,6 @@ public class ChessMatchService implements MatchSportStrategy<ChessMatch> {
 
     private final ChessMatchRepository chessMatchRepository;
 
-//    public ChessMatch findChessMatchById(Long id) {
-//
-//        return chessMatchRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.CHESS_MATCH_NOT_FOUND.message));
-//    }
-//
-//    public ChessMatch saveChessMatch(ChessMatch chessMatch) {
-//        return chessMatchRepository.save(chessMatch);
-//    }
-
     @Override
     public MatchSport findMatchSportById(Long id) {
 
@@ -32,7 +22,7 @@ public class ChessMatchService implements MatchSportStrategy<ChessMatch> {
     }
 
     @Override
-    public MatchSport saveMatchSport(ChessMatch matchSport) {
-        return chessMatchRepository.save(matchSport);
+    public ChessMatch createNewMatchSport() {
+        return chessMatchRepository.save(new ChessMatch());
     }
 }

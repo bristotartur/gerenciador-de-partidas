@@ -14,16 +14,6 @@ public class VolleyballMatchService implements MatchSportStrategy<VolleyballMatc
 
     private final VolleyballMatchRepository volleyballMatchRepository;
 
-//    public VolleyballMatch findVolleyballMatchById(Long id) {
-//
-//        return volleyballMatchRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(ExceptionMessages.VOLLEYBALL_MATCH_NOT_FOUND.message));
-//    }
-//
-//    public VolleyballMatch saveVolleyballMatch(VolleyballMatch volleyballMatch) {
-//        return volleyballMatchRepository.save(volleyballMatch);
-//    }
-
     @Override
     public MatchSport findMatchSportById(Long id) {
 
@@ -32,7 +22,7 @@ public class VolleyballMatchService implements MatchSportStrategy<VolleyballMatc
     }
 
     @Override
-    public MatchSport saveMatchSport(VolleyballMatch matchSport) {
-        return volleyballMatchRepository.save(matchSport);
+    public VolleyballMatch createNewMatchSport() {
+        return volleyballMatchRepository.save(new VolleyballMatch());
     }
 }

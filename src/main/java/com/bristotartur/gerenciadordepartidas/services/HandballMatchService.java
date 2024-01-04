@@ -7,12 +7,24 @@ import com.bristotartur.gerenciadordepartidas.repositories.HandballMatchReposito
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Serviço responsável por gerenciar operações relacionadas a partidas de handebol (HandballMatch).
+ * Esta classe implementa a estratégia MatchSportStrategy para fornecer comportamentos padronizados
+ * relacionados à especialização de HandballMatch.
+ */
 @Service
 @AllArgsConstructor
 public class HandballMatchService implements MatchSportStrategy<HandballMatch> {
 
     private final HandballMatchRepository handballMatchRepository;
 
+    /**
+     * Busca uma partida de handebol pelo seu ID.
+     *
+     * @param id Identificador único da partida de handebol.
+     * @return Uma instância de HandballMatch correspondente ao ID fornecido.
+     * @throws NotFoundException Se nenhuma partida de handebol correspondente ao ID for encontrada.
+     */
     @Override
     public HandballMatch findMatchSportById(Long id) {
 
@@ -20,6 +32,11 @@ public class HandballMatchService implements MatchSportStrategy<HandballMatch> {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.HANDBALL_MATCH_NOT_FOUND.message));
     }
 
+    /**
+     * Cria uma nova instância de HandballMatch e a persiste no banco de dados.
+     *
+     * @return Uma nova instância de HandballMatch criada e salva no banco de dados.
+     */
     @Override
     public HandballMatch createNewMatchSport() {
         return handballMatchRepository.save(new HandballMatch());

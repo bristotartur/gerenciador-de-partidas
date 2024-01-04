@@ -9,8 +9,6 @@ import com.bristotartur.gerenciadordepartidas.utils.DateTimeUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 @AllArgsConstructor
 public class MatchMapper {

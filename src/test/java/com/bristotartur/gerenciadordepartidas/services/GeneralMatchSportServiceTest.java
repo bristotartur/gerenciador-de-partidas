@@ -2,7 +2,6 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.BasketballMatch;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.FootballMatch;
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;

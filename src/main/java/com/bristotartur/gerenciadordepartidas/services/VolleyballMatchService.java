@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.VolleyballMatch;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -15,7 +14,7 @@ public class VolleyballMatchService implements MatchSportStrategy<VolleyballMatc
     private final VolleyballMatchRepository volleyballMatchRepository;
 
     @Override
-    public MatchSport findMatchSportById(Long id) {
+    public VolleyballMatch findMatchSportById(Long id) {
 
         return volleyballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.VOLLEYBALL_MATCH_NOT_FOUND.message));

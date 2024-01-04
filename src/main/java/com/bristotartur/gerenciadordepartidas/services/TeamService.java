@@ -34,7 +34,6 @@ public class TeamService {
     public Team saveTeam(TeamDto teamDto) {
 
         var savedTeam = teamRepository.save(teamMapper.toNewTeam(teamDto));
-
         return savedTeam;
     }
 

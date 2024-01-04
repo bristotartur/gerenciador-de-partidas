@@ -1,7 +1,9 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
-public enum TeamName {
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
+public enum TeamName {
     ATOMICA("atômica"),
     MESTRES_DE_OBRAS("mestres de obras"),
     PAPA_LEGUAS("papa-léguas"),
@@ -9,9 +11,4 @@ public enum TeamName {
     UNICONTTI("unicontti");
 
     public final String name;
-
-    TeamName(String name) {
-        this.name = name;
-    }
-
 }

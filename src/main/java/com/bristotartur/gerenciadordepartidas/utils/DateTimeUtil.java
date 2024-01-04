@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.utils;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Patterns;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
@@ -10,8 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @UtilityClass
 public class DateTimeUtil {

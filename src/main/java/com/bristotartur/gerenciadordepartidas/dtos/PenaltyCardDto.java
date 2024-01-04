@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,16 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
-//@RequiredArgsConstructor
+@AllArgsConstructor
 public enum PenaltyCardColor {
     YELLOW("yellow"),
     RED("red");
 
-    private final String name;
-
-    PenaltyCardColor (String name) {
-        this.name = name;
-    }
+    public final String name;
 }

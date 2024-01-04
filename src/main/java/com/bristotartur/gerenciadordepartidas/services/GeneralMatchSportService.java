@@ -15,16 +15,14 @@ public class GeneralMatchSportService {
     private final ApplicationContext context;
 
     public MatchSport newMatchSport(Sports sport) {
-
+        
         MatchSportStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
-
         return service.createNewMatchSport();
     }
 
     public MatchSport findMatchSport(Long id, Sports sport) {
 
         MatchSportStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
-
         return service.findMatchSportById(id);
     }
 

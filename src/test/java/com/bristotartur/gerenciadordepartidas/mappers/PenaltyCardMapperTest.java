@@ -69,7 +69,7 @@ class PenaltyCardMapperTest {
 
         return PenaltyCard.builder()
                 .id(1L)
-                .color(color.name())
+                .color(color.name)
                 .matchSport(existingMatchSport)
                 .team(existingTeam).build();
     }

@@ -37,7 +37,6 @@ public class MatchMapper {
 
         return Match.builder()
                 .id(id)
-                .matchSport(generalMatchSportService.findMatchSport(matchDto.sport(), matchDto.matchSportId()))
                 .teamA(teamService.findTeamById(matchDto.teamAId()))
                 .teamB(teamService.findTeamById(matchDto.teamBId()))
                 .teamScoreA(matchDto.teamScoreA())

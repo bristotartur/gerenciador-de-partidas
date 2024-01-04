@@ -49,7 +49,6 @@ class MatchMapperTest {
         matchDto = new MatchDto(Sports.FOOTBALL,
                 getRandomLongId(),
                 getRandomLongId(),
-                getRandomLongId(),
                 5,
                 1,
                 Modality.FEMININE,
@@ -167,18 +166,6 @@ class MatchMapperTest {
 
         when(teamService.findTeamById(matchDto.teamAId()))
                 .thenThrow(new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
-
-        assertThrows(NotFoundException.class, () -> matchMapper.toExistingMatch(randomId, matchDto));
-    }
-
-    @Test
-    @DisplayName("Should throw NotFoundException when non existing MatchSport id is passed to existing Match")
-    void Should_ThrowNotFoundException_When_NonExistingMatchSportIdIsPassedToExistingMatch() {
-
-        long randomId = getRandomLongId();
-
-        when(generalMatchSportService.findMatchSport(matchDto.sport(), matchDto.matchSportId()))
-                .thenThrow(new NotFoundException(ExceptionMessages.FOOTBALL_MATCH_NOT_FOUND.message));
 
         assertThrows(NotFoundException.class, () -> matchMapper.toExistingMatch(randomId, matchDto));
     }

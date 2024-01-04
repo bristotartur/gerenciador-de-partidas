@@ -5,8 +5,22 @@ import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import org.springframework.context.ApplicationContext;
 
+/**
+ * Interface que define uma fábrica para criar instâncias de classes que implementam a estratégia
+ * MatchSportStrategy. Esta fábrica permite criar dinamicamente serviços especializados com base
+ * no tipo de esporte fornecido.
+ */
 public interface MatchSportServiceFactory {
 
+    /**
+     * Cria uma nova instância de uma classe que implementa MatchSportStrategy especializada
+     * no tipo de esporte fornecido.
+     *
+     * @param sport O tipo de esporte no qual a classe gerada irá lidar.
+     * @param context O contexto do Spring responsável por gerenciar a criação e injeção de dependências.
+     * @return Uma instância de MatchSportStrategy especializada no esporte fornecido.
+     * @throws BadRequestException Se o tipo de esporte fornecida for nulo ou não suportado.
+     */
     public static MatchSportStrategy newMatchSportService(Sports sport, ApplicationContext context) {
 
         MatchSportStrategy matchSportStrategy;

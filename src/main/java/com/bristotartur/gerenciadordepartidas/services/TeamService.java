@@ -18,6 +18,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
+@Transactional
 public class TeamService {
 
     private final TeamMapper teamMapper;
@@ -77,7 +78,6 @@ public class TeamService {
      * @return A equipe atualizada.
      * @throws NotFoundException Se nenhuma equipe correspondente ao ID fornecido for encontrada.
      */
-    @Transactional
     public Team replaceTeam(Long id, TeamDto teamDto) {
 
         this.findTeamById(id);

@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.domain.team;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "TEAM")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -28,7 +28,8 @@ public class Team {
     @Column(unique = true)
     private String name;
 
-    private Integer points = 0;
+    @Column(nullable = false)
+    private Integer points;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "teamA", cascade = CascadeType.ALL)
@@ -43,7 +44,7 @@ public class Team {
     @JsonManagedReference
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Goal> goals; // guarda tanto os gols de futebol quanto os de handebol
+    private List<Goal> goals;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)

@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * A classe TeamService fornece serviços relacionados a operações CRUD para a entidade Team, interagindo
- * com o repositório TeamRepository para acessar e manipular os dados relacionados a equipes.
+ * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade Team,
+ * interagindo com o repositório TeamRepository para acessar e manipular os dados relacionados a equipes.
  */
 @Service
 @AllArgsConstructor
@@ -40,7 +40,7 @@ public class TeamService {
      * @return A equipe correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma equipe correspondente ao ID fornecido for encontrada.
      */
-    public Team findTeamById( Long id) {
+    public Team findTeamById(Long id) {
 
         var team = teamRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));

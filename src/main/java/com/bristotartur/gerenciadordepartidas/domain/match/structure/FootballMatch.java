@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "football_match")
+@Table(name = "FOOTBALL_MATCH")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

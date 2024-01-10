@@ -6,6 +6,7 @@ import lombok.Getter;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class MatchSport {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter

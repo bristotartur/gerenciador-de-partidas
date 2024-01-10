@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalTime;
 
 @Entity
-@Table
+@Table(name = "GOAL")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -23,7 +23,7 @@ public class Goal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "goal_time")
+    @Column(nullable = false)
     private LocalTime goalTime;
 
     @JsonBackReference

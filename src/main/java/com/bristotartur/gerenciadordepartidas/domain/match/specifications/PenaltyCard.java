@@ -2,7 +2,6 @@ package com.bristotartur.gerenciadordepartidas.domain.match.specifications;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
-import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,10 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
-@Table
+@Table(name = "PENALTY_CARD")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -25,8 +23,10 @@ public class PenaltyCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String color;
 
+    @Column(nullable = false)
     private LocalTime penaltyCardTime;
 
     @JsonBackReference

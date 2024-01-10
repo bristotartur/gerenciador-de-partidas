@@ -35,7 +35,7 @@ public class MatchService {
 
     public Match saveMatch(MatchDto matchDto) {
 
-        var savedMatch = matchMapper.toNewMatch(matchDto);
+        var savedMatch = matchRepository.save(matchMapper.toNewMatch(matchDto));
         return savedMatch;
     }
 

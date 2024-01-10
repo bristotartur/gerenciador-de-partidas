@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ExceptionMessages {
     TEAM_NOT_FOUND("Equipe não encontrada"),
+    MATCH_NOT_FOUND("Partida não encontrada"),
     BASKETBALL_MATCH_NOT_FOUND("Partida de basquete não encontrada"),
     CHESS_MATCH_NOT_FOUND("Partida de xadrez não encontrada"),
     FOOTBALL_MATCH_NOT_FOUND("Partida de futebol não encontrada"),

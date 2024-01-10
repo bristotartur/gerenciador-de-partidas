@@ -12,6 +12,6 @@ public final class RandomIdUtil {
         Long timestamp = System.currentTimeMillis();
         Random random = new Random();
 
-        return random.nextLong() + timestamp;
+        return Math.abs(random.nextLong() + timestamp);
     }
 }

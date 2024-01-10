@@ -1,12 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.utils;
 
-import lombok.experimental.UtilityClass;
-import org.springframework.stereotype.Component;
-
 import java.util.Random;
 
-@Component
-public class RandomIdUtil {
+public final class RandomIdUtil {
+
+    private RandomIdUtil() {
+    }
 
     public static Long getRandomLongId() {
 

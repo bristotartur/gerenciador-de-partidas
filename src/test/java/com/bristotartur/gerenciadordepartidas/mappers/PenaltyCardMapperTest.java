@@ -58,7 +58,12 @@ class PenaltyCardMapperTest {
     }
 
     private Team createTeam() {
-        return Team.builder().id(RandomIdUtil.getRandomLongId()).build();
+
+        return Team.builder()
+                .id(RandomIdUtil.getRandomLongId())
+                .points(300)
+                .build();
+
     }
 
     private FootballMatch createFootballMatch() {

@@ -23,7 +23,8 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
-    private final GeneralMatchSportService matchSportService;
+    private final TeamService teamService;
+    private final GeneralMatchSportService generalMatchSportService;
 
     /**
      * Retorna todas as partidas disponíveis no banco de dados.
@@ -57,8 +58,13 @@ public class MatchService {
      */
     public Match saveMatch(MatchDto matchDto) {
 
-        var savedMatch = matchRepository.save(matchMapper.toNewMatch(matchDto));
-        return savedMatch;
+        var matchSport = generalMatchSportService.newMatchSport(matchDto.sport());
+        var teamA = teamService.findTeamById(matchDto.teamAId());
+        var teamB = teamService.findTeamById(matchDto.teamBId());
+
+        var match = matchMapper.toNewMatch(matchDto, matchSport, teamA, teamB);
+
+        return matchRepository.save(match);
     }
 
     /**
@@ -83,10 +89,13 @@ public class MatchService {
 
         this.findMatchById(id);
 
-        var match = matchMapper.toExistingMatch(id, matchDto);
-        var updatedMatch = matchRepository.save(match);
+        var matchSport = generalMatchSportService.newMatchSport(matchDto.sport());
+        var teamA = teamService.findTeamById(matchDto.teamAId());
+        var teamB = teamService.findTeamById(matchDto.teamBId());
 
-        return updatedMatch;
+        var match = matchMapper.toExistingMatch(id, matchDto, matchSport, teamA, teamB);
+
+        return matchRepository.save(match);
     }
 
 }

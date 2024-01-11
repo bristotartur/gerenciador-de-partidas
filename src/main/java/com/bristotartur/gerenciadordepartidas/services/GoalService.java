@@ -51,7 +51,7 @@ public class GoalService {
     /**
      * Salva um gol no sistema com base nos dados fornecidos em GoalDto.
      *
-     * @param matchDto Dados do gol a ser salvo.
+     * @param goalDto Dados do gol a ser salvo.
      * @return O gol recém-salvo.
      */
     public Goal saveGoal(GoalDto goalDto) {
@@ -74,13 +74,13 @@ public class GoalService {
      * Isso envolve a substituição completa dos dados do gol existente pelos novos dados fornecidos.
      *
      * @param id Identificador único do gol a ser atualizado.
-     * @param matchDto Dados atualizados do gol.
+     * @param goalDto Dados atualizados do gol.
      * @return O gol atualizado.
      * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado.
      */
     public Goal replaceGoal(Long id, GoalDto goalDto) {
 
-        findGoalById(id);
+        this.findGoalById(id);
 
         var goal = goalMapper.toExistingGoal(id, goalDto);
         var updatedGoal = goalRepository.save(goal);

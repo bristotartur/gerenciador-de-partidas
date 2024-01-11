@@ -5,7 +5,9 @@ import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
 import com.bristotartur.gerenciadordepartidas.services.TeamService;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor
 public class PenaltyCardMapper {
 

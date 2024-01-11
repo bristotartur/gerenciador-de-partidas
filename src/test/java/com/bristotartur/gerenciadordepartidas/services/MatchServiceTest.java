@@ -44,8 +44,8 @@ class MatchServiceTest {
                 .teamScoreB(2)
                 .modality(Modality.MASCULINE.name)
                 .matchStatus(MatchStatus.ENDED.name)
-                .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 00))
-                .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 00))
+                .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 0))
+                .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 0))
                 .build();
     }
 
@@ -125,7 +125,7 @@ class MatchServiceTest {
     }
 
     @Test
-    @DisplayName("Should delete Match from database when match ID is passed to delete")
+    @DisplayName("Should delete Match from database when Match ID is passed to delete")
     void Should_DeleteMatchFromDatabase_When_MatchIdIsPassedToDelete() {
 
         var existingMatch = createNewMatch(Sports.CHESS);
@@ -156,7 +156,7 @@ class MatchServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw NotFoundException when non existing ID is passed to replace match")
+    @DisplayName("Should throw NotFoundException when non existing ID is passed to replace Match")
     void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplaceMatch() {
 
         var id = getRandomLongId();
@@ -166,4 +166,5 @@ class MatchServiceTest {
             matchService.replaceMatch(id, matchDto);
         });
     }
+
 }

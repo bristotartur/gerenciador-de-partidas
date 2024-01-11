@@ -1,34 +1,23 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
+import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
 import com.bristotartur.gerenciadordepartidas.services.TeamService;
 import lombok.AllArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-@Component
-@AllArgsConstructor
-public class GoalMapper {
+@Mapper(componentModel = "spring")
+public interface GoalMapper {
 
-    private final GeneralMatchSportService generalMatchSportService;
-    private final TeamService teamService;
+    @Mapping(target = "id", ignore = true)
+    Goal toNewGoal(GoalDto goalDto, MatchSport matchSport, Team team);
 
-    public Goal toNewGoal(GoalDto goalDto) {
+    @Mapping(target = "id", source = "id")
+     Goal toExistingGoal(Long id, GoalDto goalDto, MatchSport matchSport, Team team);
 
-        return Goal.builder()
-                .team(teamService.findTeamById(goalDto.teamId()))
-                .matchSport(generalMatchSportService.findMatchSportForGoal(goalDto.matchSportId(), goalDto.sport()))
-                .goalTime(goalDto.goalTime())
-                .build();
-    }
-    public Goal toExistingGoal(Long id, GoalDto goalDto) {
-
-        return Goal.builder()
-                .id(id)
-                .team(teamService.findTeamById(goalDto.teamId()))
-                .matchSport(generalMatchSportService.findMatchSportForGoal(goalDto.matchSportId(), goalDto.sport()))
-                .goalTime(goalDto.goalTime())
-                .build();
-    }
 }

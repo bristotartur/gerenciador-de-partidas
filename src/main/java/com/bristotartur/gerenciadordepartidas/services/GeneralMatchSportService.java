@@ -5,6 +5,7 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,12 @@ import org.springframework.stereotype.Service;
  *
  * Ela utiliza uma fábrica, MatchSportServiceFactory, para criar dinamicamente serviços especializados com
  * base no tipo de esporte fornecido.
+ *
+ * @see MatchSportServiceFactory
+ * @see MatchSportStrategy
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GeneralMatchSportService {
 
     private final ApplicationContext context;
@@ -53,7 +57,7 @@ public class GeneralMatchSportService {
     /**
      * Encontra uma instância de MatchSport associada a um gol com base no ID e tipo de esporte.
      *
-     * @param id O ID único de MatchSport.
+     * @param id O identificador único de MatchSport.
      * @param sport Tipo de esporte associado à MatchSport.
      * @return A instância correspondente de MatchSport.
      * @throws com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException Se nenhum MatchSport
@@ -74,7 +78,7 @@ public class GeneralMatchSportService {
      * Encontra uma instância de MatchSport associada a um cartão de penalidade com base
      * no ID e tipo de esporte.
      *
-     * @param id O ID único de MatchSport.
+     * @param id O identificador único de MatchSport.
      * @param sport Tipo de esporte associado à MatchSport.
      * @return A instância correspondente de MatchSport.
      * @throws com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException Se nenhum MatchSport

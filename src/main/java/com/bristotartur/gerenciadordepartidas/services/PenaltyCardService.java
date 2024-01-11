@@ -24,6 +24,8 @@ public class PenaltyCardService {
 
     private final PenaltyCardRepository penaltyCardRepository;
     private final PenaltyCardMapper penaltyCardMapper;
+    private final TeamService teamService;
+    private final GeneralMatchSportService generalMatchSportService;
 
     /**
      * Retorna todos os cartões disponíveis no banco de dados.
@@ -57,8 +59,12 @@ public class PenaltyCardService {
      */
     public PenaltyCard savePenaltyCard(PenaltyCardDto penaltyCardDto) {
 
-        var savedPenaltyCard = penaltyCardRepository.save(penaltyCardMapper.toNewPenaltyCard(penaltyCardDto));
-        return savedPenaltyCard;
+        var matchSport = generalMatchSportService.newMatchSport(penaltyCardDto.sport());
+        var team = teamService.findTeamById(penaltyCardDto.teamId());
+
+        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, matchSport, team);
+
+        return penaltyCardRepository.save(penaltyCard);
     }
 
     /**
@@ -82,11 +88,13 @@ public class PenaltyCardService {
     public PenaltyCard replacePenaltyCard(Long id, PenaltyCardDto penaltyCardDto) {
         
         this.findPenaltyCardById(id);
-        
-        var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto);
-        var updatedPenaltyCard = penaltyCardRepository.save(penaltyCard);
-        
-        return updatedPenaltyCard;
+
+        var matchSport = generalMatchSportService.newMatchSport(penaltyCardDto.sport());
+        var team = teamService.findTeamById(penaltyCardDto.teamId());
+
+        var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, matchSport, team);
+
+        return penaltyCardRepository.save(penaltyCard);
     }
 
 }

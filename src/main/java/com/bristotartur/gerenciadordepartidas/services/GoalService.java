@@ -23,6 +23,8 @@ public class GoalService {
 
     private final GoalRepository goalRepository;
     private final GoalMapper goalMapper;
+    private final TeamService teamService;
+    private final GeneralMatchSportService generalMatchSportService;
 
     /**
      * Retorna todos os gols disponíveis no banco de dados.
@@ -56,8 +58,12 @@ public class GoalService {
      */
     public Goal saveGoal(GoalDto goalDto) {
 
-        var savedGoal = goalRepository.save(goalMapper.toNewGoal(goalDto));
-        return savedGoal;
+        var matchSport = generalMatchSportService.newMatchSport(goalDto.sport());
+        var team = teamService.findTeamById(goalDto.teamId());
+
+        var goal = goalMapper.toNewGoal(goalDto, matchSport, team);
+
+        return goalRepository.save(goal);
     }
 
     /**
@@ -82,10 +88,12 @@ public class GoalService {
 
         this.findGoalById(id);
 
-        var goal = goalMapper.toExistingGoal(id, goalDto);
-        var updatedGoal = goalRepository.save(goal);
+        var matchSport = generalMatchSportService.newMatchSport(goalDto.sport());
+        var team = teamService.findTeamById(goalDto.teamId());
 
-        return updatedGoal;
+        var goal = goalMapper.toExistingGoal(id, goalDto, matchSport, team);
+
+        return goalRepository.save(goal);
     }
 
 }

@@ -1,40 +1,21 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
+import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
-import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
-import com.bristotartur.gerenciadordepartidas.services.TeamService;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@AllArgsConstructor
-public class PenaltyCardMapper {
+@Mapper(componentModel = "spring")
+public interface PenaltyCardMapper {
 
-    private final TeamService teamService;
-    private final GeneralMatchSportService generalMatchSportService;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "color", source = "penaltyCardDto.color.name")
+    PenaltyCard toNewPenaltyCard(PenaltyCardDto penaltyCardDto, MatchSport matchSport, Team team);
 
-    public PenaltyCard toNewPenaltyCard(PenaltyCardDto penaltyCardDto) {
-
-        return PenaltyCard.builder()
-                .team(teamService.findTeamById(penaltyCardDto.teamId()))
-                .penaltyCardTime(penaltyCardDto.penaltyCardTime())
-                .matchSport(generalMatchSportService
-                        .findMatchSportForCard(penaltyCardDto.matchSportId(), penaltyCardDto.sport()))
-                .color(penaltyCardDto.color().name())
-                .build();
-    }
-
-    public PenaltyCard toExistingPenaltyCard(Long id, PenaltyCardDto penaltyCardDto) {
-
-        return PenaltyCard.builder()
-                .id(id)
-                .penaltyCardTime(penaltyCardDto.penaltyCardTime())
-                .team(teamService.findTeamById(penaltyCardDto.teamId()))
-                .matchSport(generalMatchSportService
-                        .findMatchSportForCard(penaltyCardDto.matchSportId(), penaltyCardDto.sport()))
-                .color(penaltyCardDto.color().name())
-                .build();
-    }
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "color", source = "penaltyCardDto.color.name")
+    PenaltyCard toExistingPenaltyCard(Long id, PenaltyCardDto penaltyCardDto, MatchSport matchSport, Team team);
 
 }

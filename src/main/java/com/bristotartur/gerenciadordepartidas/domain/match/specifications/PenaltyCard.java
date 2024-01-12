@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalTime;
 
@@ -17,7 +18,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Data
 @Builder
-public class PenaltyCard {
+public class PenaltyCard extends RepresentationModel<PenaltyCard> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,19 +4,23 @@ import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Component;
 
+/**
+ * Interface responsável por gerar o mapeamento de dados relativos a entidade {@link Team}
+ * para uma instância concreta da mesma.
+ *
+ * @see TeamDto
+ */
 @Mapper(componentModel = "spring")
 public interface TeamMapper {
 
     /**
-     * Realiza o mapeamento de um um objeto do tipo TeamDto para um novo objeto do tipo Team.
-     * Os valores do campo points deste novo objeto Team será sempre 0, mesmo que o DTO possua
+     * Realiza o mapeamento de um um objeto do tipo {@link TeamDto} para um novo objeto do tipo {@link Team}.
+     * Os valores do campo points deste novo objeto {@link Team} será sempre 0, mesmo que o DTO possua
      * algum valor em seu campo correspondente.
      *
-     * @param teamDto DTO a ser mapeado.
-     * @return um novo objeto do tipo Team.
+     * @param teamDto DTO do tipo {@link TeamDto} contendo os dados da nova equipe.
+     * @return Uma nova instância do tipo {@link Team} com base nos dados fornecidos.
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "teamDto.teamName.name")
@@ -28,12 +32,12 @@ public interface TeamMapper {
     Team toNewTeam(TeamDto teamDto);
 
     /**
-     * Realiza o mapeamento de um objeto do tipo TeamDto para um objeto existente do tipo Team,
+     * Realiza o mapeamento de um objeto do tipo {@link TeamDto} para um objeto existente do tipo {@link Team},
      * atualizando os valores de seus respectivos campos aos correspondentes do DTO.
      *
-     * @param id identificador do objeto existente.
-     * @param teamDto DTO a ser mapeado.
-     * @return um objeto do tipo Team com seus valores atualizados.
+     * @param id Identificador único da equipe que será atualizada.
+     * @param teamDto DTO do tipo {@link TeamDto} contendo os dados da equipe que será atualizada.
+     * @return Uma nova instância do tipo {@link Team} com seus valores atualizados.
      */
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "teamDto.teamName.name")

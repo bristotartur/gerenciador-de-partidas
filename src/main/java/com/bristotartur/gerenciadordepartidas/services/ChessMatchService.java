@@ -8,9 +8,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * Serviço responsável por gerenciar operações relacionadas a partidas de xadrez (ChessMatch).
- * Esta classe implementa a estratégia MatchSportStrategy para fornecer comportamentos padronizados
- * relacionados à especialização de ChessMatch.
+ * Serviço responsável por gerenciar operações relacionadas a partidas de xadrez ({@link ChessMatch}).
+ * Esta classe implementa a estratégia {@link MatchSportStrategy} para fornecer comportamentos padronizados
+ * relacionados à especialização de {@link ChessMatch}.
+ *
+ * @see ChessMatchRepository
+ * @see MatchSportServiceFactory
+ * @see GeneralMatchSportService
  */
 @Service
 @AllArgsConstructor
@@ -22,7 +26,7 @@ public class ChessMatchService implements MatchSportStrategy<ChessMatch> {
      * Busca uma partida de xadrez pelo seu ID.
      *
      * @param id Identificador único da partida de xadrez.
-     * @return Uma instância de ChessMatch correspondente ao ID fornecido.
+     * @return Uma instância de {@link ChessMatch} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de xadrez correspondente ao ID for encontrada.
      */
     @Override
@@ -33,12 +37,13 @@ public class ChessMatchService implements MatchSportStrategy<ChessMatch> {
     }
 
     /**
-     * Cria uma nova instância de ChessMatch e a persiste no banco de dados.
+     * Cria uma nova instância de {@link ChessMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de ChessMatch criada e salva no banco de dados.
+     * @return Uma nova instância de {@link ChessMatch} criada e salva no banco de dados.
      */
     @Override
     public ChessMatch createNewMatchSport() {
         return chessMatchRepository.save(new ChessMatch());
     }
+
 }

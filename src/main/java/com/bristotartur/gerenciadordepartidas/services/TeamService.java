@@ -13,16 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade Team,
- * interagindo com o repositório TeamRepository para acessar e manipular os dados relacionados a equipes.
+ * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Team},
+ * interagindo com o repositório {@link TeamRepository} para acessar e manipular os dados
+ * relacionados a equipes.
  */
 @Service
 @AllArgsConstructor
 @Transactional
 public class TeamService {
 
-    private final TeamMapper teamMapper;
     private final TeamRepository teamRepository;
+    private final TeamMapper teamMapper;
 
     /**
      * Recupera todas as equipes disponíveis no sistema.
@@ -34,7 +35,7 @@ public class TeamService {
     }
 
     /**
-     * Busca uma equipe específica com base em seu ID.
+     * Busca uma entidade específica do tipo {@link Team} com base em seu ID.
      *
      * @param id Identificador único da equipe.
      * @return A equipe correspondente ao ID fornecido.
@@ -49,9 +50,9 @@ public class TeamService {
     }
 
     /**
-     * Salva uma nova equipe no sistema com base nos dados fornecidos em TeamDto.
+     * Salva uma nova equipe no sistema com base nos dados fornecidos em {@link TeamDto}.
      *
-     * @param teamDto Dados da equipe a serem salvos.
+     * @param teamDto DTO do tipo {@link TeamDto} contendo dados da equipe a serem salvos.
      * @return A equipe recém-salva.
      */
     public Team saveTeam(TeamDto teamDto) {
@@ -70,11 +71,11 @@ public class TeamService {
     }
 
     /**
-     * Atualiza uma equipe existente no sistema com base em seu ID e os dados fornecidos em TeamDto.
+     * Atualiza uma equipe existente no sistema com base em seu ID e os dados fornecidos em {@link TeamDto}.
      * Isso envolve a substituição completa dos dados da equipe existente pelos novos dados fornecidos.
      *
      * @param id Identificador único da equipe a ser atualizada.
-     * @param teamDto Dados atualizados da equipe.
+     * @param teamDto DTO do tipo {@link TeamDto} contendo dados atualizados da equipe.
      * @return A equipe atualizada.
      * @throws NotFoundException Se nenhuma equipe correspondente ao ID fornecido for encontrada.
      */
@@ -87,4 +88,5 @@ public class TeamService {
 
         return updatedTeam;
     }
+
 }

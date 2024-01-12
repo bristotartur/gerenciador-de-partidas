@@ -8,9 +8,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * Serviço responsável por gerenciar operações relacionadas a partidas de basquete (BasketballMatch).
- * Esta classe implementa a estratégia MatchSportStrategy para fornecer comportamentos padronizados
- * relacionados à especialização de BasketballMatch.
+ * Serviço responsável por gerenciar operações relacionadas a partidas de basquete ({@link BasketballMatch}).
+ * Esta classe implementa a estratégia {@link MatchSportStrategy} para fornecer comportamentos padronizados
+ * relacionados à especialização de {@link BasketballMatch}.
+ *
+ * @see BasketballMatchRepository
+ * @see MatchSportServiceFactory
+ * @see GeneralMatchSportService
  */
 @Service
 @AllArgsConstructor
@@ -22,7 +26,7 @@ public class BasketballMatchService implements MatchSportStrategy<BasketballMatc
      * Busca uma partida de basquete pelo seu ID.
      *
      * @param id Identificador único da partida de basquete.
-     * @return Uma instância de BasketballMatch correspondente ao ID fornecido.
+     * @return Uma instância de {@link BasketballMatch} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de basquete correspondente ao ID for encontrada.
      */
     @Override
@@ -33,12 +37,13 @@ public class BasketballMatchService implements MatchSportStrategy<BasketballMatc
     }
 
     /**
-     * Cria uma nova instância de BasketballMatch e a persiste no banco de dados.
+     * Cria uma nova instância de {@link BasketballMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de BasketballMatch criada e salva no banco de dados.
+     * @return Uma nova instância de {@link BasketballMatch} criada e salva no banco de dados.
      */
     @Override
     public BasketballMatch createNewMatchSport() {
         return basketballMatchRepository.save(new BasketballMatch());
     }
+
 }

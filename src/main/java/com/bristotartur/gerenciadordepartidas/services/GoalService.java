@@ -13,8 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade Goal,
- * interagindo com o repositório GoalRepository para acessar e manipular dados relacionados a gols.
+ * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Goal},
+ * interagindo com o repositório {@link GoalRepository} para acessar e manipular dados relacionados a gols.
+ *
+ * @see GoalMapper
+ * @see TeamService
+ * @see GeneralMatchSportService
  */
 @Service
 @RequiredArgsConstructor
@@ -36,14 +40,14 @@ public class GoalService {
     }
 
     /**
-     * Busca por uma entidade específica do tipo Goal com base no seu ID.
+     * Busca por uma entidade específica do tipo {@link Goal} com base no seu ID.
      *
      * @param id Identificador único do gol.
      * @return O gol correspondente ao ID fornecido.
      * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado.
      */
     public Goal findGoalById(Long id) {
-        
+
         var goal = goalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.GOAL_NOT_FOUND.message));
 
@@ -51,10 +55,12 @@ public class GoalService {
     }
 
     /**
-     * Salva um gol no sistema com base nos dados fornecidos em GoalDto.
+     * Salva um gol no sistema com base nos dados fornecidos em GoalDto, realizando uma validação
+     * prévia destes dados antes de gerar o gol e persistí-lo.
      *
-     * @param goalDto Dados do gol a ser salvo.
+     * @param goalDto DTO do tipo {@link GoalDto} dados do gol a ser salvo.
      * @return O gol recém-salvo.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link GoalDto}.
      */
     public Goal saveGoal(GoalDto goalDto) {
 
@@ -76,13 +82,15 @@ public class GoalService {
     }
 
     /**
-     * Atualiza um gol existente no banco de dados com base no seu ID e os dados fornecidos em GoalDto.
-     * Isso envolve a substituição completa dos dados do gol existente pelos novos dados fornecidos.
+     * Atualiza um gol existente no banco de dados com base no seu ID e os dados fornecidos em {@link GoalDto},
+     * realizando uma validação prévia destes dados antes de atualizar o gol. Isso envolve a substituição
+     * completa dos dados do gol existente pelos novos dados fornecidos.
      *
      * @param id Identificador único do gol a ser atualizado.
-     * @param goalDto Dados atualizados do gol.
+     * @param goalDto DTO do tipo {@link GoalDto} contendo os dados atualizados do gol.
      * @return O gol atualizado.
-     * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado.
+     * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado ou
+     * alguma entidade não corresponda aos IDs fornecidos por {@link GoalDto}.
      */
     public Goal replaceGoal(Long id, GoalDto goalDto) {
 

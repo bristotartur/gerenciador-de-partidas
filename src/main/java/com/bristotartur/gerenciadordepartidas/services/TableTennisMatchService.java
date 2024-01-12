@@ -8,9 +8,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * Serviço responsável por gerenciar operações relacionadas a partidas de tênis de mesa (TableTennisMatch).
- * Esta classe implementa a estratégia MatchSportStrategy para fornecer comportamentos padronizados
- * relacionados à especialização de TableTennisMatch.
+ * Serviço responsável por gerenciar operações relacionadas a partidas de tênis de mesa ({@link TableTennisMatch}).
+ * Esta classe implementa a estratégia {@link MatchSportStrategy} para fornecer comportamentos padronizados
+ * relacionados à especialização de {@link TableTennisMatch}.
+ *
+ * @see TableTennisMatchRepository
+ * @see MatchSportServiceFactory
+ * @see GeneralMatchSportService
  */
 @Service
 @AllArgsConstructor
@@ -22,7 +26,7 @@ public class TableTennisMatchService implements MatchSportStrategy<TableTennisMa
      * Busca uma partida de tênis de mesa pelo seu ID.
      *
      * @param id Identificador único da partida de tênis de mesa.
-     * @return Uma instância de TableTennisMatch correspondente ao ID fornecido.
+     * @return Uma instância de {@link TableTennisMatch} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de tênis de mesa correspondente ao ID for encontrada.
      */
     @Override
@@ -34,12 +38,13 @@ public class TableTennisMatchService implements MatchSportStrategy<TableTennisMa
     }
 
     /**
-     * Cria uma nova instância de TableTennisMatch e a persiste no banco de dados.
+     * Cria uma nova instância de {@link TableTennisMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de TableTennisMatch criada e salva no banco de dados.
+     * @return Uma nova instância de {@link TableTennisMatch} criada e salva no banco de dados.
      */
     @Override
     public TableTennisMatch createNewMatchSport() {
         return tableTennisMatchRepository.save(new TableTennisMatch());
     }
+
 }

@@ -13,8 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade Match,
- * interagindo com o repositório MatchRepository para acessar e manipular dados relacionados a partidas.
+ * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Match},
+ * interagindo com o repositório {@link MatchRepository} para acessar e manipular dados relacionados a partidas.
+ *
+ * @see MatchMapper
+ * @see TeamService
+ * @see GeneralMatchSportService
  */
 @Service
 @AllArgsConstructor
@@ -36,7 +40,7 @@ public class MatchService {
     }
 
     /**
-     * Busca por uma entidade específica do tipo Match com base no seu ID.
+     * Busca por uma entidade específica do tipo {@link Match} com base no seu ID.
      *
      * @param id Identificador único da partida.
      * @return A partida correspondente ao ID fornecido.
@@ -51,10 +55,12 @@ public class MatchService {
     }
 
     /**
-     * Salva uma partida no sistema com base nos dados fornecidos em MatchDto.
+     * Salva uma partida no sistema com base nos dados fornecidos em {@link MatchDto}, realizando uma validação
+     * prévia destes dados antes de gerar a partida e persistí-la.
      *
-     * @param matchDto Dados da partida a ser salva.
+     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida a ser salva.
      * @return A partida recém-salva.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link MatchDto}.
      */
     public Match saveMatch(MatchDto matchDto) {
 
@@ -77,13 +83,15 @@ public class MatchService {
     }
 
     /**
-     * Atualiza uma partida existente no banco de dados com base no seu ID e os dados fornecidos em MatchDto.
-     * Isso envolve a substituição completa dos dados da partida existente pelos novos dados fornecidos.
+     * Atualiza uma partida existente no banco de dados com base no seu ID e os dados fornecidos em {@link MatchDto},
+     * realizando uma validação prévia destes dados antes de atualizar a partida. Isso envolve a substituição
+     * completa dos dados da partida existente pelos novos dados fornecidos.
      *
      * @param id Identificador único da partida a ser atualizada.
-     * @param matchDto Dados atualizados da partida.
+     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados atualizados da partida.
      * @return A partida atualizada.
-     * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada.
+     * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada ou
+     * alguma entidade não corresponda aos IDs fornecidos por {@link MatchDto}.
      */
     public Match replaceMatch(Long id, MatchDto matchDto) {
 

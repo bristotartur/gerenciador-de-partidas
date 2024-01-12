@@ -13,9 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade PenaltyCard,
- * interagindo com o repositório PenaltyCardRepository para acessar e manipular dados relacionados a
+ * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link PenaltyCard},
+ * interagindo com o repositório {@link PenaltyCardRepository} para acessar e manipular dados relacionados a
  * cartões de penalidade.
+ *
+ * @see PenaltyCardMapper
+ * @see TeamService
+ * @see GeneralMatchSportService
  */
 @Service
 @RequiredArgsConstructor
@@ -37,7 +41,7 @@ public class PenaltyCardService {
     }
 
     /**
-     * Busca por uma entidade específica do tipo PenaltyCard com base no seu ID.
+     * Busca por uma entidade específica do tipo {@link PenaltyCard} com base no seu ID.
      *
      * @param id Identificador único do cartão.
      * @return O cartão correspondente ao ID fornecido.
@@ -52,10 +56,11 @@ public class PenaltyCardService {
     }
 
     /**
-     * Salva um cartão no sistema com base nos dados fornecidos em PenaltyCardDto.
+     * Salva um cartão no sistema com base nos dados fornecidos em {@link PenaltyCardDto}.
      *
-     * @param penaltyCardDto Dados do cartão a ser salvo.
+     * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados do cartão a ser salvo.
      * @return O cartão recém-salvo.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link PenaltyCardDto}.
      */
     public PenaltyCard savePenaltyCard(PenaltyCardDto penaltyCardDto) {
 
@@ -77,13 +82,15 @@ public class PenaltyCardService {
     }
 
     /**
-     * Atualiza um cartão existente no banco de dados com base no seu ID e os dados fornecidos em PenaltyCardDto.
+     * Atualiza um cartão existente no banco de dados com base no seu ID e os dados fornecidos em
+     * {@link PenaltyCardDto}, realizando uma validação prévia destes dados antes de atualizar o cartão.
      * Isso envolve a substituição completa dos dados do cartão existente pelos novos dados fornecidos.
      *
      * @param id Identificador único do cartão a ser atualizado.
-     * @param penaltyCardDto Dados atualizados do cartão.
+     * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados atualizados do cartão.
      * @return O cartão atualizado.
-     * @throws NotFoundException Caso nenhum cartão correspondente ao ID for encontrado.
+     * @throws NotFoundException Caso nenhum cartão correspondente ao ID for encontrado ou alguma
+     * entidade não corresponda aos IDs fornecidos por {@link PenaltyCardDto}.
      */
     public PenaltyCard replacePenaltyCard(Long id, PenaltyCardDto penaltyCardDto) {
         

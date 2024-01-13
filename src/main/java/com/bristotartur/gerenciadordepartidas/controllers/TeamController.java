@@ -12,45 +12,73 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping(value = "/api/teams")
 @RequiredArgsConstructor
+@Transactional
 public class TeamController {
 
     private final TeamService teamService;
 
     @GetMapping
     public ResponseEntity<List<Team>> findAllTeams() {
-        return ResponseEntity.ok()
-                .body(teamService.findAllTeams());
+
+        List<Team> teamList = teamService.findAllTeams();
+
+        if (teamList.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        teamList.forEach(this::addSingleTeamLink);
+        return ResponseEntity.ok().body(teamList);
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Team> findTeamById(@PathVariable Long id) {
-        return ResponseEntity.ok()
-                .body(teamService.findTeamById(id));
+
+        var team = teamService.findTeamById(id);
+
+        this.addTeamListLink(team);
+        return ResponseEntity.ok().body(team);
     }
 
 
     @PostMapping
     public ResponseEntity<Team> saveTeam(@RequestBody @Valid TeamDto teamDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(teamService.saveTeam(teamDto));
+
+        var team = teamService.saveTeam(teamDto);
+
+        this.addTeamListLink(team);
+        return ResponseEntity.status(HttpStatus.CREATED).body(team);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteTeamById(@PathVariable Long id) {
 
         teamService.deleteTeamById(id);
-
         return ResponseEntity.noContent().build();
     }
 
-    @Transactional
     @PutMapping(path = "/{id}")
     public ResponseEntity<Team> replaceTeam(@PathVariable Long id,
                                             @RequestBody @Valid TeamDto teamDto) {
-        return ResponseEntity.ok()
-                .body(teamService.replaceTeam(id, teamDto));
+
+        var team = teamService.replaceTeam(id, teamDto);
+
+        this.addTeamListLink(team);
+        return ResponseEntity.ok().body(team);
     }
+
+    private void addSingleTeamLink(Team team) {
+
+        var id = team.getId();
+        team.add(linkTo(methodOn(this.getClass()).findTeamById(id)).withSelfRel());
+    }
+
+    private void addTeamListLink(Team team) {
+        team.add(linkTo(methodOn(this.getClass()).findAllTeams()).withRel("Team list"));
+    }
+
 }

@@ -64,7 +64,7 @@ public class PenaltyCardController {
     public ResponseEntity<PenaltyCard> replacePenaltyCard(@PathVariable Long id,
                                                           @RequestBody @Valid PenaltyCardDto penaltyCardDto) {
 
-        var penaltyCard = penaltyCardService.findPenaltyCardById(id);
+        var penaltyCard = penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
 
         this.addPenaltyCardListLink(penaltyCard);
         return ResponseEntity.ok().body(penaltyCard);

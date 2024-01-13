@@ -64,7 +64,7 @@ public class MatchController {
     public ResponseEntity<Match> replaceMatch(@PathVariable Long id,
                                               @RequestBody @Valid MatchDto matchDto) {
 
-        var match = matchService.findMatchById(id);
+        var match = matchService.replaceMatch(id, matchDto);
 
         this.addMatchListLink(match);
         return ResponseEntity.ok().body(match);

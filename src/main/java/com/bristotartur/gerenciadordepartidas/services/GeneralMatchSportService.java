@@ -56,7 +56,7 @@ public class GeneralMatchSportService {
     /**
      * Encontra uma instância de {@link MatchSport} associada a um gol com base no ID e tipo de esporte.
      *
-     * @param id O identificador único de {@link MatchSport}.
+     * @param id Identificador único de {@link MatchSport}.
      * @param sport Tipo de esporte associado à {@link MatchSport}.
      * @return A instância correspondente de {@link MatchSport}.
      * @throws com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException Se nenhum {@link MatchSport}
@@ -77,7 +77,7 @@ public class GeneralMatchSportService {
      * Encontra uma instância de {@link MatchSport} associada a um cartão de penalidade com base
      * no ID e tipo de esporte.
      *
-     * @param id O identificador único de MatchSport.
+     * @param id Identificador único de {@link MatchSport}.
      * @param sport Tipo de esporte associado à {@link MatchSport}.
      * @return A instância correspondente de {@link MatchSport}.
      * @throws com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException Se nenhum {@link MatchSport}

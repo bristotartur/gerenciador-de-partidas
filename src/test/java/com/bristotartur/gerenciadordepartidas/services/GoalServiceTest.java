@@ -1,7 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;

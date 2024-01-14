@@ -66,7 +66,7 @@ class GoalServiceTest {
     @DisplayName("Should retrieve all Goals from repository when searching for all Goals")
     void Should_RetrieveAllGoalsFromRepository_When_SearchingForAllGoals() {
 
-        List<Goal> existingGoals = List.of(createNewGoal(Sports.FOOTBALL), createNewGoal(Sports.HANDBALL));
+        List<Goal> existingGoals = List.of(createNewGoal(Sports.FUTSAL), createNewGoal(Sports.HANDBALL));
         existingGoals.forEach(goal -> entityManager.merge(goal));
 
         List<Goal> goalList = goalService.findAllGoals();
@@ -78,7 +78,7 @@ class GoalServiceTest {
     @DisplayName("Should find Goal when existing Goal ID is passed to search")
     void Should_FindGoal_When_ExistingGoalIdIsPassedToSearch() {
 
-        var existingGoal = createNewGoal(Sports.FOOTBALL);
+        var existingGoal = createNewGoal(Sports.FUTSAL);
 
         entityManager.merge(existingGoal);
 
@@ -115,7 +115,7 @@ class GoalServiceTest {
     @DisplayName("Should delete Goal from database when Goal ID is passed to delete")
     void Should_DeleteGoalFromDatabase_When_GoalIdIsPassedToDelete() {
 
-        var existingGoal = createNewGoal(Sports.FOOTBALL);
+        var existingGoal = createNewGoal(Sports.FUTSAL);
 
         entityManager.merge(existingGoal);
 
@@ -129,7 +129,7 @@ class GoalServiceTest {
     @DisplayName("Should update Goal when GoalDto with new values is passed")
     void Should_UpdateGoal_When_GoalDtoWithNewValuesIsPassed() {
 
-        var existingGoal = createNewGoal(Sports.FOOTBALL);
+        var existingGoal = createNewGoal(Sports.FUTSAL);
 
         entityManager.merge(existingGoal);
 
@@ -147,7 +147,7 @@ class GoalServiceTest {
     void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplaceGoal() {
 
         var id = getRandomLongId();
-        var goalDto = createNewGoalDto(Sports.FOOTBALL);
+        var goalDto = createNewGoalDto(Sports.FUTSAL);
 
         assertThrows(NotFoundException.class, () -> {
             goalService.replaceGoal(id, goalDto);

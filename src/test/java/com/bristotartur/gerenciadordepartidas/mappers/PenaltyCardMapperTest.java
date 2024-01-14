@@ -72,7 +72,7 @@ class PenaltyCardMapperTest {
     @DisplayName("Should map entities to their referent fields in PenaltyCard when they are passed")
     void Should_MapEntitiesToTheirReferentFieldsInPenaltyCard_When_TheyArePassed() {
 
-        var sport = Sports.FOOTBALL;
+        var sport = Sports.FUTSAL;
         var matchSport = generalMatchSportService.newMatchSport(sport);
         var team = createNewTeam();
         var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
@@ -92,7 +92,7 @@ class PenaltyCardMapperTest {
         var team = createNewTeam();
         var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FOOTBALL, PenaltyCardColor.YELLOW);
+        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.YELLOW);
         var existingId = existingPenaltyCard.getId();
 
         var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(existingId, penaltyCardDto, matchSport, team);

@@ -67,7 +67,7 @@ public class GeneralMatchSportService {
 
         MatchSportStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
 
-        if (sport.equals(Sports.FOOTBALL) || sport.equals(Sports.HANDBALL))
+        if (sport.equals(Sports.FUTSAL) || sport.equals(Sports.HANDBALL))
             return service.findMatchSportById(id);
 
         throw new BadRequestException(ExceptionMessages.UNSUPPORTED_FOR_GOALS.message);
@@ -90,7 +90,7 @@ public class GeneralMatchSportService {
         MatchSport matchSport;
 
         switch (sport) {
-            case FOOTBALL, HANDBALL, BASKETBALL -> matchSport = service.findMatchSportById(id);
+            case FUTSAL, HANDBALL, BASKETBALL -> matchSport = service.findMatchSportById(id);
             default -> throw new BadRequestException(ExceptionMessages.UNSUPPORTED_FOR_PENALTY_CARDS.message);
         }
         return matchSport;

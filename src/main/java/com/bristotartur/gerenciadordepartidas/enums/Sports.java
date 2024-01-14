@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum Sports {
-    FOOTBALL("futebol"),
+    FUTSAL("futsal"),
     HANDBALL("handebol"),
     VOLLEYBALL("voleibol"),
     BASKETBALL("basquetebol"),

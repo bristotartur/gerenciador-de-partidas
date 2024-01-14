@@ -30,7 +30,7 @@ public interface MatchSportServiceFactory {
 
         switch (sport) {
 
-            case FOOTBALL -> service = context.getBean(FootballMatchService.class);
+            case FUTSAL -> service = context.getBean(FutsalMatchService.class);
             case HANDBALL -> service = context.getBean(HandballMatchService.class);
             case BASKETBALL -> service = context.getBean(BasketballMatchService.class);
             case VOLLEYBALL -> service = context.getBean(VolleyballMatchService.class);

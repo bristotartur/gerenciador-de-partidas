@@ -3,7 +3,6 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
-import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +55,7 @@ class GoalMapperTest {
     @DisplayName("Should map entities to their referent fields in Goal when they are passed")
     void Should_MapEntitiesToTheirReferentFieldsInGoal_When_TheyArePassed() {
 
-        var sport = Sports.FOOTBALL;
+        var sport = Sports.FUTSAL;
         var matchSport = generalMatchSportService.newMatchSport(sport);
         var team = createNewTeam();
         var goalDto = createNewGoalDto(sport);
@@ -71,12 +70,12 @@ class GoalMapperTest {
     @DisplayName("Should update Goal when new values are passed")
     void Should_UpdateGoal_When_NewValuesArePassed() {
 
-        var sport = Sports.FOOTBALL;
+        var sport = Sports.FUTSAL;
         var matchSport = generalMatchSportService.newMatchSport(sport);
         var team = createNewTeam();
         var goalDto = createNewGoalDto(sport);
 
-        var existingGoal = createNewGoal(Sports.FOOTBALL);
+        var existingGoal = createNewGoal(Sports.FUTSAL);
         var existingId = existingGoal.getId();
 
         var updatedGoal = goalMapper.toExistingGoal(existingId, goalDto, matchSport, team);

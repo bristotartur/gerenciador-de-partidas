@@ -79,7 +79,7 @@ class MatchServiceTest {
     @DisplayName("Should retrieve all Matches from repository when searching for all Matches")
     void Should_RetrieveAllMatchesFromRepository_When_SearchingForAllMatches() {
 
-        List<Match> existingMatches = List.of(createNewMatch(Sports.FOOTBALL), createNewMatch(Sports.HANDBALL));
+        List<Match> existingMatches = List.of(createNewMatch(Sports.FUTSAL), createNewMatch(Sports.HANDBALL));
         existingMatches.forEach(match -> entityManager.merge(match));
 
         List<Match> matchList = matchService.findAllMatches();
@@ -160,7 +160,7 @@ class MatchServiceTest {
     void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplaceMatch() {
 
         var id = getRandomLongId();
-        var matchDto = createNewMatchDto(Sports.FOOTBALL);
+        var matchDto = createNewMatchDto(Sports.FUTSAL);
 
         assertThrows(NotFoundException.class, () -> {
             matchService.replaceMatch(id, matchDto);

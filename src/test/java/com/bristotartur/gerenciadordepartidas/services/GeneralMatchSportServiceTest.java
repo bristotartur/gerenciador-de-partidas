@@ -1,11 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.BasketballMatch;
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.FootballMatch;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.FutsalMatch;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.FootballMatchRepository;
+import com.bristotartur.gerenciadordepartidas.repositories.FutsalMatchRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,16 +25,16 @@ class GeneralMatchSportServiceTest {
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private FootballMatchRepository footballMatchRepository;
+    private FutsalMatchRepository futsalMatchRepository;
 
     @Test
     @DisplayName("Should save MatchSport when new MatchSport is created")
     void Should_SaveMatchSport_When_NewMatchSportIsCreated() {
 
-        var existingMatchSport = generalMatchSportService.newMatchSport(Sports.FOOTBALL);
+        var existingMatchSport = generalMatchSportService.newMatchSport(Sports.FUTSAL);
         var existingId = existingMatchSport.getId();
 
-        var result = footballMatchRepository.findById(existingId).get();
+        var result = futsalMatchRepository.findById(existingId).get();
 
         assertNotNull(existingMatchSport);
         assertEquals(existingMatchSport, result);
@@ -55,13 +55,13 @@ class GeneralMatchSportServiceTest {
     @DisplayName("Should find MatchSport when existing MatchSport id is passed")
     void Should_FindMatchSport_When_ExistingMatchSportIdIsPassed() {
 
-        var mockFootballMatch = new FootballMatch();
-        entityManager.merge(mockFootballMatch);
+        var mockFutsalMatch = new FutsalMatch();
+        entityManager.merge(mockFutsalMatch);
 
-        var result = generalMatchSportService.findMatchSport(mockFootballMatch.getId(), Sports.FOOTBALL);
+        var result = generalMatchSportService.findMatchSport(mockFutsalMatch.getId(), Sports.FUTSAL);
 
         assertNotNull(result);
-        assertEquals(mockFootballMatch, result);
+        assertEquals(mockFutsalMatch, result);
     }
 
     @Test
@@ -71,7 +71,7 @@ class GeneralMatchSportServiceTest {
         var randomId = getRandomLongId();
 
         assertThrows(NotFoundException.class, () -> {
-            generalMatchSportService.findMatchSport(randomId, Sports.FOOTBALL);
+            generalMatchSportService.findMatchSport(randomId, Sports.FUTSAL);
         });
     }
 
@@ -79,14 +79,14 @@ class GeneralMatchSportServiceTest {
     @DisplayName("Should find MatchSport for Goal when valid argument is passed")
     void Should_FindMatchSportFotGoal_When_ValidArgumentIsPassed() {
 
-        var existingFootballMatch = new FootballMatch();
-        entityManager.merge(existingFootballMatch);
+        var existingFutsalMatch = new FutsalMatch();
+        entityManager.merge(existingFutsalMatch);
 
-        var existingId = existingFootballMatch.getId();
-        var result = generalMatchSportService.findMatchSportForGoal(existingId, Sports.FOOTBALL);
+        var existingId = existingFutsalMatch.getId();
+        var result = generalMatchSportService.findMatchSportForGoal(existingId, Sports.FUTSAL);
 
         assertNotNull(result);
-        assertEquals(existingFootballMatch, result);
+        assertEquals(existingFutsalMatch, result);
     }
 
     @Test

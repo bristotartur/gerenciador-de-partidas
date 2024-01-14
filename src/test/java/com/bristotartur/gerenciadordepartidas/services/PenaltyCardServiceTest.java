@@ -70,7 +70,7 @@ class PenaltyCardServiceTest {
     void Should_RetrieveAllPenaltyCardsFromRepository_When_SearchingForAllPenaltyCards() {
 
         List<PenaltyCard> existingPenaltyCards = List.of(
-                createNewPenaltyCard(Sports.FOOTBALL, PenaltyCardColor.RED),
+                createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.RED),
                 createNewPenaltyCard(Sports.HANDBALL, PenaltyCardColor.YELLOW));
 
         existingPenaltyCards.forEach(penaltyCard -> entityManager.merge(penaltyCard));
@@ -84,7 +84,7 @@ class PenaltyCardServiceTest {
     @DisplayName("Should find PenaltyCard when existing PenaltyCard ID is passed to search")
     void Should_FindPenaltyCard_When_ExistingPenaltyCardIdIsPassedToSearch() {
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FOOTBALL, PenaltyCardColor.RED);
+        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.RED);
 
         entityManager.merge(existingPenaltyCard);
 
@@ -121,7 +121,7 @@ class PenaltyCardServiceTest {
     @DisplayName("Should delete PenaltyCard from database when PenaltyCard ID is passed to delete")
     void Should_DeletePenaltyCardFromDatabase_When_PenaltyCardIdIsPassedToDelete() {
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FOOTBALL, PenaltyCardColor.YELLOW);
+        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.YELLOW);
 
         entityManager.merge(existingPenaltyCard);
 
@@ -135,7 +135,7 @@ class PenaltyCardServiceTest {
     @DisplayName("Should update PenaltyCard when PenaltyCardDto with new values is passed")
     void Should_UpdatePenaltyCard_When_PenaltyCardDtoWithNewValuesIsPassed() {
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FOOTBALL, PenaltyCardColor.RED);
+        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.RED);
 
         entityManager.merge(existingPenaltyCard);
 
@@ -153,7 +153,7 @@ class PenaltyCardServiceTest {
     void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplacePenaltyCard() {
 
         var id = getRandomLongId();
-        var penaltyCardDto = createNewPenaltyCardDto(Sports.FOOTBALL, PenaltyCardColor.YELLOW);
+        var penaltyCardDto = createNewPenaltyCardDto(Sports.FUTSAL, PenaltyCardColor.YELLOW);
 
         assertThrows(NotFoundException.class, () -> {
             penaltyCardService.replacePenaltyCard(id, penaltyCardDto);

@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "FOOTBALL_MATCH")
+@Table(name = "FUTSAL_MATCH")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FootballMatch extends MatchSport {
+public class FutsalMatch extends MatchSport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

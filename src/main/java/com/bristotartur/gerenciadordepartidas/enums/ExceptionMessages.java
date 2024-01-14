@@ -10,7 +10,7 @@ public enum ExceptionMessages {
     MATCH_NOT_FOUND("Partida não encontrada"),
     BASKETBALL_MATCH_NOT_FOUND("Partida de basquete não encontrada"),
     CHESS_MATCH_NOT_FOUND("Partida de xadrez não encontrada"),
-    FOOTBALL_MATCH_NOT_FOUND("Partida de futebol não encontrada"),
+    FUTSAL_MATCH_NOT_FOUND("Partida de futsal não encontrada"),
     HANDBALL_MATCH_NOT_FOUND("Partida de handebol não encontrada"),
     TABLE_TENNIS_MATCH_NOT_FOUND("Partida de tênis de mesa não encontrada"),
     VOLLEYBALL_MATCH_NOT_FOUND("Partida de vôlei não encontrada"),

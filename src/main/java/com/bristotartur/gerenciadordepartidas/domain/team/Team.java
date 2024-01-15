@@ -1,7 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.domain.team;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -47,15 +45,5 @@ public class Team extends RepresentationModel<Team> {
     @OneToMany(mappedBy = "teamB", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Match> matchesAsTeamB;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Goal> goals;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<PenaltyCard> penaltyCards;
 
 }

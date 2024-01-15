@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.domain.match.specifications;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -29,11 +30,12 @@ public class Goal extends RepresentationModel<Goal> {
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_id", nullable = false)
-    private Team team;
+    @JoinColumn(name = "participant_id", nullable = false)
+    private Participant player;
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "match_sport_id", nullable = false)
     private MatchSport matchSport;
+
 }

@@ -1,8 +1,12 @@
 package com.bristotartur.gerenciadordepartidas.domain.participant;
 
+import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +38,19 @@ public class Participant {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    @ManyToMany(mappedBy = "players")
+    @JsonBackReference
+    @ManyToMany(mappedBy = "players", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Match> matches;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Goal> goal;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<PenaltyCard> penaltyCards;
 
 }

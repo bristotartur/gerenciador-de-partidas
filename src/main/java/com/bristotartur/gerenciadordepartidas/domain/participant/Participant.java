@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.domain.participant;
 
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -7,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "PARTICIPANT")
@@ -31,4 +34,5 @@ public class Participant {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
+    private Set<Match> matches;
 }

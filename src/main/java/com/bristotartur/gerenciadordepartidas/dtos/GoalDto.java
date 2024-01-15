@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 @Builder
 public record GoalDto(@NotNull LocalTime goalTime,
-                      @NotNull Long teamId,
+                      @NotNull Long playerId,
                       @NotNull Long matchSportId,
                       @NotNull Sports sport) {
 }

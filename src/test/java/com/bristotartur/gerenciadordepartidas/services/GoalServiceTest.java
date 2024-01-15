@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -31,28 +32,37 @@ class GoalServiceTest {
     private GoalRepository goalRepository;
     @Autowired
     private GeneralMatchSportService generalMatchSportService;
-    
+
     private Goal createNewGoal(Sports sport) {
 
-        var team = createNewTeam();
-        
         return Goal.builder()
                 .goalTime(LocalTime.of( 9, 27, 0))
-                .team(team)
+                .player(createNewPlayer())
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .build();
     }
 
     private GoalDto createNewGoalDto(Sports sport) {
 
-        var team = createNewTeam();
-
         return GoalDto.builder()
                 .goalTime(LocalTime.of( 9, 27, 0))
-                .teamId(team.getId())
+                .playerId(createNewPlayer().getId())
                 .matchSportId(generalMatchSportService.newMatchSport(sport).getId())
                 .sport(sport)
                 .build();
+    }
+
+    private Participant createNewPlayer() {
+
+        var participant = Participant.builder()
+                .name("foo")
+                .classNumber("2-53")
+                .team(createNewTeam())
+                .build();
+
+        entityManager.merge(participant);
+
+        return participant;
     }
 
     private Team createNewTeam() {
@@ -157,5 +167,5 @@ class GoalServiceTest {
             goalService.replaceGoal(id, goalDto);
         });
     }
-    
+
 }

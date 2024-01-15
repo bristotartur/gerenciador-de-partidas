@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 class GoalMapperTest {
@@ -27,8 +28,8 @@ class GoalMapperTest {
     private Goal createNewGoal(Sports sport) {
 
         return Goal.builder()
-                .goalTime(LocalTime.of( 9, 27, 0))
-                .team(createNewTeam())
+                .goalTime(LocalTime.of(9, 27, 0))
+                .player(createNewPlayer())
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .build();
     }
@@ -36,18 +37,19 @@ class GoalMapperTest {
     private GoalDto createNewGoalDto(Sports sport) {
 
         return GoalDto.builder()
-                .goalTime(LocalTime.of( 9, 27, 0))
-                .teamId(createNewTeam().getId())
+                .goalTime(LocalTime.of(9, 27, 0))
+                .playerId(getRandomLongId())
                 .matchSportId(generalMatchSportService.newMatchSport(sport).getId())
                 .sport(sport)
                 .build();
     }
 
-    private Team createNewTeam() {
+    private Participant createNewPlayer() {
 
-        return Team.builder()
-                .id(getRandomLongId())
-                .points(300)
+        return Participant.builder()
+                .name("sa")
+                .classNumber("2-53")
+                .team(any())
                 .build();
     }
 
@@ -57,13 +59,13 @@ class GoalMapperTest {
 
         var sport = Sports.FUTSAL;
         var matchSport = generalMatchSportService.newMatchSport(sport);
-        var team = createNewTeam();
+        var player = createNewPlayer();
         var goalDto = createNewGoalDto(sport);
 
-        var goal = goalMapper.toNewGoal(goalDto, matchSport, team);
+        var goal = goalMapper.toNewGoal(goalDto, player, matchSport);
 
         assertEquals(goal.getMatchSport(), matchSport);
-        assertEquals(goal.getTeam(), team);
+        assertEquals(goal.getPlayer(), player);
     }
 
     @Test
@@ -72,13 +74,13 @@ class GoalMapperTest {
 
         var sport = Sports.FUTSAL;
         var matchSport = generalMatchSportService.newMatchSport(sport);
-        var team = createNewTeam();
+        var player = createNewPlayer();
         var goalDto = createNewGoalDto(sport);
 
         var existingGoal = createNewGoal(Sports.FUTSAL);
         var existingId = existingGoal.getId();
 
-        var updatedGoal = goalMapper.toExistingGoal(existingId, goalDto, matchSport, team);
+        var updatedGoal = goalMapper.toExistingGoal(existingId, goalDto, player, matchSport);
 
         assertNotEquals(existingGoal, updatedGoal);
     }

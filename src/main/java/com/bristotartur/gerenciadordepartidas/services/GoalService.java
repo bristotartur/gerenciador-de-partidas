@@ -18,7 +18,6 @@ import java.util.List;
  *
  * @see GoalMapper
  * @see ParticipantService
- * @see TeamService
  * @see GeneralMatchSportService
  */
 @Service
@@ -28,7 +27,7 @@ public class GoalService {
 
     private final GoalRepository goalRepository;
     private final GoalMapper goalMapper;
-    private final TeamService teamService;
+    private final ParticipantService participantService;
     private final GeneralMatchSportService generalMatchSportService;
 
     /**
@@ -56,7 +55,7 @@ public class GoalService {
     }
 
     /**
-     * Salva um gol no sistema com base nos dados fornecidos em GoalDto, realizando uma validação
+     * Salva um gol no sistema com base nos dados fornecidos em {@link GoalDto}, realizando uma validação
      * prévia destes dados antes de gerar o gol e persistí-lo.
      *
      * @param goalDto DTO do tipo {@link GoalDto} dados do gol a ser salvo.
@@ -66,9 +65,9 @@ public class GoalService {
     public Goal saveGoal(GoalDto goalDto) {
 
         var matchSport = generalMatchSportService.newMatchSport(goalDto.sport());
-        var team = teamService.findTeamById(goalDto.teamId());
+        var player = participantService.findParticipantById(goalDto.playerId());
 
-        var goal = goalMapper.toNewGoal(goalDto, matchSport, team);
+        var goal = goalMapper.toNewGoal(goalDto, player, matchSport);
 
         return goalRepository.save(goal);
     }
@@ -98,9 +97,9 @@ public class GoalService {
         this.findGoalById(id);
 
         var matchSport = generalMatchSportService.newMatchSport(goalDto.sport());
-        var team = teamService.findTeamById(goalDto.teamId());
+        var player = participantService.findParticipantById(goalDto.playerId());
 
-        var goal = goalMapper.toExistingGoal(id, goalDto, matchSport, team);
+        var goal = goalMapper.toExistingGoal(id, goalDto, player, matchSport);
 
         return goalRepository.save(goal);
     }

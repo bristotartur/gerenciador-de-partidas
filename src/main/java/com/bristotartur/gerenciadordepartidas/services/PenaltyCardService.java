@@ -19,7 +19,6 @@ import java.util.List;
  *
  * @see PenaltyCardMapper
  * @see ParticipantService
- * @see TeamService
  * @see GeneralMatchSportService
  */
 @Service
@@ -29,7 +28,7 @@ public class PenaltyCardService {
 
     private final PenaltyCardRepository penaltyCardRepository;
     private final PenaltyCardMapper penaltyCardMapper;
-    private final TeamService teamService;
+    private final ParticipantService participantService;
     private final GeneralMatchSportService generalMatchSportService;
 
     /**
@@ -66,9 +65,9 @@ public class PenaltyCardService {
     public PenaltyCard savePenaltyCard(PenaltyCardDto penaltyCardDto) {
 
         var matchSport = generalMatchSportService.newMatchSport(penaltyCardDto.sport());
-        var team = teamService.findTeamById(penaltyCardDto.teamId());
+        var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
-        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, matchSport, team);
+        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, matchSport);
 
         return penaltyCardRepository.save(penaltyCard);
     }
@@ -94,13 +93,13 @@ public class PenaltyCardService {
      * entidade não corresponda aos IDs fornecidos por {@link PenaltyCardDto}.
      */
     public PenaltyCard replacePenaltyCard(Long id, PenaltyCardDto penaltyCardDto) {
-        
+
         this.findPenaltyCardById(id);
 
         var matchSport = generalMatchSportService.newMatchSport(penaltyCardDto.sport());
-        var team = teamService.findTeamById(penaltyCardDto.teamId());
+        var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
-        var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, matchSport, team);
+        var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, matchSport);
 
         return penaltyCardRepository.save(penaltyCard);
     }

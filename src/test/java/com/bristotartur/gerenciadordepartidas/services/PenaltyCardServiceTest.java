@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
@@ -38,7 +39,7 @@ class PenaltyCardServiceTest {
         return PenaltyCard.builder()
                 .color(color.name)
                 .penaltyCardTime(LocalTime.of( 9, 27, 0))
-                .team(createNewTeam())
+                .player(createNewPlayer())
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .build();
     }
@@ -48,10 +49,23 @@ class PenaltyCardServiceTest {
         return PenaltyCardDto.builder()
                 .color(color)
                 .penaltyCardTime(LocalTime.of( 9, 27, 0))
-                .teamId(createNewTeam().getId())
+                .playerId(createNewPlayer().getId())
                 .matchSportId(generalMatchSportService.newMatchSport(sport).getId())
                 .sport(sport)
                 .build();
+    }
+
+    private Participant createNewPlayer() {
+
+        var participant = Participant.builder()
+                .name("foo")
+                .classNumber("2-53")
+                .team(createNewTeam())
+                .build();
+
+        entityManager.merge(participant);
+
+        return participant;
     }
 
     private Team createNewTeam() {

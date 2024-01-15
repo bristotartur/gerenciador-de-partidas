@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -34,7 +34,7 @@ class PenaltyCardMapperTest {
                 .id(getRandomLongId())
                 .color(color.name)
                 .penaltyCardTime(LocalTime.of(9, 27, 0))
-                .team(createNewTeam())
+                .player(createNewPlayer())
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .build();
     }
@@ -44,17 +44,18 @@ class PenaltyCardMapperTest {
         return PenaltyCardDto.builder()
                 .color(color)
                 .penaltyCardTime(LocalTime.of(9, 27, 0))
-                .teamId(getRandomLongId())
+                .playerId(getRandomLongId())
                 .matchSportId(getRandomLongId())
                 .sport(sport)
                 .build();
     }
 
-    private Team createNewTeam() {
+    private Participant createNewPlayer() {
 
-        return Team.builder()
-                .id(getRandomLongId())
-                .points(300)
+        return Participant.builder()
+                .name("sa")
+                .classNumber("2-53")
+                .team(any())
                 .build();
     }
 
@@ -74,13 +75,13 @@ class PenaltyCardMapperTest {
 
         var sport = Sports.FUTSAL;
         var matchSport = generalMatchSportService.newMatchSport(sport);
-        var team = createNewTeam();
+        var player = createNewPlayer();
         var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
 
-        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, matchSport, team);
+        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, matchSport);
 
         assertEquals(penaltyCard.getMatchSport(), matchSport);
-        assertEquals(penaltyCard.getTeam(), team);
+        assertEquals(penaltyCard.getPlayer(), player);
     }
 
     @Test
@@ -89,13 +90,13 @@ class PenaltyCardMapperTest {
 
         var sport = Sports.HANDBALL;
         var matchSport = generalMatchSportService.newMatchSport(sport);
-        var team = createNewTeam();
+        var player = createNewPlayer();
         var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
 
         var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.YELLOW);
         var existingId = existingPenaltyCard.getId();
 
-        var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(existingId, penaltyCardDto, matchSport, team);
+        var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(existingId, penaltyCardDto, player, matchSport);
 
         assertNotEquals(existingPenaltyCard, updatedPenaltyCard);
     }

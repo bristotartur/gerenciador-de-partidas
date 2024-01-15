@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
@@ -39,6 +41,7 @@ class MatchServiceTest {
         return Match.builder()
                 .teamA(createNewTeam())
                 .teamB(createNewTeam())
+                .players(createNewPlayerList())
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .teamScoreA(3)
                 .teamScoreB(2)
@@ -51,9 +54,14 @@ class MatchServiceTest {
 
     private MatchDto createNewMatchDto(Sports sport) {
 
+        var playerIds = createNewPlayerList().stream()
+                .map(player -> player.getId())
+                .toList();
+
         return MatchDto.builder()
                 .teamAId(createNewTeam().getId())
                 .teamBId(createNewTeam().getId())
+                .playerIds(playerIds)
                 .sport(sport)
                 .teamScoreA(3)
                 .teamScoreB(2)
@@ -62,6 +70,24 @@ class MatchServiceTest {
                 .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 00))
                 .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 00))
                 .build();
+    }
+
+    private List<Participant> createNewPlayerList() {
+
+        List<Participant> players = new LinkedList<>();
+
+        for (int i = 0; i < 10; i++) {
+
+            var player = Participant.builder()
+                    .name("sa")
+                    .classNumber("2-53")
+                    .team(createNewTeam())
+                    .build();
+
+            entityManager.merge(player);
+            players.add(player);
+        }
+        return players;
     }
 
     private Team createNewTeam() {

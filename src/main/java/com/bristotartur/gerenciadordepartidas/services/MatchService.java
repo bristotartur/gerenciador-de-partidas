@@ -17,6 +17,7 @@ import java.util.List;
  * interagindo com o repositório {@link MatchRepository} para acessar e manipular dados relacionados a partidas.
  *
  * @see MatchMapper
+ * @see ParticipantService
  * @see TeamService
  * @see GeneralMatchSportService
  */
@@ -27,6 +28,7 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
+    private final ParticipantService participantService;
     private final TeamService teamService;
     private final GeneralMatchSportService generalMatchSportService;
 
@@ -68,7 +70,12 @@ public class MatchService {
         var teamA = teamService.findTeamById(matchDto.teamAId());
         var teamB = teamService.findTeamById(matchDto.teamBId());
 
-        var match = matchMapper.toNewMatch(matchDto, matchSport, teamA, teamB);
+        var players = matchDto.playerIds()
+                .stream()
+                .map(participantService::findParticipantById)
+                .toList();
+
+        var match = matchMapper.toNewMatch(matchDto, players, matchSport, teamA, teamB);
 
         return matchRepository.save(match);
     }
@@ -101,7 +108,12 @@ public class MatchService {
         var teamA = teamService.findTeamById(matchDto.teamAId());
         var teamB = teamService.findTeamById(matchDto.teamBId());
 
-        var match = matchMapper.toExistingMatch(id, matchDto, matchSport, teamA, teamB);
+        var players = matchDto.playerIds()
+                .stream()
+                .map(participantService::findParticipantById)
+                .toList();
+
+        var match = matchMapper.toExistingMatch(id, matchDto, players, matchSport, teamA, teamB);
 
         return matchRepository.save(match);
     }

@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,6 +35,7 @@ class MatchMapperTest {
         return Match.builder()
                 .teamA(createNewTeam())
                 .teamB(createNewTeam())
+                .players(createNewPlayerList())
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .teamScoreA(3)
                 .teamScoreB(2)
@@ -44,10 +48,15 @@ class MatchMapperTest {
 
     private MatchDto createNewMatchDto(Sports sport) {
 
+        var playerIds = createNewPlayerList().stream()
+                .map(player -> player.getId())
+                .toList();
+
         return MatchDto.builder()
                 .teamAId(createNewTeam().getId())
                 .teamBId(createNewTeam().getId())
                 .sport(sport)
+                .playerIds(playerIds)
                 .teamScoreA(3)
                 .teamScoreB(2)
                 .modality(Modality.MASCULINE)
@@ -55,6 +64,21 @@ class MatchMapperTest {
                 .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 00))
                 .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 00))
                 .build();
+    }
+
+    private List<Participant> createNewPlayerList() {
+
+        List<Participant> players = new LinkedList<>();
+
+        for (int i = 0; i < 10; i++) {
+
+            players.add(Participant.builder()
+                    .name("sa")
+                    .classNumber("2-53")
+                    .team(createNewTeam())
+                    .build());
+        }
+        return players;
     }
 
     private Team createNewTeam() {
@@ -70,7 +94,7 @@ class MatchMapperTest {
     void Should_ConvertScoresToZero_When_MappedToNewMatch() {
 
         var matchDto = createNewMatchDto(Sports.CHESS);
-        var match = matchMapper.toNewMatch(matchDto, any(), any(), any());
+        var match = matchMapper.toNewMatch(matchDto, any(), any(), any(), any());
 
         assertEquals(match.getTeamScoreA(), 0);
         assertEquals(match.getTeamScoreB(), 0);
@@ -81,12 +105,13 @@ class MatchMapperTest {
     void Should_MapEntitiesToTheirReferentFieldsInMatch_When_TheyArePassedToNewMatch() {
 
         var sport = Sports.VOLLEYBALL;
+        var players = createNewPlayerList();
         var matchSport = generalMatchSportService.newMatchSport(sport);
         var teamA = createNewTeam();
         var teamB = createNewTeam();
         var matchDto = createNewMatchDto(sport);
 
-        var match = matchMapper.toNewMatch(matchDto, matchSport, teamA, teamB);
+        var match = matchMapper.toNewMatch(matchDto, players, matchSport, teamA, teamB);
 
         assertEquals(match.getMatchSport(), matchSport);
         assertEquals(match.getTeamA(), teamA);
@@ -98,6 +123,7 @@ class MatchMapperTest {
     void Should_UpdateMatch_When_NewValuesArePassed() {
 
         var sport = Sports.HANDBALL;
+        var players = createNewPlayerList();
         var matchSport = generalMatchSportService.newMatchSport(sport);
         var teamA = createNewTeam();
         var teamB = createNewTeam();
@@ -107,7 +133,7 @@ class MatchMapperTest {
         var existingId = existingMatch.getId();
 
         var updatedMatch = matchMapper.
-                toExistingMatch(existingId, matchDto, matchSport, teamA, teamB);
+                toExistingMatch(existingId, matchDto, players, matchSport, teamA, teamB);
 
         assertNotEquals(existingMatch, updatedMatch);
     }

@@ -28,8 +28,6 @@ public interface TeamMapper {
     @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)
-    @Mapping(target = "goals", ignore = true)
-    @Mapping(target = "penaltyCards", ignore = true)
     Team toNewTeam(TeamDto teamDto);
 
     /**
@@ -45,8 +43,6 @@ public interface TeamMapper {
     @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)
-    @Mapping(target = "goals", ignore = true)
-    @Mapping(target = "penaltyCards", ignore = true)
     Team toExistingTeam(Long id, TeamDto teamDto);
 
 }

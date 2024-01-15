@@ -37,7 +37,7 @@ public class Team extends RepresentationModel<Team> {
     @JsonManagedReference
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Participant> participants;
+    private Set<Participant> members;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "teamA", cascade = CascadeType.ALL)

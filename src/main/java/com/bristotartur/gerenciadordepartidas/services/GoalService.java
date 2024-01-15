@@ -17,6 +17,7 @@ import java.util.List;
  * interagindo com o repositório {@link GoalRepository} para acessar e manipular dados relacionados a gols.
  *
  * @see GoalMapper
+ * @see ParticipantService
  * @see TeamService
  * @see GeneralMatchSportService
  */

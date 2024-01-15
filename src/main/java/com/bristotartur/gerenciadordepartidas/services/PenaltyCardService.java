@@ -18,6 +18,7 @@ import java.util.List;
  * cartões de penalidade.
  *
  * @see PenaltyCardMapper
+ * @see ParticipantService
  * @see TeamService
  * @see GeneralMatchSportService
  */

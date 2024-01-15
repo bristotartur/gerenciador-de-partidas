@@ -33,19 +33,23 @@ class GoalServiceTest {
     private GeneralMatchSportService generalMatchSportService;
     
     private Goal createNewGoal(Sports sport) {
+
+        var team = createNewTeam();
         
         return Goal.builder()
                 .goalTime(LocalTime.of( 9, 27, 0))
-                .team(createNewTeam())
+                .team(team)
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .build();
     }
-    
+
     private GoalDto createNewGoalDto(Sports sport) {
-        
+
+        var team = createNewTeam();
+
         return GoalDto.builder()
                 .goalTime(LocalTime.of( 9, 27, 0))
-                .teamId(createNewTeam().getId())
+                .teamId(team.getId())
                 .matchSportId(generalMatchSportService.newMatchSport(sport).getId())
                 .sport(sport)
                 .build();

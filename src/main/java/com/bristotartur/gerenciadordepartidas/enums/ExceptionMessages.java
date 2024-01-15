@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ExceptionMessages {
     TEAM_NOT_FOUND("Equipe não encontrada"),
+    PARTICIPANT_NOT_FOUND("Participante não encontrado"),
     GOAL_NOT_FOUND("Gol não encontrado"),
     PENALTY_CARD_NOT_FOUND("Cartão de penalidade não encontrado"),
     MATCH_NOT_FOUND("Partida não encontrada"),
@@ -17,7 +18,7 @@ public enum ExceptionMessages {
     UNSUPPORTED_FOR_GOALS("Esporte não suportado para gols"),
     UNSUPPORTED_FOR_PENALTY_CARDS("Esporte não suportado para cartões"),
     UNSUPPORTED_SPORT("Modalidade esportiva não suportada"),
-    INVALID_PATTERN("Padrão inválido");
+    INVALID_PATTERN("Padrão inválido para %s");
 
     public final String message;
 }

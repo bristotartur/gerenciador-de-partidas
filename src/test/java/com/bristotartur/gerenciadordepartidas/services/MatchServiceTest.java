@@ -7,6 +7,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import jakarta.persistence.EntityManager;
@@ -19,9 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @Transactional
@@ -38,10 +41,13 @@ class MatchServiceTest {
 
     private Match createNewMatch(Sports sport) {
 
+        var teamA = createNewTeam();
+        var teamB = createNewTeam();
+
         return Match.builder()
-                .teamA(createNewTeam())
-                .teamB(createNewTeam())
-                .players(createNewPlayerList())
+                .teamA(teamA)
+                .teamB(teamB)
+                .players(createNewPlayerList(teamA, teamB))
                 .matchSport(generalMatchSportService.newMatchSport(sport))
                 .teamScoreA(3)
                 .teamScoreB(2)
@@ -54,13 +60,15 @@ class MatchServiceTest {
 
     private MatchDto createNewMatchDto(Sports sport) {
 
-        var playerIds = createNewPlayerList().stream()
+        var teamA = createNewTeam();
+        var teamB = createNewTeam();
+        var playerIds = createNewPlayerList(teamA, teamB).stream()
                 .map(player -> player.getId())
                 .toList();
 
         return MatchDto.builder()
-                .teamAId(createNewTeam().getId())
-                .teamBId(createNewTeam().getId())
+                .teamAId(teamA.getId())
+                .teamBId(teamB.getId())
                 .playerIds(playerIds)
                 .sport(sport)
                 .teamScoreA(3)
@@ -72,16 +80,19 @@ class MatchServiceTest {
                 .build();
     }
 
-    private List<Participant> createNewPlayerList() {
+    private List<Participant> createNewPlayerList(Team teamA, Team teamB) {
 
         List<Participant> players = new LinkedList<>();
+        var rand = new Random();
 
         for (int i = 0; i < 10; i++) {
+
+            var team = rand.nextBoolean() ? teamA : teamB;
 
             var player = Participant.builder()
                     .name("sa")
                     .classNumber("2-53")
-                    .team(createNewTeam())
+                    .team(team)
                     .build();
 
             entityManager.merge(player);
@@ -190,6 +201,32 @@ class MatchServiceTest {
 
         assertThrows(NotFoundException.class, () -> {
             matchService.replaceMatch(id, matchDto);
+        });
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when invalid player is passed")
+    void Should_ThrowBadRequestException_When_InvalidPlayersArePassed() {
+
+        var playerIds = createNewPlayerList(createNewTeam(), createNewTeam()).stream()
+                .map(Participant::getId)
+                .toList();
+
+        var match = createNewMatch(Sports.VOLLEYBALL);
+        entityManager.merge(match);
+
+        var matchDto = MatchDto.builder()
+                .teamAId(createNewTeam().getId())
+                .teamBId(createNewTeam().getId())
+                .playerIds(playerIds)
+                .sport(Sports.VOLLEYBALL)
+                .build();
+
+        assertThrows(BadRequestException.class, () -> {
+            matchService.saveMatch(matchDto);
+        });
+        assertThrows(BadRequestException.class, () -> {
+            matchService.replaceMatch(match.getId(), matchDto);
         });
     }
 

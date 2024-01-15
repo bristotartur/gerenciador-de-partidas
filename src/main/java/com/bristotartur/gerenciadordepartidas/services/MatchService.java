@@ -1,8 +1,10 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
+import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.MatchMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Match},
@@ -75,6 +78,7 @@ public class MatchService {
                 .map(participantService::findParticipantById)
                 .toList();
 
+        this.checkPlayers(players, matchDto);
         var match = matchMapper.toNewMatch(matchDto, players, matchSport, teamA, teamB);
 
         return matchRepository.save(match);
@@ -113,9 +117,32 @@ public class MatchService {
                 .map(participantService::findParticipantById)
                 .toList();
 
+        this.checkPlayers(players, matchDto);
         var match = matchMapper.toExistingMatch(id, matchDto, players, matchSport, teamA, teamB);
 
         return matchRepository.save(match);
+    }
+
+    /**
+     * Verifica se os jogadores passados pelo DTO estão aptos a participar da partida, ou seja, se
+     * pertencem a alguma das equipes presentes nela.
+     *
+     * @param players Lista do tipo {@link Participant} contendo os jogadores da partida.
+     * @param matchDto DTO do tipo {@link MatchDto} contendo os IDs das equipes presentes na partida.
+     * @throws BadRequestException Caso algum jogador não pertença a alguma das equipes.
+     */
+    private void checkPlayers(List<Participant> players, MatchDto matchDto ) {
+
+        Optional<Participant> invalidPlayer = players.stream()
+                .filter(player -> player.getTeam().getId() != matchDto.teamAId()
+                               && player.getTeam().getId() != matchDto.teamBId())
+                .findFirst();
+
+        invalidPlayer.ifPresent(player -> {
+            throw new BadRequestException(
+                    ExceptionMessages.PARTICIPANT_INVALID_FOR_MATCH.message.formatted(player.getId())
+            );
+        });
     }
 
 }

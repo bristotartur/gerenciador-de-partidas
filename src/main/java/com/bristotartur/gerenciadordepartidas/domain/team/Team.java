@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.domain.team;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "TEAM")
@@ -31,6 +33,11 @@ public class Team extends RepresentationModel<Team> {
 
     @Column(nullable = false)
     private Integer points;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Participant> participants;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "teamA", cascade = CascadeType.ALL)

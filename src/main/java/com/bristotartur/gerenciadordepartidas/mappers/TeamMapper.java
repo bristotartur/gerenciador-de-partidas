@@ -25,6 +25,7 @@ public interface TeamMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "teamDto.teamName.name")
     @Mapping(target = "points", constant = "0")
+    @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)
     @Mapping(target = "goals", ignore = true)
@@ -41,6 +42,7 @@ public interface TeamMapper {
      */
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "teamDto.teamName.name")
+    @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)
     @Mapping(target = "goals", ignore = true)

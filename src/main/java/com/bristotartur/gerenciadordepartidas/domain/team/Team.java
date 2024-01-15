@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "TEAM")
@@ -37,7 +36,7 @@ public class Team extends RepresentationModel<Team> {
     @JsonManagedReference
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Set<Participant> members;
+    private List<Participant> members;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "teamA", cascade = CascadeType.ALL)

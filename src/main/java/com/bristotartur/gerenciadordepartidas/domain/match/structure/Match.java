@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.domain.match.structure;
 
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "MATCH")
@@ -37,6 +39,14 @@ public class Match extends RepresentationModel<Match> {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sport_id", nullable = false)
     private MatchSport matchSport;
+
+    @ManyToMany
+    @JoinTable(
+            name = "match_player",
+            joinColumns = @JoinColumn(name = "match_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
+    private List<Participant> players;
 
     @Column(nullable = false)
     private Integer teamScoreA;

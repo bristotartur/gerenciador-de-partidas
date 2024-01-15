@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "PARTICIPANT")
@@ -34,5 +34,7 @@ public class Participant {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    private Set<Match> matches;
+    @ManyToMany(mappedBy = "players")
+    private List<Match> matches;
+
 }

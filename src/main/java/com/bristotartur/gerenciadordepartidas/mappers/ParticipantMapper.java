@@ -35,6 +35,7 @@ public interface ParticipantMapper {
      * @param team team A instância de {@link Team} associada ao participante.
      * @return Uma nova instância atualizada de {@link Participant} com base nos dados fornecidos.
      */
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "participantDto.name")
     @Mapping(target = "matches", ignore = true)
     Participant toExistingParticipant(Long id, ParticipantDto participantDto, Team team);

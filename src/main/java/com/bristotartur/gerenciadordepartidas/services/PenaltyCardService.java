@@ -64,10 +64,10 @@ public class PenaltyCardService {
      */
     public PenaltyCard savePenaltyCard(PenaltyCardDto penaltyCardDto) {
 
-        var matchSport = generalMatchSportService.newMatchSport(penaltyCardDto.sport());
+        var match = generalMatchSportService.findMatch(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
-        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, matchSport);
+        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
 
         return penaltyCardRepository.save(penaltyCard);
     }
@@ -96,10 +96,10 @@ public class PenaltyCardService {
 
         this.findPenaltyCardById(id);
 
-        var matchSport = generalMatchSportService.newMatchSport(penaltyCardDto.sport());
+        var match = generalMatchSportService.findMatchForCard(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
-        var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, matchSport);
+        var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, match);
 
         return penaltyCardRepository.save(penaltyCard);
     }

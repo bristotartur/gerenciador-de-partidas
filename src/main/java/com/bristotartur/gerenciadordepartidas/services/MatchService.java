@@ -69,7 +69,6 @@ public class MatchService {
      */
     public Match saveMatch(MatchDto matchDto) {
 
-        var matchSport = generalMatchSportService.newMatchSport(matchDto.sport());
         var teamA = teamService.findTeamById(matchDto.teamAId());
         var teamB = teamService.findTeamById(matchDto.teamBId());
 
@@ -79,9 +78,9 @@ public class MatchService {
                 .toList();
 
         this.checkPlayers(players, matchDto);
-        var match = matchMapper.toNewMatch(matchDto, players, matchSport, teamA, teamB);
+        var match = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
 
-        return matchRepository.save(match);
+        return generalMatchSportService.saveMatch(match, matchDto.sport());
     }
 
     /**
@@ -108,7 +107,6 @@ public class MatchService {
 
         this.findMatchById(id);
 
-        var matchSport = generalMatchSportService.newMatchSport(matchDto.sport());
         var teamA = teamService.findTeamById(matchDto.teamAId());
         var teamB = teamService.findTeamById(matchDto.teamBId());
 
@@ -118,9 +116,9 @@ public class MatchService {
                 .toList();
 
         this.checkPlayers(players, matchDto);
-        var match = matchMapper.toExistingMatch(id, matchDto, players, matchSport, teamA, teamB);
+        var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
 
-        return matchRepository.save(match);
+        return generalMatchSportService.saveMatch(match, matchDto.sport());
     }
 
     /**

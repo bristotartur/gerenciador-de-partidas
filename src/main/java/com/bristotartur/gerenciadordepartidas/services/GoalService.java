@@ -64,10 +64,10 @@ public class GoalService {
      */
     public Goal saveGoal(GoalDto goalDto) {
 
-        var matchSport = generalMatchSportService.newMatchSport(goalDto.sport());
+        var match = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var player = participantService.findParticipantById(goalDto.playerId());
 
-        var goal = goalMapper.toNewGoal(goalDto, player, matchSport);
+        var goal = goalMapper.toNewGoal(goalDto, player, match);
 
         return goalRepository.save(goal);
     }
@@ -96,10 +96,10 @@ public class GoalService {
 
         this.findGoalById(id);
 
-        var matchSport = generalMatchSportService.newMatchSport(goalDto.sport());
+        var match = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var player = participantService.findParticipantById(goalDto.playerId());
 
-        var goal = goalMapper.toExistingGoal(id, goalDto, player, matchSport);
+        var goal = goalMapper.toExistingGoal(id, goalDto, player, match);
 
         return goalRepository.save(goal);
     }

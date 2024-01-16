@@ -4,38 +4,28 @@ import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Entity
-@Table(name = "FUTSAL_MATCH")
+@DiscriminatorValue("FUTSAL")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class FutsalMatch extends MatchSport {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@RequiredArgsConstructor
+public class FutsalMatch extends Match {
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "matchSport", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Match> matches;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "matchSport", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Goal> goals;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "matchSport", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<PenaltyCard> penaltyCards;
 

@@ -15,6 +15,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "MATCH")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "MATCH_TYPE", discriminatorType = DiscriminatorType.STRING)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -34,11 +36,6 @@ public class Match extends RepresentationModel<Match> {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_b_id", nullable = false)
     private Team teamB;
-
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "sport_id", nullable = false)
-    private MatchSport matchSport;
 
     @ManyToMany
     @JoinTable(
@@ -65,4 +62,5 @@ public class Match extends RepresentationModel<Match> {
 
     @Column(nullable = false)
     private LocalDateTime matchEnd;
+
 }

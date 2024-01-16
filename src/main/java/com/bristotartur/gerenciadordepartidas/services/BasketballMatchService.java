@@ -1,15 +1,17 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.BasketballMatch;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.BasketballMatchRepository;
-import lombok.AllArgsConstructor;
+import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de basquete ({@link BasketballMatch}).
- * Esta classe implementa a estratégia {@link MatchSportStrategy} para fornecer comportamentos padronizados
+ * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link BasketballMatch}.
  *
  * @see BasketballMatchRepository
@@ -17,33 +19,33 @@ import org.springframework.stereotype.Service;
  * @see GeneralMatchSportService
  */
 @Service
-@AllArgsConstructor
-public class BasketballMatchService implements MatchSportStrategy<BasketballMatch> {
+@RequiredArgsConstructor
+public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
 
-    private final BasketballMatchRepository basketballMatchRepository;
+    private final MatchRepository matchRepository;
 
     /**
      * Busca uma partida de basquete pelo seu ID.
      *
      * @param id Identificador único da partida de basquete.
-     * @return Uma instância de {@link BasketballMatch} correspondente ao ID fornecido.
+     * @return Uma instância de {@link Match} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de basquete correspondente ao ID for encontrada.
      */
     @Override
-    public BasketballMatch findMatchSportById(Long id) {
+    public Match findMatchById(Long id) {
 
-        return basketballMatchRepository.findById(id)
+        return matchRepository.findMatchByType(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.BASKETBALL_MATCH_NOT_FOUND.message));
     }
 
     /**
-     * Cria uma nova instância de {@link BasketballMatch} e a persiste no banco de dados.
+     * Cria uma nova instância de {@link Match} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de {@link BasketballMatch} criada e salva no banco de dados.
+     * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
      */
     @Override
-    public BasketballMatch createNewMatchSport() {
-        return basketballMatchRepository.save(new BasketballMatch());
+    public Match saveMatch(Match match) {
+        return matchRepository.save(match);
     }
 
 }

@@ -11,7 +11,7 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
  * @see MatchSportServiceFactory
  * @param <T> Especifica com qual especialização de {@link Match} a estratégia irá lidar.
  */
-public interface MatchSportStrategy<T extends Match> {
+public interface MatchStrategy<T extends Match> {
 
     /**
      * Procura por um {@link Match} no banco de dados com base no ID fornecido.

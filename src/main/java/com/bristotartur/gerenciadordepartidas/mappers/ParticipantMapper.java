@@ -25,6 +25,8 @@ public interface ParticipantMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "participantDto.name")
     @Mapping(target = "matches", ignore = true)
+    @Mapping(target = "goal", ignore = true)
+    @Mapping(target = "penaltyCards", ignore = true)
     Participant toNewParticipant(ParticipantDto participantDto, Team team);
 
     /**
@@ -38,6 +40,8 @@ public interface ParticipantMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "participantDto.name")
     @Mapping(target = "matches", ignore = true)
+    @Mapping(target = "goal", ignore = true)
+    @Mapping(target = "penaltyCards", ignore = true)
     Participant toExistingParticipant(Long id, ParticipantDto participantDto, Team team);
 
 }

@@ -4,7 +4,6 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.HandballMat
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.HandballMatchRepository;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link HandballMatch}.
  *
- * @see HandballMatchRepository
+ * @see MatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -34,7 +33,7 @@ public class HandballMatchService implements MatchStrategy<HandballMatch> {
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findMatchByType(id)
+        return matchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.HANDBALL_MATCH_NOT_FOUND.message));
     }
 

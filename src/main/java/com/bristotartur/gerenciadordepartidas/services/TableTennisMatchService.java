@@ -5,7 +5,6 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.TableTennis
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
-import com.bristotartur.gerenciadordepartidas.repositories.TableTennisMatchRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link TableTennisMatch}.
  *
- * @see TableTennisMatchRepository
+ * @see MatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -34,7 +33,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findMatchByType(id)
+        return matchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TABLE_TENNIS_MATCH_NOT_FOUND.message));
 
     }

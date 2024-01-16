@@ -36,7 +36,6 @@ class MatchMapperTest {
                 .teamA(createNewTeam())
                 .teamB(createNewTeam())
                 .players(createNewPlayerList())
-                .matchSport(generalMatchSportService.newMatchSport(sport))
                 .teamScoreA(3)
                 .teamScoreB(2)
                 .modality(Modality.MASCULINE.name)
@@ -94,7 +93,7 @@ class MatchMapperTest {
     void Should_ConvertScoresToZero_When_MappedToNewMatch() {
 
         var matchDto = createNewMatchDto(Sports.CHESS);
-        var match = matchMapper.toNewMatch(matchDto, any(), any(), any(), any());
+        var match = matchMapper.toNewMatch(matchDto, any(), any(), any());
 
         assertEquals(match.getTeamScoreA(), 0);
         assertEquals(match.getTeamScoreB(), 0);
@@ -106,14 +105,12 @@ class MatchMapperTest {
 
         var sport = Sports.VOLLEYBALL;
         var players = createNewPlayerList();
-        var matchSport = generalMatchSportService.newMatchSport(sport);
         var teamA = createNewTeam();
         var teamB = createNewTeam();
         var matchDto = createNewMatchDto(sport);
 
-        var match = matchMapper.toNewMatch(matchDto, players, matchSport, teamA, teamB);
+        var match = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
 
-        assertEquals(match.getMatchSport(), matchSport);
         assertEquals(match.getTeamA(), teamA);
         assertEquals(match.getTeamB(), teamB);
     }
@@ -124,7 +121,6 @@ class MatchMapperTest {
 
         var sport = Sports.HANDBALL;
         var players = createNewPlayerList();
-        var matchSport = generalMatchSportService.newMatchSport(sport);
         var teamA = createNewTeam();
         var teamB = createNewTeam();
         var matchDto = createNewMatchDto(sport);
@@ -133,7 +129,7 @@ class MatchMapperTest {
         var existingId = existingMatch.getId();
 
         var updatedMatch = matchMapper.
-                toExistingMatch(existingId, matchDto, players, matchSport, teamA, teamB);
+                toExistingMatch(existingId, matchDto, players, teamA, teamB);
 
         assertNotEquals(existingMatch, updatedMatch);
     }

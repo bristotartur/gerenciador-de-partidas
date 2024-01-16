@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
@@ -35,7 +36,7 @@ class PenaltyCardMapperTest {
                 .color(color.name)
                 .penaltyCardTime(LocalTime.of(9, 27, 0))
                 .player(createNewPlayer())
-                .matchSport(generalMatchSportService.newMatchSport(sport))
+                .match(createNewMatch())
                 .build();
     }
 
@@ -45,9 +46,13 @@ class PenaltyCardMapperTest {
                 .color(color)
                 .penaltyCardTime(LocalTime.of(9, 27, 0))
                 .playerId(getRandomLongId())
-                .matchSportId(getRandomLongId())
+                .matchId(getRandomLongId())
                 .sport(sport)
                 .build();
+    }
+
+    private Match createNewMatch() {
+        return Match.builder().id(getRandomLongId()).build();
     }
 
     private Participant createNewPlayer() {
@@ -74,13 +79,13 @@ class PenaltyCardMapperTest {
     void Should_MapEntitiesToTheirReferentFieldsInPenaltyCard_When_TheyArePassed() {
 
         var sport = Sports.FUTSAL;
-        var matchSport = generalMatchSportService.newMatchSport(sport);
+        var matchSport = createNewMatch();
         var player = createNewPlayer();
         var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
 
         var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, matchSport);
 
-        assertEquals(penaltyCard.getMatchSport(), matchSport);
+        assertEquals(penaltyCard.getMatch(), matchSport);
         assertEquals(penaltyCard.getPlayer(), player);
     }
 
@@ -89,7 +94,7 @@ class PenaltyCardMapperTest {
     void Should_UpdatePenaltyCards_When_NewValuesArePassed() {
 
         var sport = Sports.HANDBALL;
-        var matchSport = generalMatchSportService.newMatchSport(sport);
+        var matchSport = createNewMatch();
         var player = createNewPlayer();
         var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
 

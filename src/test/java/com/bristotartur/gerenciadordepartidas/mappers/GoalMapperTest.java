@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -30,18 +31,24 @@ class GoalMapperTest {
         return Goal.builder()
                 .goalTime(LocalTime.of(9, 27, 0))
                 .player(createNewPlayer())
-                .matchSport(generalMatchSportService.newMatchSport(sport))
+                .match(createNewMatch())
                 .build();
     }
 
     private GoalDto createNewGoalDto(Sports sport) {
 
+        var match = Match.builder().id(getRandomLongId()).build();
+
         return GoalDto.builder()
                 .goalTime(LocalTime.of(9, 27, 0))
                 .playerId(getRandomLongId())
-                .matchSportId(generalMatchSportService.newMatchSport(sport).getId())
+                .matchId(createNewMatch().getId())
                 .sport(sport)
                 .build();
+    }
+
+    private Match createNewMatch() {
+        return Match.builder().id(getRandomLongId()).build();
     }
 
     private Participant createNewPlayer() {
@@ -58,13 +65,13 @@ class GoalMapperTest {
     void Should_MapEntitiesToTheirReferentFieldsInGoal_When_TheyArePassed() {
 
         var sport = Sports.FUTSAL;
-        var matchSport = generalMatchSportService.newMatchSport(sport);
+        var match = createNewMatch();
         var player = createNewPlayer();
         var goalDto = createNewGoalDto(sport);
 
-        var goal = goalMapper.toNewGoal(goalDto, player, matchSport);
+        var goal = goalMapper.toNewGoal(goalDto, player, match);
 
-        assertEquals(goal.getMatchSport(), matchSport);
+        assertEquals(goal.getMatch(), match);
         assertEquals(goal.getPlayer(), player);
     }
 
@@ -73,14 +80,14 @@ class GoalMapperTest {
     void Should_UpdateGoal_When_NewValuesArePassed() {
 
         var sport = Sports.FUTSAL;
-        var matchSport = generalMatchSportService.newMatchSport(sport);
+        var match = createNewMatch();
         var player = createNewPlayer();
         var goalDto = createNewGoalDto(sport);
 
         var existingGoal = createNewGoal(Sports.FUTSAL);
         var existingId = existingGoal.getId();
 
-        var updatedGoal = goalMapper.toExistingGoal(existingId, goalDto, player, matchSport);
+        var updatedGoal = goalMapper.toExistingGoal(existingId, goalDto, player, match);
 
         assertNotEquals(existingGoal, updatedGoal);
     }

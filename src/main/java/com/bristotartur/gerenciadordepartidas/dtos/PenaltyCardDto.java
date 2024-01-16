@@ -11,6 +11,6 @@ import java.time.LocalTime;
 public record PenaltyCardDto(@NotNull PenaltyCardColor color,
                              @NotNull LocalTime penaltyCardTime,
                              @NotNull Long playerId,
-                             @NotNull Long matchSportId,
+                             @NotNull Long matchId,
                              @NotNull Sports sport) {
 }

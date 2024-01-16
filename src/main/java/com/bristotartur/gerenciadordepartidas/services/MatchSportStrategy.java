@@ -1,31 +1,31 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.MatchSport;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 
 /**
- * Estratégia para serviços relacionados a especializações de {@link MatchSport}, fornecendo
+ * Estratégia para serviços relacionados a especializações de {@link Match}, fornecendo
  * uma abstração padronizada para gerenciar comportamentos comuns esperados destas
  * implementações, tornando seu uso mais prático e consistente.
  *
  * @see GeneralMatchSportService
  * @see MatchSportServiceFactory
- * @param <T> Especifica com qual especialização de MatchSport a estratégia irá lidar.
+ * @param <T> Especifica com qual especialização de {@link Match} a estratégia irá lidar.
  */
-public interface MatchSportStrategy<T extends MatchSport> {
+public interface MatchSportStrategy<T extends Match> {
 
     /**
-     * Procura por um {@link MatchSport} no banco de dados com base no ID fornecido.
+     * Procura por um {@link Match} no banco de dados com base no ID fornecido.
      *
-     * @param id Identificador único da entidade {@link MatchSport} a ser buscada.
-     * @return Uma instância concreta que herda de {@link MatchSport}, correspondente ao ID fornecido.
+     * @param id Identificador único da entidade {@link Match} a ser buscada.
+     * @return Uma instância concreta que herda de {@link Match}, correspondente ao ID fornecido.
      */
-    T findMatchSportById(Long id);
+    Match findMatchById(Long id);
 
     /**
-     * Gera uma nova instância de {@link MatchSport} e a persiste no banco de dados.
+     * Gera uma nova instância de {@link Match} e a persiste no banco de dados.
      *
-     * @return Uma instância concreta que herda de {@link MatchSport}, persistida no banco de dados.
+     * @return Uma instância concreta que herda de {@link Match}, persistida no banco de dados.
      */
-    T createNewMatchSport();
+    Match saveMatch(Match match);
 
 }

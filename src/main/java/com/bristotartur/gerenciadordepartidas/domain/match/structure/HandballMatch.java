@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -14,7 +15,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("HANDEBOL")
+@DiscriminatorValue("HANDBALL")
+@JsonTypeName("HANDBALL")
 @Data
 @RequiredArgsConstructor
 public class HandballMatch extends Match {

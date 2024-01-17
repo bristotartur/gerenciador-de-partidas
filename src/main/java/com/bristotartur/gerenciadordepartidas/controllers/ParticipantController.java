@@ -1,15 +1,19 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
+import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.services.ParticipantService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/api/participants")
@@ -17,22 +21,63 @@ import java.util.List;
 @Transactional
 public class ParticipantController {
 
+    private final ParticipantService participantService;
+
     @GetMapping
     public ResponseEntity<List<Participant>> findAllParticipants() {
-        return null;
+
+        List<Participant> participantList = participantService.findAllParticipants();
+
+        if (participantList.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        participantList.forEach(this::addSingleParticipantLink);
+        return ResponseEntity.ok().body(participantList);
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Participant> findParticipantById(@PathVariable Long id) {
-        return null;
+
+        var participant = participantService.findParticipantById(id);
+
+        this.addParticipantListLink(participant);
+        return ResponseEntity.ok().body(participant);
+    }
+
+    @PostMapping
+    public ResponseEntity<Participant> saveParticipant(@RequestBody @Valid ParticipantDto participantDto) {
+
+        Participant participant = participantService.saveParticipant(participantDto);
+
+        this.addParticipantListLink(participant);
+        return ResponseEntity.status(HttpStatus.CREATED).body(participant);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteParticipant(@PathVariable Long id) {
+
+        participantService.deleteParticipantById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<Participant> replaceParticipant(@PathVariable Long id,
+                                                          @RequestBody @Valid ParticipantDto participantDto) {
+
+        var participant = participantService.replaceParticipant(id, participantDto);
+
+        this.addParticipantListLink(participant);
+        return ResponseEntity.ok().body(participant);
     }
 
     private void addSingleParticipantLink(Participant participant) {
 
+        Long id = participant.getId();
+        participant.add((linkTo(methodOn(this.getClass()).findParticipantById(id)).withSelfRel()));
     }
 
     private void addParticipantListLink(Participant participant) {
-        
+        participant.add(linkTo(methodOn(this.getClass()).findAllParticipants()).withRel("Participant list"));
     }
 
 }

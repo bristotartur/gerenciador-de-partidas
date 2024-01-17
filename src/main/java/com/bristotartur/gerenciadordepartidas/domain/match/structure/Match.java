@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.domain.match.structure;
 import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,8 @@ import java.util.List;
 @Entity
 @Table(name = "MATCH")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "MATCH_TYPE", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

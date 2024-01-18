@@ -47,7 +47,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
     public Match findMatchById(Long id) {
 
         return tableTennisMatchRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TABLE_TENNIS_MATCH_NOT_FOUND.message));
 
     }
 

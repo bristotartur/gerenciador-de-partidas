@@ -46,6 +46,16 @@ public class MatchService {
     }
 
     /**
+     * Recupera uma lista contendo todas as instâncias de uma especialização específica de {@link Match}.
+     *
+     * @param sport Esporte no qual as instâncias retornadas na lista serão especializadas.
+     * @return Uma lista contendo todas as instâncias da especialização de {@link Match} definida;
+     */
+    public List<? extends Match> findMatchesBySport(Sports sport) {
+        return generalMatchSportService.findMatchesBySport(sport);
+    }
+
+    /**
      * Busca por uma entidade específica do tipo {@link Match} com base no seu ID.
      *
      * @param id Identificador único da partida.

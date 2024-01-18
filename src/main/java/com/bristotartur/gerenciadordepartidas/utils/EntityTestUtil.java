@@ -67,10 +67,7 @@ public final class EntityTestUtil {
                 .build();
     }
 
-    public static Goal createNewGoal(Sports sport, EntityManager entityManager) {
-
-        var match = createNewMatch(sport, entityManager);
-        entityManager.merge(match);
+    public static Goal createNewGoal(Sports sport, Match match) {
 
         var player = match.getPlayers().get(0);
 
@@ -81,10 +78,7 @@ public final class EntityTestUtil {
                 .build();
     }
 
-    public static GoalDto createNewGoalDto(Sports sport, EntityManager entityManager) {
-
-        var match = createNewMatch(sport, entityManager);
-        entityManager.merge(match);
+    public static GoalDto createNewGoalDto(Sports sport, Match match) {
 
         var player = match.getPlayers().get(3);
 
@@ -96,10 +90,7 @@ public final class EntityTestUtil {
                 .build();
     }
 
-    public static PenaltyCard createNewPenaltyCard(Sports sport, PenaltyCardColor color, EntityManager entityManager) {
-
-        var match = createNewMatch(sport, entityManager);
-        entityManager.merge(match);
+    public static PenaltyCard createNewPenaltyCard(Sports sport, PenaltyCardColor color, Match match) {
 
         var player = match.getPlayers().get(0);
 
@@ -111,10 +102,7 @@ public final class EntityTestUtil {
                 .build();
     }
 
-    public static PenaltyCardDto createNewPenaltyCardDto(Sports sport, PenaltyCardColor color, EntityManager entityManager) {
-
-        var match = createNewMatch(sport, entityManager);
-        entityManager.merge(match);
+    public static PenaltyCardDto createNewPenaltyCardDto(Sports sport, PenaltyCardColor color, Match match) {
 
         var player = match.getPlayers().get(2);
 

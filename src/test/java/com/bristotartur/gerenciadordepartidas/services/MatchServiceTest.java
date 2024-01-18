@@ -97,6 +97,18 @@ class MatchServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve all Match players when searching for Match players")
+    void Should_RetrieveAllMatchPlayers_When_SearchingForMatchPlayers() {
+
+        var match = createNewMatch(Sports.TABLE_TENNIS, entityManager);
+        entityManager.merge(match);
+
+        var players = matchService.findAllMatchPlayers(match.getId());
+
+        assertEquals(players, match.getPlayers());
+    }
+
+    @Test
     @DisplayName("Should save Match when valid MatchDto is passed to save")
     void Should_SaveMatch_When_ValidMatchDtoIsPassedToSave() {
 

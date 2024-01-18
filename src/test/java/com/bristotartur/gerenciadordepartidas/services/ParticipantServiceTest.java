@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.createNewTeam;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,30 +35,19 @@ class ParticipantServiceTest {
         return Participant.builder()
                 .name("sa")
                 .classNumber(classNumber)
-                .team(createNewTeam())
+                .team(createNewTeam(entityManager))
                 .build();
     }
 
     private ParticipantDto createNewParticipantDto(String classNumber) {
 
-        var team = createNewTeam();
+        var team = createNewTeam(entityManager);
 
         return ParticipantDto.builder()
                 .name("foo")
                 .classNumber(classNumber)
                 .teamId(team.getId())
                 .build();
-    }
-
-    private Team createNewTeam() {
-
-        var team = Team.builder()
-                .points(300)
-                .build();
-
-        entityManager.merge(team);
-
-        return team;
     }
 
     @Test

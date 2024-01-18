@@ -1,7 +1,7 @@
-package com.bristotartur.gerenciadordepartidas.domain.match.structure;
+package com.bristotartur.gerenciadordepartidas.domain.structure;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonTypeName;

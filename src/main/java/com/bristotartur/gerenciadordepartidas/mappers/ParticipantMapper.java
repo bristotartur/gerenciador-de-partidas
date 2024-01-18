@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

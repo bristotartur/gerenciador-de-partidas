@@ -1,9 +1,8 @@
-package com.bristotartur.gerenciadordepartidas.domain.participant;
+package com.bristotartur.gerenciadordepartidas.domain.people;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

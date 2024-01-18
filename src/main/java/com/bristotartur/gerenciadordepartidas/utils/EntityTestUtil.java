@@ -1,10 +1,10 @@
 package com.bristotartur.gerenciadordepartidas.utils;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
-import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
@@ -19,8 +19,6 @@ import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 
 public final class EntityTestUtil {
 

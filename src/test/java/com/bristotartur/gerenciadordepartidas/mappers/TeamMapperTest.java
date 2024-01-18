@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import org.junit.jupiter.api.BeforeEach;

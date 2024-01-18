@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
-import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;

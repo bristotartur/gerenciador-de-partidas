@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
-import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.services.ParticipantService;
 import jakarta.validation.Valid;

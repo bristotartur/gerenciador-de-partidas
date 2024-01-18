@@ -1,7 +1,7 @@
-package com.bristotartur.gerenciadordepartidas.domain.match.structure;
+package com.bristotartur.gerenciadordepartidas.domain.structure;
 
-import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.team.Team;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;

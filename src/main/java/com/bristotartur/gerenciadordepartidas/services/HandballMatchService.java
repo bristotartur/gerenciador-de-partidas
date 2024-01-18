@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.HandballMatch;
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.structure.HandballMatch;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.HandballMatchRepository;

@@ -4,17 +4,19 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.VolleyballMatch;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.repositories.VolleyballMatchRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de vôlei ({@link VolleyballMatch}).
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link VolleyballMatch}.
  *
- * @see MatchRepository
+ * @see VolleyballMatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -22,7 +24,17 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
 
-    private final MatchRepository<VolleyballMatch> matchRepository;
+    private final VolleyballMatchRepository volleyballMatchRepository;
+
+    /**
+     * Recupera uma lista contendo todas as instâncias da {@link VolleyballMatch}
+     *
+     * @return Uma lista contendo todas as instâncias de {@link VolleyballMatch};
+     */
+    @Override
+    public List<VolleyballMatch> findAll() {
+        return volleyballMatchRepository.findAll();
+    }
 
     /**
      * Busca uma partida de vôlei pelo seu ID.
@@ -34,7 +46,7 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findById(id)
+        return volleyballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.VOLLEYBALL_MATCH_NOT_FOUND.message));
     }
 
@@ -49,7 +61,7 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
         VolleyballMatch volleyballMatch = new VolleyballMatch();
 
         BeanUtils.copyProperties(match, volleyballMatch);
-        return matchRepository.save(volleyballMatch);
+        return volleyballMatchRepository.save(volleyballMatch);
     }
 
 }

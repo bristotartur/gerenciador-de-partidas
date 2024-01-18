@@ -4,17 +4,19 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.ChessMatch;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.repositories.ChessMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de xadrez ({@link ChessMatch}).
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link ChessMatch}.
  *
- * @see MatchRepository
+ * @see ChessMatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -22,7 +24,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChessMatchService implements MatchStrategy<ChessMatch> {
 
-    private final MatchRepository<ChessMatch> matchRepository;
+    private final ChessMatchRepository chessMatchRepository;
+
+    /**
+     * Recupera uma lista contendo todas as instâncias da {@link ChessMatch}
+     *
+     * @return Uma lista contendo todas as instâncias de {@link ChessMatch};
+     */
+    @Override
+    public List<ChessMatch> findAll() {
+        return chessMatchRepository.findAll();
+    }
 
     /**
      * Busca uma partida de xadrez pelo seu ID.
@@ -34,7 +46,7 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findById(id)
+        return chessMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.CHESS_MATCH_NOT_FOUND.message));
     }
 
@@ -49,7 +61,7 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
         ChessMatch chessMatch = new ChessMatch();
 
         BeanUtils.copyProperties(match, chessMatch);
-        return matchRepository.save(chessMatch);
+        return chessMatchRepository.save(chessMatch);
     }
 
 }

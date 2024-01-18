@@ -4,17 +4,19 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.FutsalMatch
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.repositories.FutsalMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de futsal ({@link FutsalMatch}).
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link FutsalMatch}.
  *
- * @see MatchRepository
+ * @see FutsalMatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -22,7 +24,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FutsalMatchService implements MatchStrategy<FutsalMatch> {
 
-    private final MatchRepository<FutsalMatch> matchRepository;
+    private final FutsalMatchRepository futsalMatchRepository;
+
+    /**
+     * Recupera uma lista contendo todas as instâncias da {@link FutsalMatch}
+     *
+     * @return Uma lista contendo todas as instâncias de {@link FutsalMatch};
+     */
+    @Override
+    public List<FutsalMatch> findAll() {
+        return futsalMatchRepository.findAll();
+    }
 
     /**
      * Busca uma partida de futsal pelo seu ID.
@@ -34,7 +46,7 @@ public class FutsalMatchService implements MatchStrategy<FutsalMatch> {
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findById(id)
+        return futsalMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.FUTSAL_MATCH_NOT_FOUND.message));
     }
 
@@ -49,7 +61,7 @@ public class FutsalMatchService implements MatchStrategy<FutsalMatch> {
         FutsalMatch futsalMatch = new FutsalMatch();
 
         BeanUtils.copyProperties(match, futsalMatch);
-        return matchRepository.save(futsalMatch);
+        return futsalMatchRepository.save(futsalMatch);
     }
 
 }

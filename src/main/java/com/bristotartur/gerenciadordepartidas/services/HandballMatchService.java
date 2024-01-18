@@ -4,17 +4,19 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.HandballMat
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.repositories.HandballMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de handebol ({@link HandballMatch}).
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link HandballMatch}.
  *
- * @see MatchRepository
+ * @see HandballMatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -22,7 +24,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class HandballMatchService implements MatchStrategy<HandballMatch> {
 
-    private final MatchRepository<HandballMatch> matchRepository;
+    private final HandballMatchRepository handballMatchRepository;
+
+    /**
+     * Recupera uma lista contendo todas as instâncias da {@link HandballMatch}
+     *
+     * @return Uma lista contendo todas as instâncias de {@link HandballMatch};
+     */
+    @Override
+    public List<HandballMatch> findAll() {
+        return handballMatchRepository.findAll();
+    }
 
     /**
      * Busca uma partida de handebol pelo seu ID.
@@ -34,7 +46,7 @@ public class HandballMatchService implements MatchStrategy<HandballMatch> {
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findById(id)
+        return handballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.HANDBALL_MATCH_NOT_FOUND.message));
     }
 
@@ -49,7 +61,7 @@ public class HandballMatchService implements MatchStrategy<HandballMatch> {
         HandballMatch handballMatch = new HandballMatch();
 
         BeanUtils.copyProperties(match, handballMatch);
-        return matchRepository.save(handballMatch);
+        return handballMatchRepository.save(handballMatch);
     }
 
 }

@@ -4,17 +4,19 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.BasketballM
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.repositories.BasketballMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de basquete ({@link BasketballMatch}).
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link BasketballMatch}.
  *
- * @see MatchRepository
+ * @see BasketballMatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -22,7 +24,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
 
-    private final MatchRepository<BasketballMatch> matchRepository;
+    private final BasketballMatchRepository basketballMatchRepository;
+
+    /**
+     * Recupera uma lista contendo todas as instâncias da {@link BasketballMatch}
+     *
+     * @return Uma lista contendo todas as instâncias de {@link BasketballMatch};
+     */
+    @Override
+    public List<BasketballMatch> findAll() {
+        return basketballMatchRepository.findAll();
+    }
 
     /**
      * Busca uma partida de basquete pelo seu ID.
@@ -34,7 +46,7 @@ public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findById(id)
+        return basketballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.BASKETBALL_MATCH_NOT_FOUND.message));
     }
 
@@ -49,7 +61,7 @@ public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
         BasketballMatch basketballMatch = new BasketballMatch();
 
         BeanUtils.copyProperties(match, basketballMatch);
-        return matchRepository.save(basketballMatch);
+        return basketballMatchRepository.save(basketballMatch);
     }
 
 }

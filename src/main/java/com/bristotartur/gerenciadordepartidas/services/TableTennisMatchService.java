@@ -4,17 +4,19 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.TableTennisMatch;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
-import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.repositories.TableTennisMatchRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de tênis de mesa ({@link TableTennisMatch}).
  * Esta classe implementa a estratégia {@link MatchStrategy} para fornecer comportamentos padronizados
  * relacionados à especialização de {@link TableTennisMatch}.
  *
- * @see MatchRepository
+ * @see TableTennisMatchRepository
  * @see MatchSportServiceFactory
  * @see GeneralMatchSportService
  */
@@ -22,7 +24,17 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> {
 
-    private final MatchRepository<TableTennisMatch> matchRepository;
+    private final TableTennisMatchRepository tableTennisMatchRepository;
+
+    /**
+     * Recupera uma lista contendo todas as instâncias da {@link TableTennisMatch}
+     *
+     * @return Uma lista contendo todas as instâncias de {@link TableTennisMatch};
+     */
+    @Override
+    public List<TableTennisMatch> findAll() {
+        return tableTennisMatchRepository.findAll();
+    }
 
     /**
      * Busca uma partida de tênis de mesa pelo seu ID.
@@ -34,7 +46,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
     @Override
     public Match findMatchById(Long id) {
 
-        return matchRepository.findById(id)
+        return tableTennisMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
 
     }
@@ -50,7 +62,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
         TableTennisMatch tableTennisMatch = new TableTennisMatch();
 
         BeanUtils.copyProperties(match, tableTennisMatch);
-        return matchRepository.save(tableTennisMatch);
+        return tableTennisMatchRepository.save(tableTennisMatch);
     }
 
 }

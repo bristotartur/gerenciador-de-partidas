@@ -2,6 +2,8 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 
+import java.util.List;
+
 /**
  * Estratégia para serviços relacionados a especializações de {@link Match}, fornecendo
  * uma abstração padronizada para gerenciar comportamentos comuns esperados destas
@@ -12,6 +14,14 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
  * @param <T> Especifica com qual especialização de {@link Match} a estratégia irá lidar.
  */
 public interface MatchStrategy<T extends Match> {
+
+    /**
+     * Recupera uma lista contendo todas as instâncias da especialização de {@link Match}
+     * associada a esta estratégia.
+     *
+     * @return Uma lista contendo todas as instâncias de {@link Match} específicas desta estratégia.
+     */
+    List<T> findAll();
 
     /**
      * Procura por um {@link Match} no banco de dados com base no ID fornecido.

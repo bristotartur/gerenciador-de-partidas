@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.*;
@@ -30,6 +31,11 @@ class MatchServiceTest {
     private EntityManager entityManager;
     @Autowired
     private MatchRepository matchRepository;
+    @Autowired
+    private FutsalMatchService futsalMatchService;
+    @Autowired
+    private HandballMatchService handballMatchService;
+
 
     @Test
     @DisplayName("Should retrieve all Matches from repository when searching for all Matches")
@@ -44,6 +50,25 @@ class MatchServiceTest {
         List<Match> matchList = matchService.findAllMatches();
 
         assertEquals(existingMatches, matchList);
+    }
+
+    @Test
+    @DisplayName("Should retrieve all Matches of a specific sport when specific sport is passed to search")
+    void Should_RetrieveMatchesOfSpecificSport_When_SpecificSportIsPassedToSearch() {
+
+        var futsalMatchList = List.of(
+                futsalMatchService.saveMatch(createNewMatch(Sports.FUTSAL, entityManager)),
+                futsalMatchService.saveMatch(createNewMatch(Sports.FUTSAL, entityManager)));
+
+        var genericMatchList = new LinkedList<>(
+                List.of(handballMatchService.saveMatch(createNewMatch(Sports.HANDBALL, entityManager)))
+        );
+        futsalMatchList.forEach(genericMatchList::add);
+
+        var result = matchService.findMatchesBySport(Sports.FUTSAL);
+
+        assertEquals(result, futsalMatchList);
+        assertNotEquals(result, genericMatchList);
     }
 
     @Test

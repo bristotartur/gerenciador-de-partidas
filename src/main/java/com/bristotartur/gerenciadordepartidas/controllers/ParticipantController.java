@@ -73,11 +73,18 @@ public class ParticipantController {
     private void addSingleParticipantLink(Participant participant) {
 
         Long id = participant.getId();
-        participant.add((linkTo(methodOn(this.getClass()).findParticipantById(id)).withSelfRel()));
+        Long teamId = participant.getTeam().getId();
+
+        participant.add(linkTo(methodOn(this.getClass()).findParticipantById(id)).withSelfRel());
+        participant.add(linkTo(methodOn(TeamController.class).findTeamById(teamId)).withRel("Team"));
     }
 
     private void addParticipantListLink(Participant participant) {
+
+        var teamId = participant.getTeam().getId();
+
         participant.add(linkTo(methodOn(this.getClass()).findAllParticipants()).withRel("Participant list"));
+        participant.add(linkTo(methodOn(TeamController.class).findTeamById(teamId)).withRel("Team"));
     }
 
 }

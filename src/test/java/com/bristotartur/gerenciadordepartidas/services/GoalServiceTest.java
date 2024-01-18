@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
+import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
@@ -13,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.createNewGoal;
-import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.createNewGoalDto;
+import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.*;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,12 +28,22 @@ class GoalServiceTest {
     private EntityManager entityManager;
     @Autowired
     private GoalRepository goalRepository;
+    @Autowired
+    private FutsalMatchService futsalMatchService;
+    @Autowired
+    private HandballMatchService handballMatchService;
 
     @Test
     @DisplayName("Should retrieve all Goals from repository when searching for all Goals")
     void Should_RetrieveAllGoalsFromRepository_When_SearchingForAllGoals() {
 
-        List<Goal> existingGoals = List.of(createNewGoal(Sports.FUTSAL, entityManager), createNewGoal(Sports.HANDBALL, entityManager));
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+
+        List<Goal> existingGoals = List.of(
+                createNewGoal(sport, match),
+                createNewGoal(sport, match));
+
         existingGoals.forEach(goal -> entityManager.merge(goal));
 
         List<Goal> goalList = goalService.findAllGoals();
@@ -45,7 +55,9 @@ class GoalServiceTest {
     @DisplayName("Should find Goal when existing Goal ID is passed to search")
     void Should_FindGoal_When_ExistingGoalIdIsPassedToSearch() {
 
-        var existingGoal = createNewGoal(Sports.FUTSAL, entityManager);
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var existingGoal = createNewGoal(sport, match);
 
         entityManager.merge(existingGoal);
 
@@ -70,7 +82,10 @@ class GoalServiceTest {
     @DisplayName("Should save Goal when valid GoalDto is passed to save")
     void Should_SaveGoal_When_ValidGoalDtoIsPassedToSave() {
 
-        var goalDto = createNewGoalDto(Sports.HANDBALL, entityManager);
+        var sport = Sports.HANDBALL;
+        var match = handballMatchService.saveMatch(createNewMatch(sport, entityManager));
+
+        var goalDto = createNewGoalDto(sport, match);
         var savedId = goalService.saveGoal(goalDto).getId();
 
         var savedGoal = goalRepository.findById(savedId).get();
@@ -82,7 +97,9 @@ class GoalServiceTest {
     @DisplayName("Should delete Goal from database when Goal ID is passed to delete")
     void Should_DeleteGoalFromDatabase_When_GoalIdIsPassedToDelete() {
 
-        var existingGoal = createNewGoal(Sports.FUTSAL, entityManager);
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var existingGoal = createNewGoal(sport, match);
 
         entityManager.merge(existingGoal);
 
@@ -96,12 +113,16 @@ class GoalServiceTest {
     @DisplayName("Should update Goal when GoalDto with new values is passed")
     void Should_UpdateGoal_When_GoalDtoWithNewValuesIsPassed() {
 
-        var existingGoal = createNewGoal(Sports.FUTSAL, entityManager);
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var existingGoal = createNewGoal(sport, match);
 
         entityManager.merge(existingGoal);
 
         var existingId = existingGoal.getId();
-        var goalDto = createNewGoalDto(Sports.HANDBALL, entityManager);
+        var newSport = Sports.HANDBALL;
+        var newMatch = handballMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var goalDto = createNewGoalDto(newSport, newMatch);
 
         var updatedGoal = goalService.replaceGoal(existingId, goalDto);
 
@@ -114,7 +135,8 @@ class GoalServiceTest {
     void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplaceGoal() {
 
         var id = getRandomLongId();
-        var goalDto = createNewGoalDto(Sports.FUTSAL, entityManager);
+
+        var goalDto = GoalDto.builder().build();
 
         assertThrows(NotFoundException.class, () -> {
             goalService.replaceGoal(id, goalDto);

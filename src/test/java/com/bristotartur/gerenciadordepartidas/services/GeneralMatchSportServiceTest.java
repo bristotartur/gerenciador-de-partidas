@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.match.structure.FutsalMatch;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -26,6 +25,10 @@ class GeneralMatchSportServiceTest {
     private EntityManager entityManager;
     @Autowired
     private MatchRepository matchRepository;
+    @Autowired
+    private FutsalMatchService futsalMatchService;
+    @Autowired
+    private BasketballMatchService basketballMatchService;
 
     @Test
     @DisplayName("Should save Match when new Match is passed to save")
@@ -55,8 +58,7 @@ class GeneralMatchSportServiceTest {
     @DisplayName("Should find Match when existing Match ID is passed to search")
     void Should_FindMatch_When_ExistingMatchIdIsPassedToSearch() {
 
-        var existingFutsalMatch = createNewMatch(Sports.CHESS, entityManager);
-        entityManager.persist(existingFutsalMatch);
+        var existingFutsalMatch = futsalMatchService.saveMatch(createNewMatch(Sports.FUTSAL, entityManager));
 
         var result = generalMatchSportService.findMatch(existingFutsalMatch.getId(), Sports.FUTSAL);
 
@@ -79,8 +81,7 @@ class GeneralMatchSportServiceTest {
     @DisplayName("Should find Match for Goal when valid argument is passed")
     void Should_FindMatchFotGoal_When_ValidArgumentIsPassed() {
 
-        var existingFutsalMatch = createNewMatch(Sports.FUTSAL, entityManager);
-        entityManager.persist(existingFutsalMatch);
+        var existingFutsalMatch = futsalMatchService.saveMatch(createNewMatch(Sports.FUTSAL, entityManager));
 
         var existingId = existingFutsalMatch.getId();
         var result = generalMatchSportService.findMatchForGoal(existingId, Sports.FUTSAL);
@@ -104,13 +105,11 @@ class GeneralMatchSportServiceTest {
     @DisplayName("Should find Match for PenaltyCard when valid argument is passed")
     void Should_FindMatchSportForPenaltyCard_When_ValidArgumentIsPassed() {
 
-        var basketballMatch = createNewMatch(Sports.BASKETBALL, entityManager);
-        entityManager.persist(basketballMatch);
+        var basketballMatch = basketballMatchService.saveMatch(createNewMatch(Sports.BASKETBALL, entityManager));
 
         var existingId = basketballMatch.getId();
         var result = generalMatchSportService.findMatchForCard(existingId, Sports.BASKETBALL);
 
-        assertNotNull(result);
         assertEquals(basketballMatch, result);
     }
 }

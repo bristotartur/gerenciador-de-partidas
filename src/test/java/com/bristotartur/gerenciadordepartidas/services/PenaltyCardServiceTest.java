@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -14,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.createNewPenaltyCard;
-import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.createNewPenaltyCardDto;
+import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.*;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,14 +29,21 @@ class PenaltyCardServiceTest {
     private EntityManager entityManager;
     @Autowired
     private PenaltyCardRepository penaltyCardRepository;
+    @Autowired
+    private FutsalMatchService futsalMatchService;
+    @Autowired
+    private HandballMatchService handballMatchService;
 
     @Test
     @DisplayName("Should retrieve all PenaltyCards from repository when searching for all PenaltyCards")
     void Should_RetrieveAllPenaltyCardsFromRepository_When_SearchingForAllPenaltyCards() {
 
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+
         List<PenaltyCard> existingPenaltyCards = List.of(
-                createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.RED, entityManager),
-                createNewPenaltyCard(Sports.HANDBALL, PenaltyCardColor.YELLOW, entityManager));
+                createNewPenaltyCard(sport, PenaltyCardColor.RED, match),
+                createNewPenaltyCard(sport, PenaltyCardColor.YELLOW, match));
 
         existingPenaltyCards.forEach(penaltyCard -> entityManager.merge(penaltyCard));
 
@@ -49,7 +56,9 @@ class PenaltyCardServiceTest {
     @DisplayName("Should find PenaltyCard when existing PenaltyCard ID is passed to search")
     void Should_FindPenaltyCard_When_ExistingPenaltyCardIdIsPassedToSearch() {
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.RED, entityManager);
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var existingPenaltyCard = createNewPenaltyCard(sport, PenaltyCardColor.RED, match);
 
         entityManager.merge(existingPenaltyCard);
 
@@ -74,7 +83,9 @@ class PenaltyCardServiceTest {
     @DisplayName("Should save PenaltyCard when valid PenaltyCardDto is passed to save")
     void Should_SavePenaltyCard_When_ValidPenaltyCardDtoIsPassedToSave() {
 
-        var penaltyCardDto = createNewPenaltyCardDto(Sports.HANDBALL, PenaltyCardColor.RED, entityManager);
+        var sport = Sports.HANDBALL;
+        var match = handballMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED, match);
         var savedId = penaltyCardService.savePenaltyCard(penaltyCardDto).getId();
 
         var savedPenaltyCard = penaltyCardRepository.findById(savedId).get();
@@ -86,7 +97,9 @@ class PenaltyCardServiceTest {
     @DisplayName("Should delete PenaltyCard from database when PenaltyCard ID is passed to delete")
     void Should_DeletePenaltyCardFromDatabase_When_PenaltyCardIdIsPassedToDelete() {
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.YELLOW, entityManager);
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var existingPenaltyCard = createNewPenaltyCard(sport, PenaltyCardColor.YELLOW, match);
 
         entityManager.merge(existingPenaltyCard);
 
@@ -100,12 +113,16 @@ class PenaltyCardServiceTest {
     @DisplayName("Should update PenaltyCard when PenaltyCardDto with new values is passed")
     void Should_UpdatePenaltyCard_When_PenaltyCardDtoWithNewValuesIsPassed() {
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.RED, entityManager);
+        var sport = Sports.FUTSAL;
+        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var existingPenaltyCard = createNewPenaltyCard(sport, PenaltyCardColor.RED, match);
 
         entityManager.merge(existingPenaltyCard);
 
         var existingId = existingPenaltyCard.getId();
-        var penaltyCardDto = createNewPenaltyCardDto(Sports.HANDBALL, PenaltyCardColor.RED, entityManager);
+        var newSport = Sports.HANDBALL;
+        var newMatch = handballMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var penaltyCardDto = createNewPenaltyCardDto(newSport, PenaltyCardColor.RED, newMatch);
 
         var updatedPenaltyCard = penaltyCardService.replacePenaltyCard(existingId, penaltyCardDto);
 
@@ -118,7 +135,7 @@ class PenaltyCardServiceTest {
     void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplacePenaltyCard() {
 
         var id = getRandomLongId();
-        var penaltyCardDto = createNewPenaltyCardDto(Sports.FUTSAL, PenaltyCardColor.YELLOW, entityManager);
+        var penaltyCardDto = PenaltyCardDto.builder().build();
 
         assertThrows(NotFoundException.class, () -> {
             penaltyCardService.replacePenaltyCard(id, penaltyCardDto);

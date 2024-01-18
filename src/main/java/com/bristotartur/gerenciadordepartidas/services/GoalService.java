@@ -1,6 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.match.specifications.Goal;
+import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -56,7 +58,8 @@ public class GoalService {
 
     /**
      * Salva um gol no sistema com base nos dados fornecidos em {@link GoalDto}, realizando uma validação
-     * prévia destes dados antes de gerar o gol e persistí-lo.
+     * prévia destes dados antes de gerar o gol e persistí-lo. A partida na qual este gol estiver associado
+     * terá seu placar alterado.
      *
      * @param goalDto DTO do tipo {@link GoalDto} dados do gol a ser salvo.
      * @return O gol recém-salvo.
@@ -67,24 +70,34 @@ public class GoalService {
         var match = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var player = participantService.findParticipantById(goalDto.playerId());
 
+        this.increaseScore(player.getTeam(), match);
         var goal = goalMapper.toNewGoal(goalDto, player, match);
 
         return goalRepository.save(goal);
     }
 
     /**
-     * Remove um gol do banco de dados com base no seu ID.
+     * Remove um gol do banco de dados com base no seu ID. A partida na qual este gol
+     * estava associado terá seu placar alterado.
      *
      * @param id Identificador único do gol.
      */
     public void deleteGoalById(Long id) {
+
+        var goal = findGoalById(id);
+        var team = goal.getPlayer().getTeam();
+
+        this.decreaseScore(team, goal.getMatch());
         goalRepository.deleteById(id);
     }
 
     /**
-     * Atualiza um gol existente no banco de dados com base no seu ID e os dados fornecidos em {@link GoalDto},
+     * <p>Atualiza um gol existente no banco de dados com base no seu ID e os dados fornecidos em {@link GoalDto},
      * realizando uma validação prévia destes dados antes de atualizar o gol. Isso envolve a substituição
-     * completa dos dados do gol existente pelos novos dados fornecidos.
+     * completa dos dados do gol existente pelos novos dados fornecidos.</p>
+     *
+     * <p>A partida que estiver associada a este gol terá seu placar alterado caso os novos dados fornecidos
+     * mudem a equipe que o marcou ou a partida em que ele ocorreu.</p>
      *
      * @param id Identificador único do gol a ser atualizado.
      * @param goalDto DTO do tipo {@link GoalDto} contendo os dados atualizados do gol.
@@ -94,14 +107,57 @@ public class GoalService {
      */
     public Goal replaceGoal(Long id, GoalDto goalDto) {
 
-        this.findGoalById(id);
+        var existingGoal = findGoalById(id);
+        var originalGoalMatch = existingGoal.getMatch();
+        var originalGoalPlayer = existingGoal.getPlayer();
 
-        var match = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
-        var player = participantService.findParticipantById(goalDto.playerId());
+        var newGoalMatch = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
+        var newGoalPlayer = participantService.findParticipantById(goalDto.playerId());
 
-        var goal = goalMapper.toExistingGoal(id, goalDto, player, match);
-
+        if (!(originalGoalMatch.equals(newGoalMatch)) || !(originalGoalPlayer.equals(newGoalPlayer.getTeam()))) {
+            this.increaseScore(newGoalPlayer.getTeam(), newGoalMatch);
+            this.decreaseScore(originalGoalPlayer.getTeam(), originalGoalMatch);
+        }
+        var goal = goalMapper.toExistingGoal(id, goalDto, newGoalPlayer, newGoalMatch);
         return goalRepository.save(goal);
+    }
+
+    /**
+     * Incrementa o placar da equipe fornecida na partida especificada. Caso a equipe seja a
+     * equipe A da partida, o placar da equipe A será incrementado. Caso contrário, o placar da equipe B
+     * será incrementado. O método não realiza validação adicional sobre a existência ou elegibilidade
+     * da equipe na partida, assumindo que a equipe já está associada à partida.
+     *
+     * @param team Equipe que receberá o ponto.
+     * @param match Partida que terá o placar alterado.
+     */
+    private void increaseScore(Team team, Match match) {
+
+        if (team.equals(match.getTeamA())) {
+            match.setTeamScoreA(match.getTeamScoreA() + 1);
+            return;
+        }
+        match.setTeamScoreB(match.getTeamScoreB() + 1);
+        return;
+    }
+
+    /**
+     * Decrementa o placar da equipe fornecida na partida especificada. Caso a equipe seja a
+     * equipe A da partida, o placar da equipe A será reduzido. Caso contrário, o placar da equipe B
+     * será reduzido. O método não realiza validação adicional sobre a existência ou elegibilidade
+     * da equipe na partida, assumindo que a equipe já está associada à partida.
+     *
+     * @param team Equipe que perderá o ponto.
+     * @param match Partida que terá o placar alterado.
+     */
+    private void decreaseScore(Team team, Match match) {
+
+        if (team.equals(match.getTeamA())) {
+            match.setTeamScoreA(match.getTeamScoreA() - 1);
+            return;
+        }
+        match.setTeamScoreB(match.getTeamScoreB() - 1);
+        return;
     }
 
 }

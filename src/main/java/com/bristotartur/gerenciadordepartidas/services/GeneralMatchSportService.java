@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Esta classe atua como uma camada de serviço centralizada para operações relacionadas a diferentes
  * tipos de partidas ({@link Match}). Através desta classe é possível criar novas instâncias
@@ -24,6 +26,18 @@ import org.springframework.stereotype.Service;
 public class GeneralMatchSportService {
 
     private final ApplicationContext context;
+
+    /**
+     * Retorna uma lista contendo todas as instâncias de uma determinada especialização de {@link Match}.
+     *
+     * @param sport Esporte no qual as instâncias retornadas na lista serão especializadas.
+     * @return Uma lista contendo as instâncias da especialização de {@link Match} definida.
+     */
+    public List<? extends Match> findMatchesBySport(Sports sport) {
+
+        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
+        return service.findAll();
+    }
 
     /**
      * Cria uma nova instância de {@link Match} especializada em um esporte específico.

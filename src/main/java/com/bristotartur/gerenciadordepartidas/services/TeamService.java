@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
+import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.team.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
@@ -47,6 +48,18 @@ public class TeamService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
 
         return team;
+    }
+
+    /**
+     * Retorna todos os membros de uma equipe.
+     *
+     * @param id Identificador único da equipe.
+     * @return Uma lista contendo todos os membros da equipe.
+     */
+    public List<Participant> findAllTeamMembers(Long id) {
+
+        var team = findTeamById(id);
+        return team.getMembers();
     }
 
     /**

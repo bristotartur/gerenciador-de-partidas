@@ -6,6 +6,7 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
 
-    private final MatchRepository matchRepository;
+    private final MatchRepository<VolleyballMatch> matchRepository;
 
     /**
      * Busca uma partida de vôlei pelo seu ID.
@@ -44,7 +45,11 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
      */
     @Override
     public Match saveMatch(Match match) {
-        return matchRepository.save(match);
+
+        VolleyballMatch volleyballMatch = new VolleyballMatch();
+
+        BeanUtils.copyProperties(match, volleyballMatch);
+        return matchRepository.save(volleyballMatch);
     }
 
 }

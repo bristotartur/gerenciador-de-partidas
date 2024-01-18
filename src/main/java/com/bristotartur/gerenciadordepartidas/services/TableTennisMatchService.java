@@ -6,6 +6,7 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> {
 
-    private final MatchRepository matchRepository;
+    private final MatchRepository<TableTennisMatch> matchRepository;
 
     /**
      * Busca uma partida de tênis de mesa pelo seu ID.
@@ -34,7 +35,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
     public Match findMatchById(Long id) {
 
         return matchRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TABLE_TENNIS_MATCH_NOT_FOUND.message));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
 
     }
 
@@ -45,7 +46,11 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
      */
     @Override
     public Match saveMatch(Match match) {
-        return matchRepository.save(match);
+
+        TableTennisMatch tableTennisMatch = new TableTennisMatch();
+
+        BeanUtils.copyProperties(match, tableTennisMatch);
+        return matchRepository.save(tableTennisMatch);
     }
 
 }

@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.match.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.participant.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
+import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.MatchMapper;
@@ -29,7 +30,7 @@ import java.util.Optional;
 @Transactional
 public class MatchService {
 
-    private final MatchRepository matchRepository;
+    private final MatchRepository<Match> matchRepository;
     private final MatchMapper matchMapper;
     private final ParticipantService participantService;
     private final TeamService teamService;
@@ -53,10 +54,8 @@ public class MatchService {
      */
     public Match findMatchById(Long id) {
 
-        var match = matchRepository.findById(id)
+        return matchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.MATCH_NOT_FOUND.message));
-
-        return match;
     }
 
     /**

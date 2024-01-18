@@ -6,6 +6,7 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChessMatchService implements MatchStrategy<ChessMatch> {
 
-    private final MatchRepository matchRepository;
+    private final MatchRepository<ChessMatch> matchRepository;
 
     /**
      * Busca uma partida de xadrez pelo seu ID.
@@ -44,7 +45,11 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
      */
     @Override
     public Match saveMatch(Match match) {
-        return matchRepository.save(match);
+
+        ChessMatch chessMatch = new ChessMatch();
+
+        BeanUtils.copyProperties(match, chessMatch);
+        return matchRepository.save(chessMatch);
     }
 
 }

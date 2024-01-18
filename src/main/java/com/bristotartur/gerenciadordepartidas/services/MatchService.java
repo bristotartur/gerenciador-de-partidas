@@ -69,6 +69,18 @@ public class MatchService {
     }
 
     /**
+     * Retorna todos os jogadores presentes em uma partida.
+     *
+     * @param id Identificador único da partida.
+     * @return Uma lista com todos os jogadores da partida.
+     */
+    public List<Participant> findAllMatchPlayers(Long id) {
+
+        var match = findMatchById(id);
+        return match.getPlayers();
+    }
+
+    /**
      * Salva uma partida no sistema com base nos dados fornecidos em {@link MatchDto}, realizando uma validação
      * prévia destes dados antes de gerar a partida e persistí-la.
      *

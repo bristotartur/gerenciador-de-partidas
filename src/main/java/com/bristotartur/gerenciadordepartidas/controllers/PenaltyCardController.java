@@ -16,7 +16,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/api/penalty-cards")
+@RequestMapping(value = "/gerenciador-de-partidas/api/penalty-cards")
 @RequiredArgsConstructor
 @Transactional
 public class PenaltyCardController {

@@ -16,7 +16,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/api/teams")
+@RequestMapping(value = "/gerenciador-de-partidas/api/teams")
 @RequiredArgsConstructor
 @Transactional
 public class TeamController {

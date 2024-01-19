@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -46,6 +46,8 @@ public interface MatchMapper {
      * @return Uma nova instância atualizada de {@link Match} com base nos dados fornecidos.
      */
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "teamScoreA", ignore = true)
+    @Mapping(target = "teamScoreB", ignore = true)
     @Mapping(target = "modality", source = "matchDto.modality.name")
     @Mapping(target = "matchStatus", source = "matchDto.matchStatus.name")
     Match toExistingMatch(Long id, MatchDto matchDto, List<Participant> players, Team teamA, Team teamB);

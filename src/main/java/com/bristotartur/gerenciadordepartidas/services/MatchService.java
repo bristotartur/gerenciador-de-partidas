@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -75,9 +75,7 @@ public class MatchService {
      * @return Uma lista com todos os jogadores da partida.
      */
     public List<Participant> findAllMatchPlayers(Long id) {
-
-        var match = findMatchById(id);
-        return match.getPlayers();
+        return findMatchById(id).getPlayers();
     }
 
     /**
@@ -90,17 +88,19 @@ public class MatchService {
      */
     public Match saveMatch(MatchDto matchDto) {
 
+        if (matchDto.teamAId() == matchDto.teamBId())
+            throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
+
         var teamA = teamService.findTeamById(matchDto.teamAId());
         var teamB = teamService.findTeamById(matchDto.teamBId());
-
         var players = matchDto.playerIds()
                 .stream()
                 .map(participantService::findParticipantById)
                 .toList();
 
         this.checkPlayers(players, matchDto);
-        var match = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
 
+        var match = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
         return generalMatchSportService.saveMatch(match, matchDto.sport());
     }
 
@@ -128,17 +128,19 @@ public class MatchService {
 
         this.findMatchById(id);
 
+        if (matchDto.teamAId() == matchDto.teamBId())
+            throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
+
         var teamA = teamService.findTeamById(matchDto.teamAId());
         var teamB = teamService.findTeamById(matchDto.teamBId());
-
         var players = matchDto.playerIds()
                 .stream()
                 .map(participantService::findParticipantById)
                 .toList();
 
         this.checkPlayers(players, matchDto);
-        var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
 
+        var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
         return generalMatchSportService.saveMatch(match, matchDto.sport());
     }
 

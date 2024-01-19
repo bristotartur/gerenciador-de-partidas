@@ -107,7 +107,7 @@ public class ParticipantService {
     }
 
     /**
-     * Verifica se um número da turma de um participante é válido e o reformata caso necessário.
+     * Verifica se o número da turma de um participante é válido e o reformata caso necessário.
      *
      * @param participant O participante contendo o número da turma.
      * @return O número da turma reformatado.
@@ -118,10 +118,10 @@ public class ParticipantService {
         var classNumber = participant.getClassNumber();
         var regex = "^[1-3]-?\\d{2}$";
 
-        if (!(Pattern.matches(regex, classNumber)))
+        if (!classNumber.matches(regex))
             throw new BadRequestException(ExceptionMessages.INVALID_PATTERN.message.formatted(classNumber));
 
-        if (!(classNumber.contains("-")))
+        if (!classNumber.contains("-"))
             classNumber = classNumber.substring(0, 1) + "-" + classNumber.substring(1);
 
         participant.setClassNumber(classNumber);

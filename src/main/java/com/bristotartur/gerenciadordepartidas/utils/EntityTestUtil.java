@@ -34,8 +34,8 @@ public final class EntityTestUtil {
                 .teamA(teamA)
                 .teamB(teamB)
                 .players(createNewPlayerList(teamA, teamB, entityManager))
-                .teamScoreA(3)
-                .teamScoreB(2)
+                .teamScoreA(0)
+                .teamScoreB(0)
                 .modality(Modality.MASCULINE.name)
                 .matchStatus(MatchStatus.ENDED.name)
                 .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 0))
@@ -56,9 +56,27 @@ public final class EntityTestUtil {
                 .teamBId(teamB.getId())
                 .playerIds(playerIds)
                 .sport(sport)
-                .teamScoreA(3)
-                .teamScoreB(2)
                 .modality(Modality.MASCULINE)
+                .matchStatus(MatchStatus.ENDED)
+                .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 00))
+                .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 00))
+                .build();
+    }
+
+    public static MatchDto createNewMatchDto(Sports sport, Modality modality, EntityManager entityManager) {
+
+        var teamA = createNewTeam(entityManager);
+        var teamB = createNewTeam(entityManager);
+        var playerIds = createNewPlayerList(teamA, teamB, entityManager).stream()
+                .map(player -> player.getId())
+                .toList();
+
+        return MatchDto.builder()
+                .teamAId(teamA.getId())
+                .teamBId(teamB.getId())
+                .playerIds(playerIds)
+                .sport(sport)
+                .modality(modality)
                 .matchStatus(MatchStatus.ENDED)
                 .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 00))
                 .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 00))

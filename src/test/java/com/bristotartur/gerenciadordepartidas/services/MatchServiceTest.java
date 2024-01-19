@@ -1,8 +1,9 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
+import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -138,17 +139,16 @@ class MatchServiceTest {
     @DisplayName("Should update Match when MatchDto with new values is passed")
     void Should_UpdateMatch_When_MatchDtoWithNewValuesIsPassed() {
 
-        var existingMatch = createNewMatch(Sports.BASKETBALL, entityManager);
+        var sport = Sports.BASKETBALL;
+        var match =  matchService.saveMatch(createNewMatchDto(sport, Modality.MASCULINE, entityManager));
 
-        entityManager.merge(existingMatch);
-
-        var existingId = existingMatch.getId();
-        var matchDto = createNewMatchDto(Sports.VOLLEYBALL, entityManager);
+        var existingId = match.getId();
+        var originalModality = match.getModality();
+        var matchDto = createNewMatchDto(sport, Modality.FEMININE, entityManager);
 
         var updatedMatch = matchService.replaceMatch(existingId, matchDto);
 
-        assertNotNull(updatedMatch);
-        assertNotEquals(existingMatch, updatedMatch);
+        assertNotEquals(originalModality, updatedMatch.getModality());
     }
 
     @Test

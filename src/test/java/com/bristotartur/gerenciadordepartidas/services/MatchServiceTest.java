@@ -21,6 +21,7 @@ import java.util.List;
 import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.*;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @SpringBootTest
 @Transactional
@@ -119,6 +120,25 @@ class MatchServiceTest {
         var savedMatch = matchRepository.findById(savedId).get();
 
         assertNotNull(savedMatch);
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when MatchDto with two equal team IDs is passed")
+    void Should_ThrowBadRequestException_When_MatchDtoWithTwoEqualTeamIdsIsPassed() {
+
+        var existingId = futsalMatchService.saveMatch(createNewMatch(Sports.FUTSAL, entityManager)).getId();
+
+        var matchDto = MatchDto.builder()
+                .teamAId(1L)
+                .teamBId(1L)
+                .build();
+
+        assertThrows(BadRequestException.class, () -> {
+            matchService.saveMatch(matchDto);
+        });
+        assertThrows(BadRequestException.class, () -> {
+            matchService.replaceMatch(existingId, matchDto);
+        });
     }
 
     @Test

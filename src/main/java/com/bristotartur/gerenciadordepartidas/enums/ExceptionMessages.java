@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ExceptionMessages {
     TEAM_NOT_FOUND("Equipe não encontrada"),
+    INVALID_TEAMS_FOR_MATCH("Uma partida não pode ter duas equipes iguais."),
     PARTICIPANT_NOT_FOUND("Participante não encontrado"),
     PARTICIPANT_INVALID_FOR_MATCH("Participante com id '%d' não pertence a nenhuma equipe da partida"),
     GOAL_NOT_FOUND("Gol não encontrado"),

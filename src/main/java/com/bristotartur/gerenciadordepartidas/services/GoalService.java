@@ -108,17 +108,17 @@ public class GoalService {
     public Goal replaceGoal(Long id, GoalDto goalDto) {
 
         var existingGoal = findGoalById(id);
-        var originalGoalMatch = existingGoal.getMatch();
-        var originalGoalPlayer = existingGoal.getPlayer();
+        var originaMatch = existingGoal.getMatch();
+        var originalPlayerTeam = existingGoal.getPlayer().getTeam();
 
-        var newGoalMatch = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
-        var newGoalPlayer = participantService.findParticipantById(goalDto.playerId());
+        var newMatch = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
+        var newPlayer = participantService.findParticipantById(goalDto.playerId());
 
-        if (!(originalGoalMatch.equals(newGoalMatch)) || !(originalGoalPlayer.equals(newGoalPlayer.getTeam()))) {
-            this.increaseScore(newGoalPlayer.getTeam(), newGoalMatch);
-            this.decreaseScore(originalGoalPlayer.getTeam(), originalGoalMatch);
+        if (!originaMatch.equals(newMatch) || !originalPlayerTeam.equals(newPlayer.getTeam())) {
+            this.increaseScore(newPlayer.getTeam(), newMatch);
+            this.decreaseScore(originalPlayerTeam, originaMatch);
         }
-        var goal = goalMapper.toExistingGoal(id, goalDto, newGoalPlayer, newGoalMatch);
+        var goal = goalMapper.toExistingGoal(id, goalDto, newPlayer, newMatch);
         return goalRepository.save(goal);
     }
 

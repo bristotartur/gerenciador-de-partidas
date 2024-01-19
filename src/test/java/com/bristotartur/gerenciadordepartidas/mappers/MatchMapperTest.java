@@ -1,69 +1,33 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
-import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
-import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
-import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.createNewMatchDto;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
+@Transactional
 class MatchMapperTest {
 
     @Autowired
     private MatchMapper matchMapper;
     @Autowired
-    private GeneralMatchSportService generalMatchSportService;
-
-    private Match createNewMatch(Sports sport) {
-
-        return Match.builder()
-                .teamA(createNewTeam())
-                .teamB(createNewTeam())
-                .players(createNewPlayerList())
-                .teamScoreA(3)
-                .teamScoreB(2)
-                .modality(Modality.MASCULINE.name)
-                .matchStatus(MatchStatus.ENDED.name)
-                .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 0))
-                .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 0))
-                .build();
-    }
-
-    private MatchDto createNewMatchDto(Sports sport) {
-
-        var playerIds = createNewPlayerList().stream()
-                .map(player -> player.getId())
-                .toList();
-
-        return MatchDto.builder()
-                .teamAId(createNewTeam().getId())
-                .teamBId(createNewTeam().getId())
-                .sport(sport)
-                .playerIds(playerIds)
-                .teamScoreA(3)
-                .teamScoreB(2)
-                .modality(Modality.MASCULINE)
-                .matchStatus(MatchStatus.ENDED)
-                .matchStart(LocalDateTime.of(2024, 1, 10, 13, 57, 00))
-                .matchEnd(LocalDateTime.of(2024, 1, 10, 14, 30, 00))
-                .build();
-    }
+    private EntityManager entityManager;
 
     private List<Participant> createNewPlayerList() {
 
@@ -92,7 +56,7 @@ class MatchMapperTest {
     @DisplayName("Should convert scores fields to zero when mapped to new Match")
     void Should_ConvertScoresToZero_When_MappedToNewMatch() {
 
-        var matchDto = createNewMatchDto(Sports.CHESS);
+        var matchDto = createNewMatchDto(Sports.CHESS, entityManager);
         var match = matchMapper.toNewMatch(matchDto, any(), any(), any());
 
         assertEquals(match.getTeamScoreA(), 0);
@@ -107,7 +71,7 @@ class MatchMapperTest {
         var players = createNewPlayerList();
         var teamA = createNewTeam();
         var teamB = createNewTeam();
-        var matchDto = createNewMatchDto(sport);
+        var matchDto = createNewMatchDto(sport, entityManager);
 
         var match = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
 
@@ -123,9 +87,9 @@ class MatchMapperTest {
         var players = createNewPlayerList();
         var teamA = createNewTeam();
         var teamB = createNewTeam();
-        var matchDto = createNewMatchDto(sport);
+        var matchDto = createNewMatchDto(sport, entityManager);
 
-        var existingMatch = createNewMatch(Sports.BASKETBALL);
+        var existingMatch = EntityTestUtil.createNewMatch(Sports.BASKETBALL, entityManager);
         var existingId = existingMatch.getId();
 
         var updatedMatch = matchMapper.

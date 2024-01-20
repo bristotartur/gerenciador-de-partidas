@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.TeamMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;
@@ -45,6 +46,21 @@ public class TeamService {
     public Team findTeamById(Long id) {
 
         var team = teamRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
+
+        return team;
+    }
+
+    /**
+     * Busca uma entidade específica do tipo {@link Team} com base em seu nome.
+     *
+     * @param name O nome da equipe.
+     * @return A equipe correspondente ao nome.
+     * @throws NotFoundException Se nenhuma equipe correspondente ao nome fornecido for encontrada.
+     */
+    public Team findTeamByName(TeamName name) {
+
+        var team = teamRepository.findByName(name.value)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
 
         return team;

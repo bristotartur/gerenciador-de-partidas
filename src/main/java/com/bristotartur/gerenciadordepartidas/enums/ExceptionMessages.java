@@ -1,12 +1,12 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum ExceptionMessages {
     TEAM_NOT_FOUND("Equipe não encontrada."),
     INVALID_TEAMS_FOR_MATCH("Uma partida não pode ter duas equipes iguais."),
+    INVALID_CLASS_NUMBER("Número de turma inválido."),
     PARTICIPANT_NOT_FOUND("Participante não encontrado."),
     PARTICIPANT_INVALID_FOR_MATCH("Participante com id '%d' não pertence a nenhuma equipe da partida."),
     GOAL_NOT_FOUND("Gol não encontrado."),

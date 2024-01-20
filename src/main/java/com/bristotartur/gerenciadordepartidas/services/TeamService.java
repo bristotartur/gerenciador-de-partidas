@@ -5,6 +5,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.TeamMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;
@@ -83,8 +84,14 @@ public class TeamService {
      *
      * @param teamDto DTO do tipo {@link TeamDto} contendo dados da equipe a serem salvos.
      * @return A equipe recém-salva.
+     * @throws BadRequestException Caso o nome da equipe passado pelo DTO já esteja em uso.
      */
     public Team saveTeam(TeamDto teamDto) {
+
+        var teamName = teamDto.teamName().value;
+
+        if (!teamRepository.findByName(teamName).isEmpty())
+            throw new BadRequestException(ExceptionMessages.NAME_ALREADY_IN_USE.message.formatted(teamName));
 
         var savedTeam = teamRepository.save(teamMapper.toNewTeam(teamDto));
         return savedTeam;
@@ -96,6 +103,8 @@ public class TeamService {
      * @param id Identificador único da equipe a ser removida.
      */
     public void deleteTeamById(Long id) {
+
+        this.findTeamById(id);
         teamRepository.deleteById(id);
     }
 
@@ -107,15 +116,22 @@ public class TeamService {
      * @param teamDto DTO do tipo {@link TeamDto} contendo dados atualizados da equipe.
      * @return A equipe atualizada.
      * @throws NotFoundException Se nenhuma equipe correspondente ao ID fornecido for encontrada.
+     * @throws BadRequestException Caso o nome da equipe passado pelo DTO já esteja em uso.
      */
     public Team replaceTeam(Long id, TeamDto teamDto) {
 
-        this.findTeamById(id);
+        var originalTeamName = findTeamById(id).getName();
+        var newName = teamDto.teamName().value;
+        var teamWithSameName = teamRepository.findByName(newName);
 
-        var team = teamMapper.toExistingTeam(id, teamDto);
-        var updatedTeam = teamRepository.save(team);
+        if (originalTeamName.equals(newName) || teamWithSameName.isEmpty()) {
 
-        return updatedTeam;
+            var team = teamMapper.toExistingTeam(id, teamDto);
+            var updatedTeam = teamRepository.save(team);
+
+            return updatedTeam;
+        }
+        throw new BadRequestException(ExceptionMessages.NAME_ALREADY_IN_USE.message.formatted(newName));
     }
 
 }

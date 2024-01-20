@@ -28,7 +28,7 @@ class TeamMapperTest {
 
         existingTeam = Team.builder()
                 .id(1L)
-                .name(TeamName.PAPA_LEGUAS.name)
+                .name(TeamName.PAPA_LEGUAS.value)
                 .points(1500)
                 .build();
     }
@@ -39,7 +39,7 @@ class TeamMapperTest {
 
         var team = teamMapper.toNewTeam(teamDtoA);
 
-        assertThat(team.getName()).isEqualTo(teamDtoA.teamName().name);
+        assertThat(team.getName()).isEqualTo(teamDtoA.teamName().value);
     }
 
     @Test

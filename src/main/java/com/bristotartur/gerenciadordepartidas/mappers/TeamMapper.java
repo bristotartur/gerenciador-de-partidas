@@ -23,7 +23,7 @@ public interface TeamMapper {
      * @return Uma nova instância do tipo {@link Team} com base nos dados fornecidos.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "name", source = "teamDto.teamName.name")
+    @Mapping(target = "name", source = "teamDto.teamName.value")
     @Mapping(target = "points", constant = "0")
     @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
@@ -39,7 +39,7 @@ public interface TeamMapper {
      * @return Uma nova instância do tipo {@link Team} com seus valores atualizados.
      */
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "teamDto.teamName.name")
+    @Mapping(target = "name", source = "teamDto.teamName.value")
     @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)

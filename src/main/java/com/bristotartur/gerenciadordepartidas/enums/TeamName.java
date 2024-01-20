@@ -1,21 +1,27 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Enumeração contendo os nomes das equipes. Este enum possui métodos para resgatar nomes de equipes
+ * com base em critérios específicos, como curso.
+ */
 @RequiredArgsConstructor
 public enum TeamName {
-    ATOMICA("atômica"),
-    MESTRES_DE_OBRAS("mestres de obras"),
-    PAPA_LEGUAS("papa-léguas"),
-    TWISTER("twister"),
-    UNICONTTI("unicontti");
+    ATOMICA("Atômica"),
+    MESTRES_DE_OBRAS("Mestres de obras"),
+    PAPA_LEGUAS("Papa-Léguas"),
+    TWISTER("Twister"),
+    UNICONTTI("Unicontti");
 
-    public final String name;
+    /**
+     * Valor interno das opções deste enum.
+     */
+    public final String value;
     private static Map<Integer, TeamName> courseTeamMap = new HashMap<>();
 
     static {

@@ -101,6 +101,7 @@ public class TeamService {
      * Remove uma equipe do sistema com base em seu ID.
      *
      * @param id Identificador único da equipe a ser removida.
+     * @throws NotFoundException Se nenhuma equipe correspondente ao ID fornecido for encontrada.
      */
     public void deleteTeamById(Long id) {
 

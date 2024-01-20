@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Participant},
@@ -78,8 +77,11 @@ public class ParticipantService {
      * Remove um participante do banco de dados com base no seu ID.
      *
      * @param id Identificador único do participante.
+     * @throws NotFoundException caso o ID fornecido não corresponda a nenhum participante.
      */
     public void deleteParticipantById(Long id) {
+
+        this.findParticipantById(id);
         participantRepository.deleteById(id);
     }
 
@@ -110,7 +112,6 @@ public class ParticipantService {
      * Verifica se o número da turma de um participante é válido e o reformata caso necessário.
      *
      * @param participant O participante contendo o número da turma.
-     * @return O número da turma reformatado.
      * @throws BadRequestException Caso o número da turma do participante seja inválido.
      */
     private void reformatClassNumber(Participant participant) {

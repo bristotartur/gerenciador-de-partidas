@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 public enum ExceptionMessages {
     TEAM_NOT_FOUND("Equipe não encontrada."),
     INVALID_TEAMS_FOR_MATCH("Uma partida não pode ter duas equipes iguais."),
+    NAME_ALREADY_IN_USE("O nome '%s' já está em uso."),
     INVALID_CLASS_NUMBER("Número de turma inválido."),
     PARTICIPANT_NOT_FOUND("Participante não encontrado."),
     PARTICIPANT_INVALID_FOR_MATCH("Participante com id '%d' não pertence a nenhuma equipe da partida."),

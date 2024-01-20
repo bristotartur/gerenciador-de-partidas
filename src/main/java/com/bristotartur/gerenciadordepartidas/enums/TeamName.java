@@ -13,7 +13,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public enum TeamName {
     ATOMICA("Atômica"),
-    MESTRES_DE_OBRAS("Mestres de obras"),
+    MESTRES_DE_OBRAS("Mestres de Obras"),
     PAPA_LEGUAS("Papa-Léguas"),
     TWISTER("Twister"),
     UNICONTTI("Unicontti");
@@ -43,14 +43,14 @@ public enum TeamName {
      *
      * <p>As equipes relacionadas a cada curso são, respectivamente: </p>
      * <ol>
-     *     <li>Administração: Twister</li>
-     *     <li>Alimentos: Atômica</li>
-     *     <li>Comércio: Unicontti</li>
-     *     <li>Edificações: Mestres de Obras</li>
-     *     <li>Informática: Papa-Léguas</li>
-     *     <li>Química: Atômica</li>
-     *     <li>Ciêcia de Dados: Papa-Léguas</li>
-     *     <li>Marketing: Unicontti</li>
+     *     <li>Administração: Twister.</li>
+     *     <li>Alimentos: Atômica.</li>
+     *     <li>Comércio: Unicontti.</li>
+     *     <li>Edificações: Mestres de Obras.</li>
+     *     <li>Informática: Papa-Léguas.</li>
+     *     <li>Química: Atômica.</li>
+     *     <li>Ciêcia de Dados: Papa-Léguas.</li>
+     *     <li>Marketing: Unicontti.</li>
      * </ol>
      *
      * @param classNumber O número da turma contendo o número do curso.

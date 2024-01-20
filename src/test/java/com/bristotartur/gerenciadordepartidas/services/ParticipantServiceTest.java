@@ -1,11 +1,14 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.ParticipantRepository;
+import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.createNewTeam;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,39 +30,23 @@ class ParticipantServiceTest {
     private EntityManager entityManager;
     @Autowired
     private ParticipantRepository participantRepository;
+    private Team team;
 
-    private Participant createNewParticipant(String classNumber) {
-
-        return Participant.builder()
-                .name("sa")
-                .classNumber(classNumber)
-                .team(createNewTeam(entityManager))
-                .build();
-    }
-
-    private ParticipantDto createNewParticipantDto(String classNumber) {
-
-        var team = createNewTeam(entityManager);
-
-        return ParticipantDto.builder()
-                .name("foo")
-                .classNumber(classNumber)
-                .teamId(team.getId())
-                .build();
+    @BeforeEach
+    void setUp() {
+        team = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
     }
 
     @Test
     @DisplayName("Should retrieve all Participants from repository when searching for all Participants")
     void Should_RetrieveAllParticipantsFromRepository_When_SearchingForAllParticipants() {
 
-        List<Participant> existingParticipants = List.of(
-                createNewParticipant("1-53"),
-                createNewParticipant("2-53"),
-                createNewParticipant("3-53"));
+        var existingParticipants = List.of(
+                ParticipantTestUtil.createNewParticipant("1-53", team, entityManager),
+                ParticipantTestUtil.createNewParticipant("2-53", team, entityManager),
+                ParticipantTestUtil.createNewParticipant("3-53", team, entityManager));
 
-        existingParticipants.forEach(participant -> entityManager.merge(participant));
-
-        List<Participant> participantList = participantService.findAllParticipants();
+        var participantList = participantService.findAllParticipants();
 
         assertEquals(existingParticipants, participantList);
     }
@@ -69,24 +55,29 @@ class ParticipantServiceTest {
     @DisplayName("Should find Participant when existing Participant ID is passed to search")
     void Should_FindParticipant_When_ExistingParticipantIdIsPassedToSearch() {
 
-        var existingParticipant = createNewParticipant("3-53");
+        var participant = ParticipantTestUtil.createNewParticipant("3-53", team, entityManager);
 
-        entityManager.merge(existingParticipant);
+        var existingId = participant.getId();
+        var result = participantService.findParticipantById(existingId);
 
-        var existingId = existingParticipant.getId();
-        var participant = participantService.findParticipantById(existingId);
-
-        assertEquals(participant, existingParticipant);
+        assertEquals(result, participant);
     }
 
     @Test
-    @DisplayName("Should throw NotFoundException when non existing Participant ID is passed to search")
-    void Should_ThrowNotFoundException_When_NonExistingParticipantIdIsPassedToSearch() {
+    @DisplayName("Should throw NotFoundException when non existing Participant ID is passed to any method")
+    void Should_ThrowNotFoundException_When_NonExistingParticipantIdIsPassedToAnyMethod() {
 
         var id = getRandomLongId();
+        var participantDto = ParticipantTestUtil.createNewParticipantDto("2-14", getRandomLongId());
 
         assertThrows(NotFoundException.class, () -> {
             participantService.findParticipantById(id);
+        });
+        assertThrows(NotFoundException.class, () -> {
+           participantService.deleteParticipantById(id);
+        });
+        assertThrows(NotFoundException.class, () -> {
+            participantService.replaceParticipant(id, participantDto);
         });
     }
 
@@ -94,72 +85,53 @@ class ParticipantServiceTest {
     @DisplayName("Should save Participant when valid ParticipantDto is passed to save")
     void Should_SaveParticipant_When_ValidParticipantDtoIsPassedToSave() {
 
-        var participantDto = createNewParticipantDto("2-53");
-        var savedId = participantService.saveParticipant(participantDto).getId();
+        var participantDto = ParticipantTestUtil.createNewParticipantDto("2-53", team.getId());
+        var result = participantService.saveParticipant(participantDto);
 
-        var savedParticipant = participantRepository.findById(savedId).get();
-
-        assertNotNull(savedParticipant);
+        assertEquals(result, participantRepository.findById(result.getId()).get());
     }
 
     @Test
     @DisplayName("Should delete Participant from database when Participant ID is passed to delete")
     void Should_DeleteParticipantFromDatabase_When_ParticipantIdIsPassedToDelete() {
 
-        var existingParticipant = createNewParticipant("3-54");
+        var participant = ParticipantTestUtil.createNewParticipant("3-54", team, entityManager);
+        participantService.deleteParticipantById(participant.getId());
 
-        entityManager.merge(existingParticipant);
-
-        var existingId = existingParticipant.getId();
-        participantService.deleteParticipantById(existingId);
-
-        assertTrue(participantRepository.findById(existingId).isEmpty());
+        assertTrue(participantRepository.findById(participant.getId()).isEmpty());
     }
 
     @Test
     @DisplayName("Should update Participant when ParticipantDto with new values is passed")
     void Should_UpdateParticipant_When_ParticipantDtoWithNewValuesIsPassed() {
 
-        var existingParticipant = createNewParticipant("2-81");
+        var participant = ParticipantTestUtil.createNewParticipant("3-54", team, entityManager);
 
-        entityManager.merge(existingParticipant);
+        var newTeam = TeamTestUtil.createNewTeam(TeamName.UNICONTTI, entityManager);
+        var participantDto = ParticipantTestUtil.createNewParticipantDto("2-31", newTeam.getId());
 
-        var existingId = existingParticipant.getId();
-        var participantDto = createNewParticipantDto("2-61");
+        var result = participantService.replaceParticipant(participant.getId(), participantDto);
 
-        var updatedParticipant = participantService.replaceParticipant(existingId, participantDto);
-
-        assertNotNull(updatedParticipant);
-        assertNotEquals(existingParticipant, updatedParticipant);
+        assertNotEquals(result, participant);
     }
 
     @Test
-    @DisplayName("Should throw NotFoundException when non existing ID is passed to replace Participant")
-    void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplaceParticipant() {
-
-        var id = getRandomLongId();
-        var participantDto = createNewParticipantDto("2-14");
-
-        assertThrows(NotFoundException.class, () -> {
-            participantService.replaceParticipant(id, participantDto);
-        });
-    }
-
-    @Test
-    void Should_FormatClassNumber_When_ValidClassNumberIsPassed() {
+    @DisplayName("Should reformat class number when valid class number is passed")
+    void Should_ReformatClassNumber_When_ValidClassNumberIsPassed() {
 
         var expectClassNumber = "2-61";
-        var participantDto = createNewParticipantDto("261");
+        var participantDto = ParticipantTestUtil.createNewParticipantDto("261", team.getId());
 
-        var participant = participantService.saveParticipant(participantDto);
+        var result = participantService.saveParticipant(participantDto);
 
-        assertEquals(participant.getClassNumber(), expectClassNumber);
+        assertEquals(result.getClassNumber(), expectClassNumber);
     }
 
     @Test
+    @DisplayName("Should throw BadRequestException when invalid class number is passed")
     void Should_ThrowBadRequestException_When_InvalidClassNumberIsPassed() {
 
-        var participantDto = createNewParticipantDto("4-61");
+        var participantDto = ParticipantTestUtil.createNewParticipantDto("4-61", team.getId());
 
         assertThrows(BadRequestException.class, () -> {
             participantService.saveParticipant(participantDto);

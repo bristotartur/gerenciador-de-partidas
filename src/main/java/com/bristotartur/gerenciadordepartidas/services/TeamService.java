@@ -74,8 +74,8 @@ public class TeamService {
      */
     public List<Participant> findAllTeamMembers(Long id) {
 
-        var team = findTeamById(id);
-        return team.getMembers();
+        this.findTeamById(id);
+        return teamRepository.findTeamMembers(id);
     }
 
     /**

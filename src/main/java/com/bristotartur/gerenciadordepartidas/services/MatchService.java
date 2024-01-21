@@ -85,6 +85,7 @@ public class MatchService {
      * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida a ser salva.
      * @return A partida recém-salva.
      * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link MatchDto}.
+     * @throws BadRequestException Caso a seleção das equipes ou jogadores seja irregular.
      */
     public Match saveMatch(MatchDto matchDto) {
 
@@ -108,8 +109,11 @@ public class MatchService {
      * Remove uma partida do banco de dados com base no seu ID.
      *
      * @param id Identificador único da partida.
+     * @throws NotFoundException Caso nenhuma partida correspondente ao ID seja encontrada.
      */
     public void deleteMatchById(Long id) {
+
+        this.findMatchById(id);
         matchRepository.deleteById(id);
     }
 
@@ -123,6 +127,7 @@ public class MatchService {
      * @return A partida atualizada.
      * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada ou
      * alguma entidade não corresponda aos IDs fornecidos por {@link MatchDto}.
+     * @throws BadRequestException Caso a seleção das equipes ou jogadores seja irregular.
      */
     public Match replaceMatch(Long id, MatchDto matchDto) {
 

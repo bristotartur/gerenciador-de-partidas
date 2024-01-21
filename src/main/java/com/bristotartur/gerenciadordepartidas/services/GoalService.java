@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -81,6 +81,7 @@ public class GoalService {
      * estava associado terá seu placar alterado.
      *
      * @param id Identificador único do gol.
+     * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado.
      */
     public void deleteGoalById(Long id) {
 

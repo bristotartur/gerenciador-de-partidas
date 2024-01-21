@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
+import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import jakarta.persistence.EntityManager;
 
 import java.time.LocalTime;
@@ -61,12 +62,13 @@ public final class GoalTestUtil {
      * @param matchId Identificador único da partida em que o gol ocorreu.
      * @return Uma nova instância de {@link GoalDto} com os dados passados.
      */
-    public static GoalDto createNewGoalDto(Long playerId, Long matchId) {
+    public static GoalDto createNewGoalDto(Long playerId, Long matchId, Sports sport) {
 
         return GoalDto.builder()
                 .goalTime(LocalTime.now())
                 .playerId(playerId)
                 .matchId(matchId)
+                .sport(sport)
                 .build();
     }
 

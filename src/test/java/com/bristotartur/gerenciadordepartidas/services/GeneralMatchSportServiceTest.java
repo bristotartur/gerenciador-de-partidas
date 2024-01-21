@@ -69,7 +69,7 @@ class GeneralMatchSportServiceTest {
             assertInstanceOf(FutsalMatch.class, r);
         }
     }
-    
+
     @Test
     @DisplayName("Should save Match of an specific sport when new Match is passed to save")
     void Should_SaveMatchOfAnSpecifSport_When_NewMatchIsPassedToSave() {

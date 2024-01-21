@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -57,8 +58,7 @@ public class GeneralMatchSportService {
      * @param id O ID único de {@link Match}.
      * @param sport Tipo de esporte associado à {@link Match}.
      * @return A instância correspondente de {@link Match}.
-     * @throws com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException Se nenhum {@link Match}
-     * correspondente ao ID for encontrado.
+     * @throws NotFoundException Se nenhuma partida correspondente ao ID ou esporte fornecido for encontrada.
      * @throws BadRequestException Se o tipo de esporte fornecido for nulo.
      */
     public Match findMatch(Long id, Sports sport) {
@@ -73,8 +73,7 @@ public class GeneralMatchSportService {
      * @param id Identificador único de {@link Match}.
      * @param sport Tipo de esporte associado à {@link Match}.
      * @return A instância correspondente de {@link Match}.
-     * @throws com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException Se nenhum {@link Match}
-     * correspondente ao ID for encontrado.
+     * @throws NotFoundException Se nenhuma partida correspondente ao ID ou esporte fornecido for encontrada.
      * @throws BadRequestException Se o tipo de esporte não suportar a operação relacionada a gols.
      */
     public Match findMatchForGoal(Long id, Sports sport) {
@@ -94,8 +93,7 @@ public class GeneralMatchSportService {
      * @param id Identificador único de {@link Match}.
      * @param sport Tipo de esporte associado à {@link Match}.
      * @return A instância correspondente de {@link Match}.
-     * @throws com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException Se nenhum {@link Match}
-     * correspondente ao ID for encontrado.
+     * @throws NotFoundException Se nenhuma partida correspondente ao ID ou esporte fornecido for encontrada.
      * @throws BadRequestException Se o tipo de esporte não suportar a operação relacionada a cartões de penalidade.
      */
     public Match findMatchForCard(Long id, Sports sport) {

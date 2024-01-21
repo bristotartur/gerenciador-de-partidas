@@ -55,7 +55,7 @@ public final class ParticipantTestUtil {
      * Gera uma nova instância de {@link ParticipantDto}.
      *
      * @param classNumber O número da turma do participante.
-     * @param team A equipe associada ao participante.
+     * @param teamId Identificador único equipe associada ao participante.
      * @return uma nova instância de {@link ParticipantDto}.
      */
     public static ParticipantDto createNewParticipantDto(String classNumber, Long teamId) {

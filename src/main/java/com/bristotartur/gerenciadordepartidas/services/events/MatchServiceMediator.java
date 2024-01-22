@@ -17,7 +17,7 @@ import java.util.List;
  * de {@link Match}, encontrar detalhes específicos de uma partida, como partidas relacionadas a gols ou cartões,
  * e manipular operações gerais associadas a serviços de MatchSport. <br> <br>
  *
- * Ela utiliza uma fábrica, {@link MatchSportServiceFactory}, para criar dinamicamente serviços especializados com
+ * Ela utiliza uma fábrica, {@link MatchServiceFactory}, para criar dinamicamente serviços especializados com
  * base no tipo de esporte fornecido.
  *
  * @see MatchStrategy
@@ -36,7 +36,7 @@ public class MatchServiceMediator {
      */
     public List<? extends Match> findMatchesBySport(Sports sport) {
 
-        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
+        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
         return service.findAll();
     }
 
@@ -51,7 +51,7 @@ public class MatchServiceMediator {
      */
     public Match findMatch(Long id, Sports sport) {
 
-        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
+        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
         return service.findMatchById(id);
     }
 
@@ -63,7 +63,7 @@ public class MatchServiceMediator {
      */
     public Match saveMatch(Match match, Sports sport) {
 
-        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
+        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
         return service.saveMatch(match);
     }
 
@@ -78,7 +78,7 @@ public class MatchServiceMediator {
      */
     public Match findMatchForGoal(Long id, Sports sport) {
 
-        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
+        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
 
         if (sport.equals(Sports.FUTSAL) || sport.equals(Sports.HANDBALL))
             return service.findMatchById(id);
@@ -98,7 +98,7 @@ public class MatchServiceMediator {
      */
     public Match findMatchForCard(Long id, Sports sport) {
 
-        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
+        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
         Match match;
 
         switch (sport) {

@@ -17,8 +17,8 @@ import java.util.List;
  * relacionados à especialização de {@link ChessMatch}.
  *
  * @see ChessMatchRepository
- * @see MatchSportServiceFactory
- * @see GeneralMatchSportService
+ * @see MatchServiceFactory
+ * @see MatchServiceMediator
  */
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
      * Busca uma partida de xadrez pelo seu ID.
      *
      * @param id Identificador único da partida de xadrez.
-     * @return Uma instância de {@link Match} correspondente ao ID fornecido.
+     * @return Uma instância de {@link ChessMatch} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de xadrez correspondente ao ID for encontrada.
      */
     @Override
@@ -53,7 +53,7 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
     /**
      * Cria uma nova instância de {@link Match} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
+     * @return Uma nova instância de {@link ChessMatch} criada e salva no banco de dados.
      */
     @Override
     public ChessMatch saveMatch(Match match) {

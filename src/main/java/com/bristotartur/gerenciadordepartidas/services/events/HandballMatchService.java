@@ -17,8 +17,8 @@ import java.util.List;
  * relacionados à especialização de {@link HandballMatch}.
  *
  * @see HandballMatchRepository
- * @see MatchSportServiceFactory
- * @see GeneralMatchSportService
+ * @see MatchServiceFactory
+ * @see MatchServiceMediator
  */
 @Service
 @RequiredArgsConstructor
@@ -51,9 +51,9 @@ public class HandballMatchService implements MatchStrategy<HandballMatch> {
     }
 
     /**
-     * Cria uma nova instância de {@link Match} e a persiste no banco de dados.
+     * Cria uma nova instância de {@link HandballMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
+     * @return Uma nova instância de {@link HandballMatch} criada e salva no banco de dados.
      */
     @Override
     public HandballMatch saveMatch(Match match) {

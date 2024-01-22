@@ -17,8 +17,8 @@ import java.util.List;
  * relacionados à especialização de {@link FutsalMatch}.
  *
  * @see FutsalMatchRepository
- * @see MatchSportServiceFactory
- * @see GeneralMatchSportService
+ * @see MatchServiceFactory
+ * @see MatchServiceMediator
  */
 @Service
 @RequiredArgsConstructor
@@ -51,9 +51,9 @@ public class FutsalMatchService implements MatchStrategy<FutsalMatch> {
     }
 
     /**
-     * Cria uma nova instância de {@link Match} e a persiste no banco de dados.
+     * Cria uma nova instância de {@link FutsalMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
+     * @return Uma nova instância de {@link FutsalMatch} criada e salva no banco de dados.
      */
     @Override
     public FutsalMatch saveMatch(Match match) {

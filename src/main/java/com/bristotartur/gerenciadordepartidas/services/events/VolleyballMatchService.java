@@ -17,8 +17,8 @@ import java.util.List;
  * relacionados à especialização de {@link VolleyballMatch}.
  *
  * @see VolleyballMatchRepository
- * @see MatchSportServiceFactory
- * @see GeneralMatchSportService
+ * @see MatchServiceFactory
+ * @see MatchServiceMediator
  */
 @Service
 @AllArgsConstructor
@@ -40,7 +40,7 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
      * Busca uma partida de vôlei pelo seu ID.
      *
      * @param id Identificador único da partida de vôlei.
-     * @return Uma instância de {@link Match} correspondente ao ID fornecido.
+     * @return Uma instância de {@link VolleyballMatch} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de vôlei correspondente ao ID for encontrada.
      */
     @Override
@@ -51,9 +51,9 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
     }
 
     /**
-     * Cria uma nova instância de {@link Match} e a persiste no banco de dados.
+     * Cria uma nova instância de {@link VolleyballMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
+     * @return Uma nova instância de {@link VolleyballMatch} criada e salva no banco de dados.
      */
     @Override
     public VolleyballMatch saveMatch(Match match) {

@@ -17,8 +17,8 @@ import java.util.List;
  * relacionados à especialização de {@link BasketballMatch}.
  *
  * @see BasketballMatchRepository
- * @see MatchSportServiceFactory
- * @see GeneralMatchSportService
+ * @see MatchServiceFactory
+ * @see MatchServiceMediator
  */
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
      * Busca uma partida de basquete pelo seu ID.
      *
      * @param id Identificador único da partida de basquete.
-     * @return Uma instância de {@link Match} correspondente ao ID fornecido.
+     * @return Uma instância de {@link BasketballMatch} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de basquete correspondente ao ID for encontrada.
      */
     @Override
@@ -51,9 +51,9 @@ public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
     }
 
     /**
-     * Cria uma nova instância de {@link Match} e a persiste no banco de dados.
+     * Cria uma nova instância de {@link BasketballMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
+     * @return Uma nova instância de {@link BasketballMatch} criada e salva no banco de dados.
      */
     @Override
     public BasketballMatch saveMatch(Match match) {

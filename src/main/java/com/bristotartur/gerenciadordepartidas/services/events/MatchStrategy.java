@@ -9,8 +9,8 @@ import java.util.List;
  * uma abstração padronizada para gerenciar comportamentos comuns esperados destas
  * implementações, tornando seu uso mais prático e consistente.
  *
- * @see GeneralMatchSportService
- * @see MatchSportServiceFactory
+ * @see MatchServiceMediator
+ * @see MatchServiceFactory
  * @param <T> Especifica com qual especialização de {@link Match} a estratégia irá lidar.
  */
 public interface MatchStrategy<T extends Match> {

@@ -17,8 +17,8 @@ import java.util.List;
  * relacionados à especialização de {@link TableTennisMatch}.
  *
  * @see TableTennisMatchRepository
- * @see MatchSportServiceFactory
- * @see GeneralMatchSportService
+ * @see MatchServiceFactory
+ * @see MatchServiceMediator
  */
 @Service
 @AllArgsConstructor
@@ -40,7 +40,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
      * Busca uma partida de tênis de mesa pelo seu ID.
      *
      * @param id Identificador único da partida de tênis de mesa.
-     * @return Uma instância de {@link Match} correspondente ao ID fornecido.
+     * @return Uma instância de {@link TableTennisMatch} correspondente ao ID fornecido.
      * @throws NotFoundException Se nenhuma partida de tênis de mesa correspondente ao ID for encontrada.
      */
     @Override
@@ -52,9 +52,9 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
     }
 
     /**
-     * Cria uma nova instância de {@link Match} e a persiste no banco de dados.
+     * Cria uma nova instância de {@link TableTennisMatch} e a persiste no banco de dados.
      *
-     * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
+     * @return Uma nova instância de {@link TableTennisMatch} criada e salva no banco de dados.
      */
     @Override
     public TableTennisMatch saveMatch(Match match) {

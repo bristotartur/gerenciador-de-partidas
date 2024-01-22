@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.domain.structure;
+package com.bristotartur.gerenciadordepartidas.domain.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("FUTSAL")
-@JsonTypeName("FUTSAL")
+@DiscriminatorValue("HANDBALL")
+@JsonTypeName("HANDBALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
-public class FutsalMatch extends Match {
+public class HandballMatch extends Match {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)

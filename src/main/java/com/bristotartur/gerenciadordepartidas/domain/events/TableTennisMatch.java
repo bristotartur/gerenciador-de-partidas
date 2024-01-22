@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.domain.structure;
+package com.bristotartur.gerenciadordepartidas.domain.events;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.DiscriminatorValue;
@@ -8,11 +8,11 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@DiscriminatorValue("CHESS")
-@JsonTypeName("CHESS")
+@DiscriminatorValue("TABLE TENNIS")
+@JsonTypeName("TABLE TENNIS")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
-public class ChessMatch extends Match {
+public class TableTennisMatch extends Match {
 
 }

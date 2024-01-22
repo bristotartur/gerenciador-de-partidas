@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
@@ -186,11 +187,11 @@ class MatchServiceTest {
     void Should_DeleteMatchFromDatabase_When_MatchIdIsPassedToDelete() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.CHESS);
+        var chessMatch = generalMatchSportService.saveMatch(match, Sports.CHESS);
 
-        matchService.deleteMatchById(futsalMatch.getId());
+        matchService.deleteMatchById(chessMatch.getId());
 
-        assertTrue(matchRepository.findById(futsalMatch.getId()).isEmpty());
+        assertTrue(matchRepository.findById(chessMatch.getId()).isEmpty());
     }
 
     @Test
@@ -234,6 +235,20 @@ class MatchServiceTest {
         assertThrows(BadRequestException.class, () -> {
             matchService.replaceMatch(volleyballMatch.getId(), matchDto);
         });
+    }
+
+    @Test
+    @DisplayName("Should convert Match to ExposingMatchDto when Match is passed to convert")
+    void Should_ConvertMatchToExposingMatchDto_When_MatchIsPassedToConvert() {
+
+        var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MASCULINE);
+        var tableTennisMatch = generalMatchSportService.saveMatch(match, Sports.TABLE_TENNIS);
+
+        var result = matchService.createExposingMatchDto(tableTennisMatch);
+
+        assertInstanceOf(ExposingMatchDto.class, result);
+        assertEquals(result.getTeamA(), teamA.getName());
+        assertEquals(result.getTeamB(), teamB.getName());
     }
 
 }

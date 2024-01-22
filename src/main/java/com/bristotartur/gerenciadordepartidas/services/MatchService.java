@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -166,6 +167,18 @@ public class MatchService {
 
         var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
         return generalMatchSportService.saveMatch(match, matchDto.sport());
+    }
+
+    /**
+     * Gera um DTO do tipo {@link ExposingMatchDto} com base na partida fornecida.
+     *
+     * @param match Partida que terá seus dados mapeados para o DTO.
+     * @return Nova instância de {@link ExposingMatchDto} contendo os dados fornecidos.
+     */
+    public ExposingMatchDto createExposingMatchDto(Match match) {
+
+        var sport = findMatchSportById(match.getId());
+        return matchMapper.toNewExposingMatchDto(match, sport);
     }
 
     /**

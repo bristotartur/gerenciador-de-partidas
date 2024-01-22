@@ -115,11 +115,27 @@ class MatchServiceTest {
             matchService.findMatchById(id);
         });
         assertThrows(NotFoundException.class, () -> {
+            matchService.findMatchSportById(id);
+        });
+        assertThrows(NotFoundException.class, () -> {
             matchService.deleteMatchById(id);
         });
         assertThrows(NotFoundException.class, () -> {
             matchService.replaceMatch(id, matchDto);
         });
+    }
+
+    @Test
+    @DisplayName("Should find Match sport when Searching for Match sport")
+    void Should_FindMatchSport_When_SearchingForMatchSport() {
+
+        var sport = Sports.CHESS;
+        var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
+        var chessMatch = generalMatchSportService.saveMatch(match, sport);
+
+        var result = matchService.findMatchSportById(chessMatch.getId());
+
+        assertEquals(sport.name(), result);
     }
 
     @Test
@@ -149,8 +165,8 @@ class MatchServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when MatchDto with two equal team IDs is passed")
-    void Should_ThrowBadRequestException_When_MatchDtoWithTwoEqualTeamIdsIsPassed() {
+    @DisplayName("Should throw BadRequestException when MatchDto with two equal teams is passed")
+    void Should_ThrowBadRequestException_When_MatchDtoWithTwoEqualTeamsIsPassed() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);

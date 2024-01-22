@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class GeneralMatchSportServiceTest {
+class MatchServiceMediatorTest {
 
     @Autowired
     private MatchServiceMediator matchServiceMediator;
@@ -59,12 +59,12 @@ class GeneralMatchSportServiceTest {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var matches = List.of(
-                generalMatchSportService.saveMatch(match, Sports.FUTSAL),
-                generalMatchSportService.saveMatch(match, Sports.FUTSAL),
-                generalMatchSportService.saveMatch(match, Sports.HANDBALL));
+                matchServiceMediator.saveMatch(match, Sports.FUTSAL),
+                matchServiceMediator.saveMatch(match, Sports.FUTSAL),
+                matchServiceMediator.saveMatch(match, Sports.HANDBALL));
 
 
-        var result = generalMatchSportService.findMatchesBySport(Sports.FUTSAL);
+        var result = matchServiceMediator.findMatchesBySport(Sports.FUTSAL);
 
         for (Match r : result) {
             assertInstanceOf(FutsalMatch.class, r);
@@ -76,7 +76,7 @@ class GeneralMatchSportServiceTest {
     void Should_SaveMatchOfAnSpecifSport_When_NewMatchIsPassedToSave() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var result = generalMatchSportService.saveMatch(match, Sports.CHESS);
+        var result = matchServiceMediator.saveMatch(match, Sports.CHESS);
 
         assertEquals(result, matchRepository.findById(result.getId()).get());
         assertInstanceOf(ChessMatch.class, result);
@@ -87,9 +87,9 @@ class GeneralMatchSportServiceTest {
     void Should_FindMatch_When_ExistingMatchIdIsPassedToSearch() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.TABLE_TENNIS);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.TABLE_TENNIS);
 
-        var result = generalMatchSportService.findMatch(futsalMatch.getId(), Sports.TABLE_TENNIS);
+        var result = matchServiceMediator.findMatch(futsalMatch.getId(), Sports.TABLE_TENNIS);
 
         assertEquals(result, futsalMatch);
     }
@@ -101,13 +101,13 @@ class GeneralMatchSportServiceTest {
         var randomId = getRandomLongId();
 
         assertThrows(NotFoundException.class, () -> {
-            generalMatchSportService.findMatch(randomId, Sports.FUTSAL);
+            matchServiceMediator.findMatch(randomId, Sports.FUTSAL);
         });
         assertThrows(NotFoundException.class, () -> {
-            generalMatchSportService.findMatchForGoal(randomId, Sports.FUTSAL);
+            matchServiceMediator.findMatchForGoal(randomId, Sports.FUTSAL);
         });
         assertThrows(NotFoundException.class, () -> {
-            generalMatchSportService.findMatchForCard(randomId, Sports.HANDBALL);
+            matchServiceMediator.findMatchForCard(randomId, Sports.HANDBALL);
         });
     }
 
@@ -116,16 +116,16 @@ class GeneralMatchSportServiceTest {
     void Should_ThrowNotFoundException_When_ExistingIdWithInvalidSportIsPassedToSearchAnySearch() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
         assertThrows(NotFoundException.class, () -> {
-            generalMatchSportService.findMatch(futsalMatch.getId(), Sports.CHESS);
+            matchServiceMediator.findMatch(futsalMatch.getId(), Sports.CHESS);
         });
         assertThrows(NotFoundException.class, () -> {
-            generalMatchSportService.findMatchForGoal(futsalMatch.getId(), Sports.HANDBALL);
+            matchServiceMediator.findMatchForGoal(futsalMatch.getId(), Sports.HANDBALL);
         });
         assertThrows(NotFoundException.class, () -> {
-            generalMatchSportService.findMatchForCard(futsalMatch.getId(), Sports.BASKETBALL);
+            matchServiceMediator.findMatchForCard(futsalMatch.getId(), Sports.BASKETBALL);
         });
     }
 
@@ -134,9 +134,9 @@ class GeneralMatchSportServiceTest {
     void Should_FindMatchFotGoal_When_ValidArgumentIsPassed() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
-        var result = generalMatchSportService.findMatchForGoal(futsalMatch.getId(), Sports.FUTSAL);
+        var result = matchServiceMediator.findMatchForGoal(futsalMatch.getId(), Sports.FUTSAL);
 
         assertEquals(result, futsalMatch);
     }
@@ -146,9 +146,9 @@ class GeneralMatchSportServiceTest {
     void Should_FindMatchSportForPenaltyCard_When_ValidArgumentIsPassed() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var handballMatch = generalMatchSportService.saveMatch(match, Sports.HANDBALL);
+        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
 
-        var result = generalMatchSportService.findMatchForGoal(handballMatch.getId(), Sports.HANDBALL);
+        var result = matchServiceMediator.findMatchForGoal(handballMatch.getId(), Sports.HANDBALL);
 
         assertEquals(result, handballMatch);
     }
@@ -160,10 +160,10 @@ class GeneralMatchSportServiceTest {
         var randomId = getRandomLongId();
 
         assertThrows(BadRequestException.class, () -> {
-            generalMatchSportService.findMatchForGoal(randomId, Sports.CHESS);
+            matchServiceMediator.findMatchForGoal(randomId, Sports.CHESS);
         });
         assertThrows(BadRequestException.class, () -> {
-            generalMatchSportService.findMatchForCard(randomId, Sports.CHESS);
+            matchServiceMediator.findMatchForCard(randomId, Sports.CHESS);
         });
     }
 

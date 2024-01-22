@@ -41,18 +41,6 @@ public class GeneralMatchSportService {
     }
 
     /**
-     * Cria uma nova instância de {@link Match} especializada em um esporte específico.
-     *
-     * @param sport Tipo de esporte na qual a instância de {@link Match} será especializada.
-     * @return Uma nova instância de {@link Match} baseada no tipo de esporte fornecido.
-     */
-    public Match saveMatch(Match match, Sports sport) {
-
-        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
-        return service.saveMatch(match);
-    }
-
-    /**
      * Encontra uma instância de {@link Match} com base no seu ID e tipo de esporte.
      *
      * @param id O ID único de {@link Match}.
@@ -65,6 +53,18 @@ public class GeneralMatchSportService {
 
         MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
         return service.findMatchById(id);
+    }
+
+    /**
+     * Cria uma nova instância de {@link Match} especializada em um esporte específico.
+     *
+     * @param sport Tipo de esporte na qual a instância de {@link Match} será especializada.
+     * @return Uma nova instância de {@link Match} baseada no tipo de esporte fornecido.
+     */
+    public Match saveMatch(Match match, Sports sport) {
+
+        MatchStrategy service = MatchSportServiceFactory.newMatchSportService(sport, context);
+        return service.saveMatch(match);
     }
 
     /**

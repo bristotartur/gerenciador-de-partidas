@@ -151,7 +151,7 @@ public class MatchService {
      */
     public Match replaceMatch(Long id, MatchDto matchDto) {
 
-        this.findMatchById(id);
+        var existingMatch = findMatchById(id);
 
         if (matchDto.teamAId() == matchDto.teamBId())
             throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
@@ -166,6 +166,9 @@ public class MatchService {
         this.checkPlayers(players, matchDto);
 
         var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
+        
+        match.setTeamScoreA(existingMatch.getTeamScoreA());
+        match.setTeamScoreB(existingMatch.getTeamScoreB());
         return generalMatchSportService.saveMatch(match, matchDto.sport());
     }
 

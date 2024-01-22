@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,16 +12,16 @@ import java.util.List;
 
 /**
  * Interface responsável por gerar o mapeamento de dados relativos a entidade {@link Match}
- * para uma instância concreta da mesma.
+ * para novas instâncias da mesma e para DTOs.
  *
  * @see MatchDto
+ * @see ExposingMatchDto
  */
 @Mapper(componentModel = "spring")
 public interface MatchMapper {
 
     /**
-     * Gera uma nova instância de {@link Match} com base nos dados fornecidos. Os valores relacionados
-     * a pontuação de cada equipe na partida serão sempre 0, mesmo que algum outro valor seja passado.
+     * Gera uma nova instância de {@link Match} com base nos dados fornecidos.
      *
      * @param goalDto DTO do tipo {@link MatchDto} contendo os dados e metadados da nova partida.
      * @param players Lista do tipo {@link Participant} contendo todos os jogadores da partida.
@@ -51,5 +52,17 @@ public interface MatchMapper {
     @Mapping(target = "modality", source = "matchDto.modality.name")
     @Mapping(target = "matchStatus", source = "matchDto.matchStatus.name")
     Match toExistingMatch(Long id, MatchDto matchDto, List<Participant> players, Team teamA, Team teamB);
+
+    /**
+     * Gera uma nova instância de {@link ExposingMatchDto} a partir de qualquer instância de {@link Match}
+     * ou de suas classes filhas.
+     *
+     * @param match Partida contendo os dados a serem mapeados.
+     * @param sport A modalidade esportiva da partida.
+     * @return Uma nova instância de {@link ExposingMatchDto}.
+     */
+    @Mapping(target = "teamA", source = "match.teamA.name")
+    @Mapping(target = "teamB", source = "match.teamB.name")
+    ExposingMatchDto toNewExposingMatchDto(Match match, String sport);
 
 }

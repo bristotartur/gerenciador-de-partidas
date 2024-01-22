@@ -5,7 +5,6 @@ import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,6 @@ class GoalMapperTest {
 
     @Autowired
     private GoalMapper goalMapper;
-    @Autowired
-    private GeneralMatchSportService generalMatchSportService;
 
     private Goal createNewGoal(Sports sport) {
 

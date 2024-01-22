@@ -10,7 +10,7 @@ import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
-import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GeneralMatchSportServiceTest {
 
     @Autowired
-    private GeneralMatchSportService generalMatchSportService;
+    private MatchServiceMediator matchServiceMediator;
     @Autowired
     private EntityManager entityManager;
     @Autowired

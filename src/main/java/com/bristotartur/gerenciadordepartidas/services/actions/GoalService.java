@@ -8,7 +8,7 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
-import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @see GoalMapper
  * @see ParticipantService
- * @see GeneralMatchSportService
+ * @see MatchServiceMediator
  */
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class GoalService {
     private final GoalRepository goalRepository;
     private final GoalMapper goalMapper;
     private final ParticipantService participantService;
-    private final GeneralMatchSportService generalMatchSportService;
+    private final MatchServiceMediator matchServiceMediator;
 
     /**
      * Retorna todos os gols disponíveis no banco de dados.
@@ -69,7 +69,7 @@ public class GoalService {
      */
     public Goal saveGoal(GoalDto goalDto) {
 
-        var match = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
+        var match = matchServiceMediator.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var player = participantService.findParticipantById(goalDto.playerId());
 
         this.increaseScore(player.getTeam(), match);
@@ -114,7 +114,7 @@ public class GoalService {
         var originaMatch = existingGoal.getMatch();
         var originalPlayerTeam = existingGoal.getPlayer().getTeam();
 
-        var newMatch = generalMatchSportService.findMatchForGoal(goalDto.matchId(), goalDto.sport());
+        var newMatch = matchServiceMediator.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var newPlayer = participantService.findParticipantById(goalDto.playerId());
 
         if (!originaMatch.equals(newMatch) || !originalPlayerTeam.equals(newPlayer.getTeam())) {

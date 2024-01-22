@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class GeneralMatchSportService {
+public class MatchServiceMediator {
 
     private final ApplicationContext context;
 

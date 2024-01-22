@@ -6,7 +6,7 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.PenaltyCardMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository;
-import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @see PenaltyCardMapper
  * @see ParticipantService
- * @see GeneralMatchSportService
+ * @see MatchServiceMediator
  */
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class PenaltyCardService {
     private final PenaltyCardRepository penaltyCardRepository;
     private final PenaltyCardMapper penaltyCardMapper;
     private final ParticipantService participantService;
-    private final GeneralMatchSportService generalMatchSportService;
+    private final MatchServiceMediator matchServiceMediator;
 
     /**
      * Retorna todos os cartões disponíveis no banco de dados.
@@ -66,7 +66,7 @@ public class PenaltyCardService {
      */
     public PenaltyCard savePenaltyCard(PenaltyCardDto penaltyCardDto) {
 
-        var match = generalMatchSportService.findMatch(penaltyCardDto.matchId(), penaltyCardDto.sport());
+        var match = matchServiceMediator.findMatch(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
         var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
@@ -98,7 +98,7 @@ public class PenaltyCardService {
 
         this.findPenaltyCardById(id);
 
-        var match = generalMatchSportService.findMatchForCard(penaltyCardDto.matchId(), penaltyCardDto.sport());
+        var match = matchServiceMediator.findMatchForCard(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
         var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, match);

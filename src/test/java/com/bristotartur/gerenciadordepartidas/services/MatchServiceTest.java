@@ -9,7 +9,7 @@ import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
-import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.services.events.MatchService;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
@@ -40,7 +40,7 @@ class MatchServiceTest {
     @Autowired
     private MatchRepository matchRepository;
     @Autowired
-    private GeneralMatchSportService generalMatchSportService;
+    private MatchServiceMediator matchServiceMediator;
 
     private Team teamA;
     private Team teamB;
@@ -69,8 +69,8 @@ class MatchServiceTest {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var matches = List.of(
-                generalMatchSportService.saveMatch(match, Sports.FUTSAL),
-                generalMatchSportService.saveMatch(match, Sports.HANDBALL));
+                matchServiceMediator.saveMatch(match, Sports.FUTSAL),
+                matchServiceMediator.saveMatch(match, Sports.HANDBALL));
 
         var result = matchService.findAllMatches();
 
@@ -83,10 +83,10 @@ class MatchServiceTest {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var futsalMatches = List.of(
-                generalMatchSportService.saveMatch(match, Sports.FUTSAL),
-                generalMatchSportService.saveMatch(match, Sports.FUTSAL));
+                matchServiceMediator.saveMatch(match, Sports.FUTSAL),
+                matchServiceMediator.saveMatch(match, Sports.FUTSAL));
 
-        var genericMatchList = new LinkedList<>(List.of(generalMatchSportService.saveMatch(match, Sports.HANDBALL)));
+        var genericMatchList = new LinkedList<>(List.of(matchServiceMediator.saveMatch(match, Sports.HANDBALL)));
 
         futsalMatches.forEach(genericMatchList::add);
         var result = matchService.findMatchesBySport(Sports.FUTSAL);
@@ -100,7 +100,7 @@ class MatchServiceTest {
     void Should_FindMatch_When_ExistingMatchIdIsPassedToSearch() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
-        var volleyballMatch = generalMatchSportService.saveMatch(match, Sports.VOLLEYBALL);
+        var volleyballMatch = matchServiceMediator.saveMatch(match, Sports.VOLLEYBALL);
 
         var result = matchService.findMatchById(volleyballMatch.getId());
 
@@ -134,7 +134,7 @@ class MatchServiceTest {
 
         var sport = Sports.CHESS;
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
-        var chessMatch = generalMatchSportService.saveMatch(match, sport);
+        var chessMatch = matchServiceMediator.saveMatch(match, sport);
 
         var result = matchService.findMatchSportById(chessMatch.getId());
 
@@ -146,7 +146,7 @@ class MatchServiceTest {
     void Should_RetrieveAllMatchPlayers_When_SearchingForMatchPlayers() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.FEMININE);
-        var handballMatch = generalMatchSportService.saveMatch(match, Sports.HANDBALL);
+        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
 
         var result = matchService.findAllMatchPlayers(handballMatch.getId());
 
@@ -172,7 +172,7 @@ class MatchServiceTest {
     void Should_ThrowBadRequestException_When_MatchDtoWithTwoEqualTeamsIsPassed() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
         var matchDto = MatchTestUtil.createNewMatchDto(any(), 1L, 1L, any());
 
@@ -189,7 +189,7 @@ class MatchServiceTest {
     void Should_DeleteMatchFromDatabase_When_MatchIdIsPassedToDelete() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
-        var chessMatch = generalMatchSportService.saveMatch(match, Sports.CHESS);
+        var chessMatch = matchServiceMediator.saveMatch(match, Sports.CHESS);
 
         matchService.deleteMatchById(chessMatch.getId());
 
@@ -204,7 +204,7 @@ class MatchServiceTest {
         var originalModality = Modality.MASCULINE;
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, originalModality);
-        var tableTennisMatch = generalMatchSportService.saveMatch(match, sport);
+        var tableTennisMatch = matchServiceMediator.saveMatch(match, sport);
 
         var playerIds = players.stream()
                 .map(Participant::getId)
@@ -227,7 +227,7 @@ class MatchServiceTest {
                 .toList();
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
-        var volleyballMatch = generalMatchSportService.saveMatch(match, Sports.VOLLEYBALL);
+        var volleyballMatch = matchServiceMediator.saveMatch(match, Sports.VOLLEYBALL);
 
         var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA.getId(), teamC.getId(), playerIds);
 
@@ -244,7 +244,7 @@ class MatchServiceTest {
     void Should_ConvertMatchToExposingMatchDto_When_MatchIsPassedToConvert() {
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MASCULINE);
-        var tableTennisMatch = generalMatchSportService.saveMatch(match, Sports.TABLE_TENNIS);
+        var tableTennisMatch = matchServiceMediator.saveMatch(match, Sports.TABLE_TENNIS);
 
         var result = matchService.createExposingMatchDto(tableTennisMatch);
 

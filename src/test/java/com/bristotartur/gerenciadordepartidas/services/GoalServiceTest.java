@@ -7,7 +7,7 @@ import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
-import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.utils.GoalTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
@@ -37,7 +37,7 @@ class GoalServiceTest {
     @Autowired
     private GoalRepository goalRepository;
     @Autowired
-    private GeneralMatchSportService generalMatchSportService;
+    private MatchServiceMediator matchServiceMediator;
 
     private Participant playerA;
     private Participant playerB;
@@ -59,7 +59,7 @@ class GoalServiceTest {
     @DisplayName("Should retrieve all Goals from repository when searching for all Goals")
     void Should_RetrieveAllGoalsFromRepository_When_SearchingForAllGoals() {
 
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
         var goals = List.of(
                 GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager),
                 GoalTestUtil.createNewGoal(playerB, futsalMatch, entityManager));
@@ -73,7 +73,7 @@ class GoalServiceTest {
     @DisplayName("Should find Goal when existing Goal ID is passed to search")
     void Should_FindGoal_When_ExistingGoalIdIsPassedToSearch() {
 
-        var handballMatch = generalMatchSportService.saveMatch(match, Sports.HANDBALL);
+        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
         var goal = GoalTestUtil.createNewGoal(playerA, handballMatch, entityManager);
 
         var result = goalService.findGoalById(goal.getId());
@@ -104,7 +104,7 @@ class GoalServiceTest {
     void Should_SaveGoal_When_ValidGoalDtoIsPassedToSave() {
 
         var sport = Sports.HANDBALL;
-        var handballMatch = generalMatchSportService.saveMatch(match, sport);
+        var handballMatch = matchServiceMediator.saveMatch(match, sport);
         var goalDto = GoalTestUtil.createNewGoalDto(playerB.getId(), handballMatch.getId(), sport);
 
         var result = goalService.saveGoal(goalDto);
@@ -116,7 +116,7 @@ class GoalServiceTest {
     @DisplayName("Should delete Goal from database when Goal ID is passed to delete")
     void Should_DeleteGoalFromDatabase_When_GoalIdIsPassedToDelete() {
 
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
         var goal = GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager);
 
         goalService.deleteGoalById(goal.getId());
@@ -128,7 +128,7 @@ class GoalServiceTest {
     @DisplayName("Should decrease team score in match when a goal is deleted")
     void Should_DecreaseTeamScoreInMatch_When_GoalIsDeleted() {
 
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
         futsalMatch.setTeamScoreB(1);
 
         var goal = GoalTestUtil.createNewGoal(playerB, futsalMatch, entityManager);
@@ -142,7 +142,7 @@ class GoalServiceTest {
     void Should_UpdateGoal_When_GoalDtoWithNewValuesIsPassed() {
 
         var sport = Sports.FUTSAL;
-        var futsalMatch = generalMatchSportService.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
         var goal = GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager);
 
@@ -157,7 +157,7 @@ class GoalServiceTest {
     void Should_UpdateTeamScore_When_GoalPlayerIsChangedToPlayerFromOpposingTeam() {
 
         var sport = Sports.HANDBALL;
-        var handballMatch = generalMatchSportService.saveMatch(match, sport);
+        var handballMatch = matchServiceMediator.saveMatch(match, sport);
 
         var originalGoalDto = GoalTestUtil.createNewGoalDto(playerA.getId(), handballMatch.getId(), sport);
         var goal = goalService.saveGoal(originalGoalDto);
@@ -179,7 +179,7 @@ class GoalServiceTest {
     void Should_NotUpdateTeamScore_When_GoalPlayerIsChangedToPlayerFromSameTeam() {
 
         var sport = Sports.FUTSAL;
-        var futsalMatch = generalMatchSportService.saveMatch(match, sport);
+        var futsalMatch = matchServiceMediator.saveMatch(match, sport);
 
         var team = match.getTeamB();
         var playerC = ParticipantTestUtil.createNewParticipant("1-52", team, entityManager);
@@ -203,7 +203,7 @@ class GoalServiceTest {
     void Should_DecreaseTeamScoreInMatch_When_GoalMatchIsChanged() {
 
         var originalSport = Sports.HANDBALL;
-        var handballMatch = generalMatchSportService.saveMatch(match, originalSport);
+        var handballMatch = matchServiceMediator.saveMatch(match, originalSport);
 
         var originalGoalDto = GoalTestUtil.createNewGoalDto(playerA.getId(), handballMatch.getId(), originalSport);
         var goal = goalService.saveGoal(originalGoalDto);
@@ -211,7 +211,7 @@ class GoalServiceTest {
         var originalTeamScoreA = handballMatch.getTeamScoreA();
 
         var newSport = Sports.FUTSAL;
-        var futsalMatch = generalMatchSportService.saveMatch(match, newSport);
+        var futsalMatch = matchServiceMediator.saveMatch(match, newSport);
 
         var newGoalDto = GoalTestUtil.createNewGoalDto(playerB.getId(), futsalMatch.getId(), newSport);
         goalService.replaceGoal(goal.getId(), newGoalDto);

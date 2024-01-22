@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Match},
- * interagindo com o repositório {@link MatchRepository} para acessar e manipular dados relacionados a partidas.
+ * Classe responsável por fornecer serviços para o gerenciamento de instâncias de {@link Match},
+ * lidando apenas com aspectos
  *
  * @see MatchMapper
  * @see ParticipantService
  * @see TeamService
- * @see GeneralMatchSportService
+ * @see MatchServiceMediator
  */
 @Service
 @AllArgsConstructor
@@ -41,7 +41,7 @@ public class MatchService {
     private final MatchMapper matchMapper;
     private final ParticipantService participantService;
     private final TeamService teamService;
-    private final GeneralMatchSportService generalMatchSportService;
+    private final MatchServiceMediator matchServiceMediator;
 
     /**
      * Retorna todas as partidas disponíveis no banco de dados.
@@ -59,7 +59,7 @@ public class MatchService {
      * @return Uma lista contendo todas as instâncias da especialização de {@link Match} definida;
      */
     public List<? extends Match> findMatchesBySport(Sports sport) {
-        return generalMatchSportService.findMatchesBySport(sport);
+        return matchServiceMediator.findMatchesBySport(sport);
     }
 
     /**
@@ -124,7 +124,7 @@ public class MatchService {
         this.checkPlayers(players, matchDto);
 
         var match = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
-        return generalMatchSportService.saveMatch(match, matchDto.sport());
+        return matchServiceMediator.saveMatch(match, matchDto.sport());
     }
 
     /**
@@ -168,10 +168,10 @@ public class MatchService {
         this.checkPlayers(players, matchDto);
 
         var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
-
         match.setTeamScoreA(existingMatch.getTeamScoreA());
         match.setTeamScoreB(existingMatch.getTeamScoreB());
-        return generalMatchSportService.saveMatch(match, matchDto.sport());
+
+        return matchServiceMediator.saveMatch(match, matchDto.sport());
     }
 
     /**

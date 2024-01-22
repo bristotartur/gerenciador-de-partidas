@@ -122,17 +122,14 @@ public class TeamService {
     public Team replaceTeam(Long id, TeamDto teamDto) {
 
         var originalTeamName = findTeamById(id).getName();
-        var newName = teamDto.teamName().value;
-        var teamWithSameName = teamRepository.findByName(newName);
+        var newTeamName = teamDto.teamName().value;
+        var teamWithSameName = teamRepository.findByName(newTeamName);
 
-        if (originalTeamName.equals(newName) || teamWithSameName.isEmpty()) {
+        if (teamWithSameName.isPresent() && !newTeamName.equals(originalTeamName))
+            throw new BadRequestException(ExceptionMessages.NAME_ALREADY_IN_USE.message.formatted(newTeamName));
 
-            var team = teamMapper.toExistingTeam(id, teamDto);
-            var updatedTeam = teamRepository.save(team);
-
-            return updatedTeam;
-        }
-        throw new BadRequestException(ExceptionMessages.NAME_ALREADY_IN_USE.message.formatted(newName));
+        var team = teamMapper.toExistingTeam(id, teamDto);
+        return teamRepository.save(team);
     }
 
 }

@@ -10,9 +10,9 @@ import org.springframework.context.ApplicationContext;
  * {@link MatchStrategy}. Esta fábrica permite criar dinamicamente serviços especializados com base
  * no tipo de esporte fornecido.
  *
- * @see GeneralMatchSportService
+ * @see MatchServiceMediator
  */
-public interface MatchSportServiceFactory {
+public interface MatchServiceFactory {
 
     /**
      * Cria uma nova instância de um serviço que implemente {@link MatchStrategy} especializado

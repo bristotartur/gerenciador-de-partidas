@@ -1,7 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.services.MatchService;
@@ -26,27 +27,33 @@ public class MatchController {
     private final MatchService matchService;
 
     @GetMapping
-    public ResponseEntity<List<Match>> findAllMatches() {
+    public ResponseEntity<List<ExposingMatchDto>> findAllMatches() {
 
-        List<Match> matchList = matchService.findAllMatches();
+        var matchList = matchService.findAllMatches();
 
         if (matchList.isEmpty())
             return ResponseEntity.noContent().build();
 
-        matchList.forEach(this::addSingleMatchLink);
-        return ResponseEntity.ok().body(matchList);
+        var dtos = matchList.stream()
+                .map(this::addSingleMatchLink)
+                .toList();
+
+        return ResponseEntity.ok().body(dtos);
     }
 
     @GetMapping(path = "/list")
-    public ResponseEntity<List<? extends Match>> findMatchesBySport(@RequestParam Sports sport) {
+    public ResponseEntity<List<ExposingMatchDto>> findMatchesBySport(@RequestParam Sports sport) {
 
-        List<? extends Match> matchList = matchService.findMatchesBySport(sport);
+        var matchList = matchService.findMatchesBySport(sport);
 
         if (matchList.isEmpty())
             return ResponseEntity.noContent().build();
 
-        matchList.forEach(this::addSingleMatchLink);
-        return ResponseEntity.ok().body(matchList);
+        var dtos = matchList.stream()
+                .map(this::addSingleMatchLink)
+                .toList();
+
+        return ResponseEntity.ok().body(dtos);
     }
 
     @GetMapping(path = "/{id}/players")
@@ -59,21 +66,21 @@ public class MatchController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Match> findMatchById(@PathVariable Long id) {
+    public ResponseEntity<ExposingMatchDto> findMatchById(@PathVariable Long id) {
 
         var match = matchService.findMatchById(id);
+        var dto = addMatchListLink(match);
 
-        this.addMatchListLink(match);
-        return ResponseEntity.ok().body(match);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping
-    public ResponseEntity<Match> saveMatch(@RequestBody @Valid MatchDto matchDto) {
+    public ResponseEntity<ExposingMatchDto> saveMatch(@RequestBody @Valid MatchDto matchDto) {
 
         var match = matchService.saveMatch(matchDto);
+        var dto = addMatchListLink(match);
 
-        this.addMatchListLink(match);
-        return ResponseEntity.status(HttpStatus.CREATED).body(match);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -84,37 +91,45 @@ public class MatchController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<Match> replaceMatch(@PathVariable Long id,
-                                              @RequestBody @Valid MatchDto matchDto) {
+    public ResponseEntity<ExposingMatchDto> replaceMatch(@PathVariable Long id,
+                                                         @RequestBody @Valid MatchDto matchDto) {
 
         var match = matchService.replaceMatch(id, matchDto);
+        var dto = addMatchListLink(match);
 
-        this.addMatchListLink(match);
-        return ResponseEntity.ok().body(match);
+        return ResponseEntity.ok().body(dto);
     }
 
-    private void addSingleMatchLink(Match match) {
+    private ExposingMatchDto addSingleMatchLink(Match match) {
 
         var id = match.getId();
         var teamAId = match.getTeamA().getId();
         var teamBId = match.getTeamB().getId();
 
-        match.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
-        match.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("Team A"));
-        match.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("Team B"));
-        match.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("Match players list"));
+        var dto = matchService.createExposingMatchDto(match);
+
+        dto.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("Team A"));
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("Team B"));
+        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("Match players list"));
+
+        return dto;
     }
 
-    private void addMatchListLink(Match match) {
+    private ExposingMatchDto addMatchListLink(Match match) {
 
         var id = match.getId();
         var teamAId = match.getTeamA().getId();
         var teamBId = match.getTeamB().getId();
 
-        match.add(linkTo(methodOn(this.getClass()).findAllMatches()).withRel("Match list"));
-        match.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("Team A"));
-        match.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("Team B"));
-        match.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("Match players list"));
+        var dto = matchService.createExposingMatchDto(match);
+
+        dto.add(linkTo(methodOn(this.getClass()).findAllMatches()).withRel("Match list"));
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("Team A"));
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("Team B"));
+        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("Match players list"));
+
+        return dto;
     }
 
     private void addPlayerLink(Participant player, Long matchId) {

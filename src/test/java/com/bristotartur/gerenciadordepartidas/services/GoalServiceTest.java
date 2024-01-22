@@ -1,11 +1,13 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
+import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
+import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
 import com.bristotartur.gerenciadordepartidas.utils.GoalTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;

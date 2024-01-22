@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;

@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.repositories;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.HandballMatch;
+import com.bristotartur.gerenciadordepartidas.domain.events.HandballMatch;
 import org.springframework.stereotype.Repository;
 
 @Repository

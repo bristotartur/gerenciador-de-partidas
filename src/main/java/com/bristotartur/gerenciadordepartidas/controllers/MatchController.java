@@ -1,11 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.services.MatchService;
+import com.bristotartur.gerenciadordepartidas.services.events.MatchService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

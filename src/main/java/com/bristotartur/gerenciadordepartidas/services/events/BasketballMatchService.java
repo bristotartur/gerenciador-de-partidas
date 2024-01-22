@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.BasketballMatch;
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.events.BasketballMatch;
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.BasketballMatchRepository;

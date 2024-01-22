@@ -1,11 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.services.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

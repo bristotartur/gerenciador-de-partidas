@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 
 import java.util.List;
 

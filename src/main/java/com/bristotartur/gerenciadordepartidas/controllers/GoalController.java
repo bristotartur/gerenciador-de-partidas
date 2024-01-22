@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
-import com.bristotartur.gerenciadordepartidas.services.GoalService;
+import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

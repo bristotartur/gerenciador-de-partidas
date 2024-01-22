@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
-import com.bristotartur.gerenciadordepartidas.services.PenaltyCardService;
+import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.repositories;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.FutsalMatch;
+import com.bristotartur.gerenciadordepartidas.domain.events.FutsalMatch;
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.repositories;
 
-import com.bristotartur.gerenciadordepartidas.domain.structure.TableTennisMatch;
+import com.bristotartur.gerenciadordepartidas.domain.events.TableTennisMatch;
 import org.springframework.stereotype.Repository;
 
 @Repository

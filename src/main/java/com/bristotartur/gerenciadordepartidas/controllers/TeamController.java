@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
-import com.bristotartur.gerenciadordepartidas.services.TeamService;
+import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

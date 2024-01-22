@@ -9,6 +9,8 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.MatchMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,8 @@ import java.util.Optional;
 @Transactional
 public class MatchService {
 
+    @PersistenceContext
+    private final EntityManager entityManager;
     private final MatchRepository<Match> matchRepository;
     private final MatchMapper matchMapper;
     private final ParticipantService participantService;
@@ -66,6 +70,21 @@ public class MatchService {
 
         return matchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.MATCH_NOT_FOUND.message));
+    }
+
+    /**
+     * Busca pela modalidade esportiva de uma determinada partida com base no seu ID. O valor
+     * retornado por este método não corresponde ao valor interno das opções do enum {@link Sports},
+     * mas sim ao nome dessas opções.
+     *
+     * @param id Identificador único da partida.
+     * @return A modalidade esportiva correspondente a partida.
+     * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada.
+     */
+    public String findMatchSportById(Long id) {
+
+        this.findMatchById(id);
+        return matchRepository.findMatchTypeById(id, entityManager);
     }
 
     /**

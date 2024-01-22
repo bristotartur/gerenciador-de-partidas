@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.structure.VolleyballMatch;
@@ -44,7 +44,7 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
      * @throws NotFoundException Se nenhuma partida de vôlei correspondente ao ID for encontrada.
      */
     @Override
-    public Match findMatchById(Long id) {
+    public VolleyballMatch findMatchById(Long id) {
 
         return volleyballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.VOLLEYBALL_MATCH_NOT_FOUND.message));
@@ -56,7 +56,7 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
      * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
      */
     @Override
-    public Match saveMatch(Match match) {
+    public VolleyballMatch saveMatch(Match match) {
 
         VolleyballMatch volleyballMatch = new VolleyballMatch();
 

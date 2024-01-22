@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;

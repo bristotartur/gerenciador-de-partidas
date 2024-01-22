@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.domain.structure.TableTennisMatch;
@@ -44,7 +44,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
      * @throws NotFoundException Se nenhuma partida de tênis de mesa correspondente ao ID for encontrada.
      */
     @Override
-    public Match findMatchById(Long id) {
+    public TableTennisMatch findMatchById(Long id) {
 
         return tableTennisMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TABLE_TENNIS_MATCH_NOT_FOUND.message));
@@ -57,7 +57,7 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
      * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
      */
     @Override
-    public Match saveMatch(Match match) {
+    public TableTennisMatch saveMatch(Match match) {
 
         TableTennisMatch tableTennisMatch = new TableTennisMatch();
 

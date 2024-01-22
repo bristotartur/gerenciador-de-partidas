@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;

@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.ChessMatch;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
@@ -44,7 +44,7 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
      * @throws NotFoundException Se nenhuma partida de xadrez correspondente ao ID for encontrada.
      */
     @Override
-    public Match findMatchById(Long id) {
+    public ChessMatch findMatchById(Long id) {
 
         return chessMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.CHESS_MATCH_NOT_FOUND.message));
@@ -56,7 +56,7 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
      * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
      */
     @Override
-    public Match saveMatch(Match match) {
+    public ChessMatch saveMatch(Match match) {
 
         ChessMatch chessMatch = new ChessMatch();
 

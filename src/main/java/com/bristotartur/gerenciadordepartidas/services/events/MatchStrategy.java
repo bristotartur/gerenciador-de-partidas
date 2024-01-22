@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
 
@@ -29,13 +29,13 @@ public interface MatchStrategy<T extends Match> {
      * @param id Identificador único da entidade {@link Match} a ser buscada.
      * @return Uma instância concreta que herda de {@link Match}, correspondente ao ID fornecido.
      */
-    Match findMatchById(Long id);
+    T findMatchById(Long id);
 
     /**
      * Gera uma nova instância de {@link Match} e a persiste no banco de dados.
      *
      * @return Uma instância concreta que herda de {@link Match}, persistida no banco de dados.
      */
-    Match saveMatch(Match match);
+    T saveMatch(Match match);
 
 }

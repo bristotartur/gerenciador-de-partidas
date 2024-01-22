@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -15,13 +15,13 @@ import org.springframework.context.ApplicationContext;
 public interface MatchSportServiceFactory {
 
     /**
-     * Cria uma nova instância de uma classe que implementa {@link MatchStrategy} especializada
+     * Cria uma nova instância de um serviço que implemente {@link MatchStrategy} especializado
      * no tipo de esporte fornecido.
      *
-     * @param sport O tipo de esporte no qual a classe gerada irá lidar.
+     * @param sport O tipo de esporte no qual o serviço gerado irá lidar.
      * @param context O contexto do Spring responsável por gerenciar a criação e injeção de dependências
      *                para o serviço gerado.
-     * @return Uma instância de {@link MatchStrategy} especializada no esporte fornecido.
+     * @return Uma implementação de {@link MatchStrategy} especializada no esporte fornecido.
      * @throws BadRequestException Se o tipo de esporte fornecida for nulo ou não suportado.
      */
     public static MatchStrategy newMatchSportService(Sports sport, ApplicationContext context) {

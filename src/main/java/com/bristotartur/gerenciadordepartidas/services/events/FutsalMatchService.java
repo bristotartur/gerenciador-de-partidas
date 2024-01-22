@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.FutsalMatch;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
@@ -44,7 +44,7 @@ public class FutsalMatchService implements MatchStrategy<FutsalMatch> {
      * @throws NotFoundException Se nenhuma partida de futsal correspondente ao ID for encontrada.
      */
     @Override
-    public Match findMatchById(Long id) {
+    public FutsalMatch findMatchById(Long id) {
 
         return futsalMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.FUTSAL_MATCH_NOT_FOUND.message));
@@ -56,7 +56,7 @@ public class FutsalMatchService implements MatchStrategy<FutsalMatch> {
      * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
      */
     @Override
-    public Match saveMatch(Match match) {
+    public FutsalMatch saveMatch(Match match) {
 
         FutsalMatch futsalMatch = new FutsalMatch();
 

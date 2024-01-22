@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.BasketballMatch;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
@@ -44,7 +44,7 @@ public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
      * @throws NotFoundException Se nenhuma partida de basquete correspondente ao ID for encontrada.
      */
     @Override
-    public Match findMatchById(Long id) {
+    public BasketballMatch findMatchById(Long id) {
 
         return basketballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.BASKETBALL_MATCH_NOT_FOUND.message));
@@ -56,7 +56,7 @@ public class BasketballMatchService implements MatchStrategy<BasketballMatch> {
      * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
      */
     @Override
-    public Match saveMatch(Match match) {
+    public BasketballMatch saveMatch(Match match) {
 
         BasketballMatch basketballMatch = new BasketballMatch();
 

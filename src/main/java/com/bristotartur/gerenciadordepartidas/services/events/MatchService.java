@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
@@ -10,6 +10,8 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.MatchMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
+import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
@@ -166,7 +168,7 @@ public class MatchService {
         this.checkPlayers(players, matchDto);
 
         var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
-        
+
         match.setTeamScoreA(existingMatch.getTeamScoreA());
         match.setTeamScoreB(existingMatch.getTeamScoreB());
         return generalMatchSportService.saveMatch(match, matchDto.sport());

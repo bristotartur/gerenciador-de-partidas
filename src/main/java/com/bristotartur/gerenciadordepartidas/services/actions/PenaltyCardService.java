@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
@@ -6,6 +6,8 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.PenaltyCardMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository;
+import com.bristotartur.gerenciadordepartidas.services.events.GeneralMatchSportService;
+import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

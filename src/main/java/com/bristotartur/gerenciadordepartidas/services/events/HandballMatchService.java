@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services;
+package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.structure.HandballMatch;
 import com.bristotartur.gerenciadordepartidas.domain.structure.Match;
@@ -44,7 +44,7 @@ public class HandballMatchService implements MatchStrategy<HandballMatch> {
      * @throws NotFoundException Se nenhuma partida de handebol correspondente ao ID for encontrada.
      */
     @Override
-    public Match findMatchById(Long id) {
+    public HandballMatch findMatchById(Long id) {
 
         return handballMatchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.HANDBALL_MATCH_NOT_FOUND.message));
@@ -56,7 +56,7 @@ public class HandballMatchService implements MatchStrategy<HandballMatch> {
      * @return Uma nova instância de {@link Match} criada e salva no banco de dados.
      */
     @Override
-    public Match saveMatch(Match match) {
+    public HandballMatch saveMatch(Match match) {
 
         HandballMatch handballMatch = new HandballMatch();
 

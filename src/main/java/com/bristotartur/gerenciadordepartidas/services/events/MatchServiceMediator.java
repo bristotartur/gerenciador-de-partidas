@@ -13,14 +13,13 @@ import java.util.List;
 
 /**
  * Esta classe atua como uma camada de serviço centralizada para operações relacionadas a diferentes
- * tipos de partidas ({@link Match}). Através desta classe é possível criar novas instâncias
- * de {@link Match}, encontrar detalhes específicos de uma partida, como partidas relacionadas a gols ou cartões,
- * e manipular operações gerais associadas a serviços de MatchSport. <br> <br>
- *
- * Ela utiliza uma fábrica, {@link MatchServiceFactory}, para criar dinamicamente serviços especializados com
- * base no tipo de esporte fornecido.
+ * especializações de {@link Match}. Cada tipo de partida possui um serviço dedicado, sendo este uma
+ * implementação de {@link MatchStrategy}, e a função desta classe é fornecer uma ponte entre estas
+ * implementações e os demais serviços.
  *
  * @see MatchStrategy
+ * @see MatchServiceFactory
+ * @see MatchService
  */
 @Service
 @RequiredArgsConstructor

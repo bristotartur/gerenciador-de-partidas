@@ -4,7 +4,6 @@ import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -15,9 +14,14 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Classe filha de {@link Match} especializada em partidas de futsal.
+ *
+ * @see Goal
+ * @see PenaltyCard
+ */
 @Entity
 @DiscriminatorValue("FUTSAL")
-@JsonTypeName("FUTSAL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor

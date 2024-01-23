@@ -1,15 +1,16 @@
 package com.bristotartur.gerenciadordepartidas.domain.events;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Classe filha de {@link Match} especializada em partidas de vôlei.
+ */
 @Entity
 @DiscriminatorValue("VOLLEYBALL")
-@JsonTypeName("VOLLEYBALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor

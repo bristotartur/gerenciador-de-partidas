@@ -3,7 +3,6 @@ package com.bristotartur.gerenciadordepartidas.domain.events;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -11,11 +10,28 @@ import org.springframework.hateoas.RepresentationModel;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * <p>Entidade reposnsável por fornecer uma representação geral de partidas no sistema, provendo
+ * todos os atributos essenciais e comuns para qualquer tipo de partida, como jogadores, placar,
+ * equipes envolvidas, horários, etc.</p>
+ *
+ * <p>Cada modalidade esportiva possui uma entidade filha de {@link Match} especializada nela, sendo
+ * que estas especializações possuem atributos específicos para o seu tipo esportivo, como gols
+ * para uma especialização em futsal ou sets para uma especialização em vôlei.</p>
+ *
+ * @see Team
+ * @see Participant
+ * @see FutsalMatch
+ * @see HandballMatch
+ * @see BasketballMatch
+ * @see VolleyballMatch
+ * @see TableTennisMatch
+ * @see ChessMatch
+ */
 @Entity
 @Table(name = "MATCH")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

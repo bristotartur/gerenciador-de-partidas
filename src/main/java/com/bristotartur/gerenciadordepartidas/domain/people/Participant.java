@@ -12,6 +12,16 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
+/**
+ * Entidade responsável por representar todos os participantes da gincana no sistema.
+ * Objetos que instanciam esta classe podem às vezes ser representados como "players"
+ * em um contexto de partidas, ou como "members" quando se trata de equipes.
+ *
+ * @see Team
+ * @see Match
+ * @see Goal
+ * @see PenaltyCard
+ */
 @Entity
 @Table(name = "PARTICIPANT")
 @NoArgsConstructor

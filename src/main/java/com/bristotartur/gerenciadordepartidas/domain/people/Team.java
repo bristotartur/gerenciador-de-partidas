@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.domain.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -9,6 +10,15 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
+/**
+ * Entidade responsável por representar as equipes da gincana no sistema. Cada equipe possui
+ * um nome predefinido em {@link TeamName}. Equipes não podem ser salvas com o mesmo nome e este
+ * nome não pode ser diferente dos fornecidos no sistema, o que faz com que apenas um número
+ * finito de equipes possam ser salvas.
+ *
+ * @see Participant
+ * @see Match
+ */
 @Entity
 @Table(name = "TEAM")
 @NoArgsConstructor

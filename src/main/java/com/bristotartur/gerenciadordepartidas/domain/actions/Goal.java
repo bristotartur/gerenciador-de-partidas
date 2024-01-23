@@ -9,6 +9,13 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalTime;
 
+/**
+ * Entidade responsável por representar gols no sistema. Esta entidade carrega consigo
+ * o jogador que marcou o gol e a partida em que ele ocorreu.
+ *
+ * @see Participant
+ * @see Match
+ */
 @Entity
 @Table(name = "GOAL")
 @NoArgsConstructor

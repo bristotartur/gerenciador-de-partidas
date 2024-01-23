@@ -24,7 +24,8 @@ public interface MatchStrategy<T extends Match> {
     List<T> findAll();
 
     /**
-     * Procura por um {@link Match} no banco de dados com base no ID fornecido.
+     * Procura por uma instância de uma determinada especialização de {@link Match} no banco de dados
+     * com base no ID fornecido.
      *
      * @param id Identificador único da entidade {@link Match} a ser buscada.
      * @return Uma instância concreta que herda de {@link Match}, correspondente ao ID fornecido.
@@ -32,7 +33,7 @@ public interface MatchStrategy<T extends Match> {
     T findMatchById(Long id);
 
     /**
-     * Gera uma nova instância de {@link Match} e a persiste no banco de dados.
+     * Persiste uma nova instância de uma entidade especializada flha de {@link Match}.
      *
      * @return Uma instância concreta que herda de {@link Match}, persistida no banco de dados.
      */

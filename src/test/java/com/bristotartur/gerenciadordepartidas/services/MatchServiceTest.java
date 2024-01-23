@@ -118,27 +118,11 @@ class MatchServiceTest {
             matchService.findMatchById(id);
         });
         assertThrows(NotFoundException.class, () -> {
-            matchService.findMatchSportById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
             matchService.deleteMatchById(id);
         });
         assertThrows(NotFoundException.class, () -> {
             matchService.replaceMatch(id, matchDto);
         });
-    }
-
-    @Test
-    @DisplayName("Should find Match sport when Searching for Match sport")
-    void Should_FindMatchSport_When_SearchingForMatchSport() {
-
-        var sport = Sports.CHESS;
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
-        var chessMatch = matchServiceMediator.saveMatch(match, sport);
-
-        var result = matchService.findMatchSportById(chessMatch.getId());
-
-        assertEquals(sport.name(), result);
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
-import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
@@ -22,8 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Classe responsável por fornecer serviços para o gerenciamento de instâncias de {@link Match},
- * lidando apenas com aspectos
+ *<p>Classe responsável por fornecer uma camada de serviços geral para o gerenciamento de instâncias de {@link Match},
+ * lidando com aspectos gerais de partidas, como criação, atualizações, validações, etc.</p>
+ *
+ * <p>Para se comunicar com serviços específicos de especializações de {@link Match}, esta classe utiliza
+ * {@link MatchServiceMediator} como uma ponte entre estas classes especializadas.</p>
  *
  * @see MatchMapper
  * @see ParticipantService
@@ -76,6 +79,18 @@ public class MatchService {
     }
 
     /**
+     * Gera um DTO do tipo {@link ExposingMatchDto} com base na partida fornecida.
+     *
+     * @param match Partida que terá seus dados mapeados para o DTO.
+     * @return Nova instância de {@link ExposingMatchDto} contendo os dados fornecidos.
+     */
+    public ExposingMatchDto createExposingMatchDto(Match match) {
+
+        var sport = findMatchSportById(match.getId());
+        return matchMapper.toNewExposingMatchDto(match, sport);
+    }
+
+    /**
      * Busca pela modalidade esportiva de uma determinada partida com base no seu ID. O valor
      * retornado por este método não corresponde ao valor interno das opções do enum {@link Sports},
      * mas sim ao nome dessas opções.
@@ -84,7 +99,7 @@ public class MatchService {
      * @return A modalidade esportiva correspondente a partida.
      * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada.
      */
-    public String findMatchSportById(Long id) {
+    private String findMatchSportById(Long id) {
 
         this.findMatchById(id);
         return matchRepository.findMatchTypeById(id, entityManager);
@@ -175,18 +190,6 @@ public class MatchService {
     }
 
     /**
-     * Gera um DTO do tipo {@link ExposingMatchDto} com base na partida fornecida.
-     *
-     * @param match Partida que terá seus dados mapeados para o DTO.
-     * @return Nova instância de {@link ExposingMatchDto} contendo os dados fornecidos.
-     */
-    public ExposingMatchDto createExposingMatchDto(Match match) {
-
-        var sport = findMatchSportById(match.getId());
-        return matchMapper.toNewExposingMatchDto(match, sport);
-    }
-
-    /**
      * Verifica se os jogadores passados pelo DTO estão aptos a participar da partida, ou seja, se
      * pertencem a alguma das equipes presentes nela.
      *
@@ -194,7 +197,7 @@ public class MatchService {
      * @param matchDto DTO do tipo {@link MatchDto} contendo os IDs das equipes presentes na partida.
      * @throws BadRequestException Caso algum jogador não pertença a alguma das equipes.
      */
-    private void checkPlayers(List<Participant> players, MatchDto matchDto ) {
+    private void checkPlayers(List<Participant> players, MatchDto matchDto) {
 
         Optional<Participant> invalidPlayer = players.stream()
                 .filter(player -> player.getTeam().getId() != matchDto.teamAId()

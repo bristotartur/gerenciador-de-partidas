@@ -1,13 +1,14 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
-import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.services.events.MatchService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping(value = "/gerenciador-de-partidas/api/matches")
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MatchController {
 
     private final MatchService matchService;
@@ -29,6 +31,7 @@ public class MatchController {
     @GetMapping
     public ResponseEntity<List<ExposingMatchDto>> findAllMatches() {
 
+        log.info("Request to find all Matches was made.");
         var matchList = matchService.findAllMatches();
 
         if (matchList.isEmpty())
@@ -44,6 +47,7 @@ public class MatchController {
     @GetMapping(path = "/list")
     public ResponseEntity<List<ExposingMatchDto>> findMatchesBySport(@RequestParam Sports sport) {
 
+        log.info("Request to find all Matches of type '{}' was made.", sport);
         var matchList = matchService.findMatchesBySport(sport);
 
         if (matchList.isEmpty())
@@ -59,14 +63,18 @@ public class MatchController {
     @GetMapping(path = "/{id}/players")
     public ResponseEntity<List<Participant>> findAllMatchPlayers(@PathVariable Long id) {
 
-        var players = matchService.findAllMatchPlayers(id);
+        log.info("Request to find all players from Macth '{}' was made.", id);
 
+        var players = matchService.findAllMatchPlayers(id);
         players.forEach(player -> addPlayerLink(player, id));
+
         return ResponseEntity.ok().body(players);
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<ExposingMatchDto> findMatchById(@PathVariable Long id) {
+
+        log.info("Request to find Match '{}' was made.", id);
 
         var match = matchService.findMatchById(id);
         var dto = addMatchListLink(match);
@@ -77,6 +85,8 @@ public class MatchController {
     @PostMapping
     public ResponseEntity<ExposingMatchDto> saveMatch(@RequestBody @Valid MatchDto matchDto) {
 
+        log.info("Request to create a new Match of type '{}' was made.", matchDto.sport());
+
         var match = matchService.saveMatch(matchDto);
         var dto = addMatchListLink(match);
 
@@ -86,6 +96,8 @@ public class MatchController {
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteMatch(@PathVariable Long id) {
 
+        log.info("Request to delete Match '{}' was made.", id);
+
         matchService.deleteMatchById(id);
         return ResponseEntity.noContent().build();
     }
@@ -93,6 +105,8 @@ public class MatchController {
     @PutMapping(path = "/{id}")
     public ResponseEntity<ExposingMatchDto> replaceMatch(@PathVariable Long id,
                                                          @RequestBody @Valid MatchDto matchDto) {
+
+        log.info("Request to update Match '{}' of type '{}' was made.", id, matchDto.sport());
 
         var match = matchService.replaceMatch(id, matchDto);
         var dto = addMatchListLink(match);

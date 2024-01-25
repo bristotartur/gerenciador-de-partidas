@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- *<p>Classe responsável por fornecer uma camada de serviços geral para o gerenciamento de instâncias de {@link Match},
+ * <p>Classe responsável por fornecer uma camada de serviços geral para o gerenciamento de instâncias de {@link Match},
  * lidando com aspectos gerais de partidas, como criação, atualizações, validações, etc.</p>
  *
  * <p>Para se comunicar com serviços específicos de especializações de {@link Match}, esta classe utiliza

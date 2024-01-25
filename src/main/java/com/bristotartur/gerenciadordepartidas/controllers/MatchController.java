@@ -32,7 +32,8 @@ public class MatchController {
     public ResponseEntity<List<ExposingMatchDto>> findAllMatches() {
 
         log.info("Request to find all Matches was made.");
-        var matchList = matchService.findAllMatches();
+
+        List<Match> matchList = matchService.findAllMatches();
 
         if (matchList.isEmpty())
             return ResponseEntity.noContent().build();
@@ -48,7 +49,8 @@ public class MatchController {
     public ResponseEntity<List<ExposingMatchDto>> findMatchesBySport(@RequestParam Sports sport) {
 
         log.info("Request to find all Matches of type '{}' was made.", sport);
-        var matchList = matchService.findMatchesBySport(sport);
+
+        List<? extends Match> matchList = matchService.findMatchesBySport(sport);
 
         if (matchList.isEmpty())
             return ResponseEntity.noContent().build();
@@ -65,7 +67,7 @@ public class MatchController {
 
         log.info("Request to find all players from Macth '{}' was made.", id);
 
-        var players = matchService.findAllMatchPlayers(id);
+        List<Participant> players = matchService.findAllMatchPlayers(id);
         players.forEach(player -> addPlayerLink(player, id));
 
         return ResponseEntity.ok().body(players);

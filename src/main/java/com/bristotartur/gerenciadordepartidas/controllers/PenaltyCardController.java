@@ -5,6 +5,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping(value = "/gerenciador-de-partidas/api/penalty-cards")
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class PenaltyCardController {
 
     private final PenaltyCardService penaltyCardService;
 
     @GetMapping
     public ResponseEntity<List<PenaltyCard>> findAllPenaltyCards() {
+
+        log.info("Request to find all Penalty Cards was made.");
 
         List<PenaltyCard> penaltyCardList = penaltyCardService.findAllPenaltyCards();
 
@@ -38,23 +42,29 @@ public class PenaltyCardController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<PenaltyCard> findPenaltyCardById(@PathVariable Long id) {
 
-        var penaltyCard = penaltyCardService.findPenaltyCardById(id);
+        log.info("Request to find Penalty Card '{}' was made.", id);
 
+        var penaltyCard = penaltyCardService.findPenaltyCardById(id);
         this.addPenaltyCardListLink(penaltyCard);
+
         return ResponseEntity.ok().body(penaltyCard);
     }
 
     @PostMapping
     public ResponseEntity<PenaltyCard> savePenaltyCard(@RequestBody @Valid PenaltyCardDto penaltyCardDto) {
 
-        var penaltyCard = penaltyCardService.savePenaltyCard(penaltyCardDto);
+        log.info("Request to create a new Penalty Card was made.");
 
+        var penaltyCard = penaltyCardService.savePenaltyCard(penaltyCardDto);
         this.addPenaltyCardListLink(penaltyCard);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(penaltyCard);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deletePenaltyCard(@PathVariable Long id) {
+
+        log.info("Request to delete Penalty Card '{}' was made.", id);
 
         penaltyCardService.deletePenaltyCardById(id);
         return ResponseEntity.noContent().build();
@@ -64,14 +74,15 @@ public class PenaltyCardController {
     public ResponseEntity<PenaltyCard> replacePenaltyCard(@PathVariable Long id,
                                                           @RequestBody @Valid PenaltyCardDto penaltyCardDto) {
 
-        var penaltyCard = penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
+        log.info("Request to update Penalty Card '{}' was made.", id);
 
+        var penaltyCard = penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
         this.addPenaltyCardListLink(penaltyCard);
+
         return ResponseEntity.ok().body(penaltyCard);
     }
 
     private void addSinglePenaltyCardLink(PenaltyCard penaltyCard) {
-
         var id = penaltyCard.getId();
         penaltyCard.add(linkTo(methodOn(this.getClass()).findPenaltyCardById(id)).withSelfRel());
     }

@@ -5,6 +5,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping(value = "/gerenciador-de-partidas/api/goals")
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class GoalController {
 
     private final GoalService goalService;
 
     @GetMapping
     public ResponseEntity<List<Goal>> findAllGoals() {
+
+        log.info("Request to find all Goals was made.");
 
         List<Goal> goalList = goalService.findAllGoals();
 
@@ -38,23 +42,29 @@ public class GoalController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<Goal> findGoalById(@PathVariable Long id) {
 
-        var goal = goalService.findGoalById(id);
+        log.info("Request to find Goal '{}' was made.", id);
 
+        var goal = goalService.findGoalById(id);
         this.addGoalListLink(goal);
+
         return ResponseEntity.ok().body(goal);
     }
 
     @PostMapping
     public ResponseEntity<Goal> saveGoal(@RequestBody @Valid GoalDto goalDto) {
 
-        var goal = goalService.saveGoal(goalDto);
+        log.info("Request to create a new Goal was made.");
 
+        var goal = goalService.saveGoal(goalDto);
         this.addGoalListLink(goal);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(goal);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteGoal(@PathVariable Long id) {
+
+        log.info("Request to delete Goal '{}' was made.", id);
 
         goalService.deleteGoalById(id);
         return ResponseEntity.noContent().build();
@@ -64,14 +74,15 @@ public class GoalController {
     public ResponseEntity<Goal> replaceGoal(@PathVariable Long id,
                                             @RequestBody @Valid GoalDto goalDto) {
 
-        var goal = goalService.replaceGoal(id, goalDto);
+        log.info("Request to update Goal '{}' was made.", id);
 
+        var goal = goalService.replaceGoal(id, goalDto);
         this.addGoalListLink(goal);
+
         return ResponseEntity.ok().body(goal);
     }
 
     private void addSingleGoalLink(Goal goal) {
-
         var id = goal.getId();
         goal.add(linkTo(methodOn(this.getClass()).findGoalById(id)).withSelfRel());
     }

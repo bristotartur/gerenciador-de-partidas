@@ -5,6 +5,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +20,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping(value = "/gerenciador-de-partidas/api/teams")
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class TeamController {
 
     private final TeamService teamService;
 
     @GetMapping
     public ResponseEntity<List<Team>> findAllTeams() {
+
+        log.info("Request to find all Teams was made.");
 
         List<Team> teamList = teamService.findAllTeams();
 
@@ -38,9 +42,11 @@ public class TeamController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<Team> findTeamById(@PathVariable Long id) {
 
-        var team = teamService.findTeamById(id);
+        log.info("Request to find Team '{}' was made.", id);
 
+        var team = teamService.findTeamById(id);
         this.addTeamListLink(team);
+
         return ResponseEntity.ok().body(team);
     }
 
@@ -48,14 +54,18 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<Team> saveTeam(@RequestBody @Valid TeamDto teamDto) {
 
-        var team = teamService.saveTeam(teamDto);
+        log.info("Request to create a new Team was made.");
 
+        var team = teamService.saveTeam(teamDto);
         this.addTeamListLink(team);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(team);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteTeamById(@PathVariable Long id) {
+
+        log.info("Request to delete Team '{}' was made.", id);
 
         teamService.deleteTeamById(id);
         return ResponseEntity.noContent().build();
@@ -65,9 +75,11 @@ public class TeamController {
     public ResponseEntity<Team> replaceTeam(@PathVariable Long id,
                                             @RequestBody @Valid TeamDto teamDto) {
 
-        var team = teamService.replaceTeam(id, teamDto);
+        log.info("Request to update Team '{}' was made.", id);
 
+        var team = teamService.replaceTeam(id, teamDto);
         this.addTeamListLink(team);
+
         return ResponseEntity.ok().body(team);
     }
 

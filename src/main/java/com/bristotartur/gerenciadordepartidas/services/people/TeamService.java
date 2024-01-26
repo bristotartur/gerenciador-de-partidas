@@ -10,6 +10,7 @@ import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.TeamMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class TeamService {
 
     private final TeamRepository teamRepository;
@@ -34,7 +36,11 @@ public class TeamService {
      * @return Uma lista contendo todas as equipes.
      */
     public List<Team> findAllTeams() {
-        return teamRepository.findAll();
+
+        List<Team> teams = teamRepository.findAll();
+
+        log.info("List with all Teams was found.");
+        return teams;
     }
 
     /**
@@ -49,6 +55,7 @@ public class TeamService {
         var team = teamRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
 
+        log.info("Team '{}' with name '{}' was found.", id, team.getName());
         return team;
     }
 
@@ -64,6 +71,7 @@ public class TeamService {
         var team = teamRepository.findByName(name.value)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.TEAM_NOT_FOUND.message));
 
+        log.info("Team '{}' with name '{}' was found.", team.getId(), name);
         return team;
     }
 
@@ -75,8 +83,11 @@ public class TeamService {
      */
     public List<Participant> findAllTeamMembers(Long id) {
 
-        this.findTeamById(id);
-        return teamRepository.findTeamMembers(id);
+        var team = findTeamById(id);
+        var members = teamRepository.findTeamMembers(id);
+
+        log.info("List with all members from team '{}' with name '{}' was found.", id, team.getName());
+        return members;
     }
 
     /**
@@ -94,6 +105,8 @@ public class TeamService {
             throw new BadRequestException(ExceptionMessages.NAME_ALREADY_IN_USE.message.formatted(teamName));
 
         var savedTeam = teamRepository.save(teamMapper.toNewTeam(teamDto));
+
+        log.info("Team '{}' with name '{}' was created.", savedTeam.getId(), savedTeam.getName());
         return savedTeam;
     }
 
@@ -105,8 +118,10 @@ public class TeamService {
      */
     public void deleteTeamById(Long id) {
 
-        this.findTeamById(id);
+        var team = findTeamById(id);
         teamRepository.deleteById(id);
+
+        log.info("Team '{}' with name '{}' was deleted.", id, team.getName());
     }
 
     /**
@@ -128,8 +143,10 @@ public class TeamService {
         if (teamWithSameName.isPresent() && !newTeamName.equals(originalTeamName))
             throw new BadRequestException(ExceptionMessages.NAME_ALREADY_IN_USE.message.formatted(newTeamName));
 
-        var team = teamMapper.toExistingTeam(id, teamDto);
-        return teamRepository.save(team);
+        var updatedTeam = teamRepository.save(teamMapper.toExistingTeam(id, teamDto));
+
+        log.info("Team '{}' with name '{}' was updated.", id, updatedTeam.getName());
+        return updatedTeam;
     }
 
 }

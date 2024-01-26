@@ -7,7 +7,6 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.ParticipantRepository;
-import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -77,10 +76,10 @@ public class ParticipantService {
         var participant = participantMapper.toNewParticipant(participantDto, team);
 
         this.reformatClassNumber(participant);
-        var newParticipant = participantRepository.save(participant);
+        var savedParticipant = participantRepository.save(participant);
 
-        log.info("Participant '{}' with name '{}' was created.", newParticipant.getId(), newParticipant.getName());
-        return newParticipant;
+        log.info("Participant '{}' with name '{}' was created.", savedParticipant.getId(), savedParticipant.getName());
+        return savedParticipant;
     }
 
     /**

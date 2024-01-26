@@ -46,6 +46,20 @@ public class ParticipantService {
     }
 
     /**
+     * Retorna todos os participantes que tenham um nome semelhante ao fornecido.
+     *
+     * @param name Nome usado para a busca.
+     * @return Uma lista contendo todos os participantes cujo o nome se assemelhe ao nome passado como parâmetro.
+     */
+    public List<Participant> findParticipantsByNameLike(String name) {
+
+        List<Participant> participants = participantRepository.findParticipantsByNameLike(name);
+
+        log.info("List with all Participants with name like '{}' was found.", name);
+        return participants;
+    }
+
+    /**
      * Busca por uma entidade específica do tipo {@link Participant} com base no seu ID.
      *
      * @param id Identificador único do participant.

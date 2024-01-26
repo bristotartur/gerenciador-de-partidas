@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,16 @@ public class TeamController {
         return ResponseEntity.ok().body(team);
     }
 
+    @GetMapping(path = "/find")
+    public ResponseEntity<Team> findTeamByName(@RequestParam TeamName name) {
+
+        log.info("Request to find Team with name '{}' was made.", name);
+
+        var team = teamService.findTeamByName(name);
+        this.addTeamListLink(team);
+
+        return ResponseEntity.ok().body(team);
+    }
 
     @PostMapping
     public ResponseEntity<Team> saveTeam(@RequestBody @Valid TeamDto teamDto) {

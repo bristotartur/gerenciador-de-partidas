@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
  * Classe filha de {@link Match} especializada em partidas de tênis de mesa.
  */
 @Entity
-@DiscriminatorValue("TABLE TENNIS")
+@DiscriminatorValue("TABLE_TENNIS")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor

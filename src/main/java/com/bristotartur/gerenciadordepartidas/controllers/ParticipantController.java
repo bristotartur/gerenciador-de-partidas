@@ -39,6 +39,17 @@ public class ParticipantController {
         return ResponseEntity.ok().body(participantList);
     }
 
+    @GetMapping(path = "/find")
+    public ResponseEntity<List<Participant>> findParticipantsByNameLike(@RequestParam String name) {
+
+        log.info("Request to find all Participant with name like '{}' was made.", name);
+
+        List<Participant> participantList = participantService.findParticipantsByNameLike(name);
+        participantList.forEach(this::addSingleParticipantLink);
+
+        return ResponseEntity.ok().body(participantList);
+    }
+
     @GetMapping(path = "/{id}")
     public ResponseEntity<Participant> findParticipantById(@PathVariable Long id) {
 

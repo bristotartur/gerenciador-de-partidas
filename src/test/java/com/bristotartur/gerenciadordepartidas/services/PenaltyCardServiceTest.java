@@ -1,15 +1,21 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
-import com.bristotartur.gerenciadordepartidas.services.events.FutsalMatchService;
-import com.bristotartur.gerenciadordepartidas.services.events.HandballMatchService;
+import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
+import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.PenaltyCardTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.bristotartur.gerenciadordepartidas.utils.EntityTestUtil.*;
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @Transactional
@@ -33,52 +39,67 @@ class PenaltyCardServiceTest {
     @Autowired
     private PenaltyCardRepository penaltyCardRepository;
     @Autowired
-    private FutsalMatchService futsalMatchService;
-    @Autowired
-    private HandballMatchService handballMatchService;
+    private MatchServiceMediator matchServiceMediator;
+
+    private Participant playerA;
+    private Participant playerB;
+    private Match match;
+
+    @BeforeEach
+    void setUp() {
+
+        var teamA = TeamTestUtil.createNewTeam(TeamName.MESTRES_DE_OBRAS, entityManager);
+        var teamB = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
+
+        playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, entityManager);
+        playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, entityManager);
+
+        match = MatchTestUtil.createNewMatch(teamA, teamB, List.of(playerA, playerB));
+    }
 
     @Test
     @DisplayName("Should retrieve all PenaltyCards from repository when searching for all PenaltyCards")
     void Should_RetrieveAllPenaltyCardsFromRepository_When_SearchingForAllPenaltyCards() {
 
-        var sport = Sports.FUTSAL;
-        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
+        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
-        List<PenaltyCard> existingPenaltyCards = List.of(
-                createNewPenaltyCard(sport, PenaltyCardColor.RED, match),
-                createNewPenaltyCard(sport, PenaltyCardColor.YELLOW, match));
+        List<PenaltyCard> penaltyCards = List.of(
+                PenaltyCardTestUtil.createNewPenaltyCard(PenaltyCardColor.RED, playerA, futsalMatch, entityManager),
+                PenaltyCardTestUtil.createNewPenaltyCard(PenaltyCardColor.YELLOW, playerA, futsalMatch, entityManager));
 
-        existingPenaltyCards.forEach(penaltyCard -> entityManager.merge(penaltyCard));
+        List<PenaltyCard> result = penaltyCardService.findAllPenaltyCards();
 
-        List<PenaltyCard> penaltyCardList = penaltyCardService.findAllPenaltyCards();
-
-        assertEquals(existingPenaltyCards, penaltyCardList);
+        assertEquals(result, penaltyCards);
     }
 
     @Test
     @DisplayName("Should find PenaltyCard when existing PenaltyCard ID is passed to search")
     void Should_FindPenaltyCard_When_ExistingPenaltyCardIdIsPassedToSearch() {
 
-        var sport = Sports.FUTSAL;
-        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
-        var existingPenaltyCard = createNewPenaltyCard(sport, PenaltyCardColor.RED, match);
+        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
+        var penaltyCard = PenaltyCardTestUtil
+                .createNewPenaltyCard(PenaltyCardColor.RED, playerB, handballMatch, entityManager);
 
-        entityManager.merge(existingPenaltyCard);
+        var result = penaltyCardService.findPenaltyCardById(penaltyCard.getId());
 
-        var existingId = existingPenaltyCard.getId();
-        var penaltyCard = penaltyCardService.findPenaltyCardById(existingId);
-
-        assertEquals(penaltyCard, existingPenaltyCard);
+        assertEquals(result, penaltyCard);
     }
 
     @Test
-    @DisplayName("Should throw NotFoundException when non existing PenaltyCard ID is passed to search")
-    void Should_ThrowNotFoundException_When_NonExistingPenaltyCardIdIsPassedToSearch() {
+    @DisplayName("Should throw NotFoundException when non existing PenaltyCard ID is passed to any method")
+    void Should_ThrowNotFoundException_When_NonExistingPenaltyCardIdIsPassedToAnyMethod() {
 
         var id = getRandomLongId();
+        var penaltyCardDto = PenaltyCardTestUtil.createNewPenaltyCardDto(any(), any(), any(), any());
 
         assertThrows(NotFoundException.class, () -> {
             penaltyCardService.findPenaltyCardById(id);
+        });
+        assertThrows(NotFoundException.class, () -> {
+           penaltyCardService.deletePenaltyCardById(id);
+        });
+        assertThrows(NotFoundException.class, () -> {
+            penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
         });
     }
 
@@ -86,63 +107,45 @@ class PenaltyCardServiceTest {
     @DisplayName("Should save PenaltyCard when valid PenaltyCardDto is passed to save")
     void Should_SavePenaltyCard_When_ValidPenaltyCardDtoIsPassedToSave() {
 
-        var sport = Sports.HANDBALL;
-        var match = handballMatchService.saveMatch(createNewMatch(sport, entityManager));
-        var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED, match);
-        var savedId = penaltyCardService.savePenaltyCard(penaltyCardDto).getId();
+        var sport = Sports.FUTSAL;
+        var futsalMatch = matchServiceMediator.saveMatch(match, sport);
+        var penaltyCardDto = PenaltyCardTestUtil
+                .createNewPenaltyCardDto(sport, PenaltyCardColor.RED, playerA.getId(), futsalMatch.getId());
 
-        var savedPenaltyCard = penaltyCardRepository.findById(savedId).get();
+        var result = penaltyCardService.savePenaltyCard(penaltyCardDto);
 
-        assertNotNull(savedPenaltyCard);
+        assertEquals(result, penaltyCardRepository.findById(result.getId()).get());
     }
 
     @Test
     @DisplayName("Should delete PenaltyCard from database when PenaltyCard ID is passed to delete")
     void Should_DeletePenaltyCardFromDatabase_When_PenaltyCardIdIsPassedToDelete() {
 
-        var sport = Sports.FUTSAL;
-        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
-        var existingPenaltyCard = createNewPenaltyCard(sport, PenaltyCardColor.YELLOW, match);
+        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
+        var penaltyCard = PenaltyCardTestUtil
+                .createNewPenaltyCard(PenaltyCardColor.RED, playerA, handballMatch, entityManager);
 
-        entityManager.merge(existingPenaltyCard);
+        var id = penaltyCard.getId();
+        penaltyCardService.deletePenaltyCardById(id);
 
-        var existingId = existingPenaltyCard.getId();
-        penaltyCardService.deletePenaltyCardById(existingId);
-
-        assertTrue(penaltyCardRepository.findById(existingId).isEmpty());
+        assertTrue(penaltyCardRepository.findById(id).isEmpty());
     }
 
     @Test
     @DisplayName("Should update PenaltyCard when PenaltyCardDto with new values is passed")
     void Should_UpdatePenaltyCard_When_PenaltyCardDtoWithNewValuesIsPassed() {
 
-        var sport = Sports.FUTSAL;
-        var match = futsalMatchService.saveMatch(createNewMatch(sport, entityManager));
-        var existingPenaltyCard = createNewPenaltyCard(sport, PenaltyCardColor.RED, match);
+        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
+        var penaltyCard = PenaltyCardTestUtil
+                .createNewPenaltyCard(PenaltyCardColor.YELLOW, playerA, handballMatch, entityManager);
 
-        entityManager.merge(existingPenaltyCard);
+        var penaltyCardDto = PenaltyCardTestUtil
+                .createNewPenaltyCardDto(Sports.HANDBALL, PenaltyCardColor.RED, playerB.getId(), handballMatch.getId());
 
-        var existingId = existingPenaltyCard.getId();
-        var newSport = Sports.HANDBALL;
-        var newMatch = handballMatchService.saveMatch(createNewMatch(sport, entityManager));
-        var penaltyCardDto = createNewPenaltyCardDto(newSport, PenaltyCardColor.RED, newMatch);
+        var result = penaltyCardService.replacePenaltyCard(penaltyCard.getId(), penaltyCardDto);
+        System.out.println(penaltyCard.getId());
 
-        var updatedPenaltyCard = penaltyCardService.replacePenaltyCard(existingId, penaltyCardDto);
-
-        assertNotNull(updatedPenaltyCard);
-        assertNotEquals(existingPenaltyCard, updatedPenaltyCard);
-    }
-
-    @Test
-    @DisplayName("Should throw NotFoundException when non existing ID is passed to replace PenaltyCard")
-    void Should_ThrowNotFoundException_When_NonExistingIdIsPassedToReplacePenaltyCard() {
-
-        var id = getRandomLongId();
-        var penaltyCardDto = PenaltyCardDto.builder().build();
-
-        assertThrows(NotFoundException.class, () -> {
-            penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
-        });
+        assertNotEquals(result, penaltyCard);
     }
 
 }

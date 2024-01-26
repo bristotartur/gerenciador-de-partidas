@@ -1,106 +1,62 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
-import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import jakarta.persistence.EntityManager;
+import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.PenaltyCardTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalTime;
+import java.util.List;
 
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 class PenaltyCardMapperTest {
 
     @Autowired
-    private EntityManager entityManager;
-    @Autowired
     private PenaltyCardMapper penaltyCardMapper;
-
-    private PenaltyCard createNewPenaltyCard(Sports sport, PenaltyCardColor color) {
-
-        return PenaltyCard.builder()
-                .id(getRandomLongId())
-                .color(color.name)
-                .penaltyCardTime(LocalTime.of(9, 27, 0))
-                .player(createNewPlayer())
-                .match(createNewMatch())
-                .build();
-    }
-
-    private PenaltyCardDto createNewPenaltyCardDto(Sports sport, PenaltyCardColor color) {
-
-        return PenaltyCardDto.builder()
-                .color(color)
-                .penaltyCardTime(LocalTime.of(9, 27, 0))
-                .playerId(getRandomLongId())
-                .matchId(getRandomLongId())
-                .sport(sport)
-                .build();
-    }
-
-    private Match createNewMatch() {
-        return Match.builder().id(getRandomLongId()).build();
-    }
-
-    private Participant createNewPlayer() {
-
-        return Participant.builder()
-                .name("sa")
-                .classNumber("2-53")
-                .team(any())
-                .build();
-    }
-
-    @Test
-    @DisplayName("Should convert color field from PenaltyCardDto to its String value when mapped to PenaltyCard")
-    void Should_ConvertCardColorFiledToString_When_MappedToPenaltyCardIs() {
-
-        var penaltyCardDto = createNewPenaltyCardDto(Sports.HANDBALL, PenaltyCardColor.YELLOW);
-        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, any(), any());
-
-        assertInstanceOf(String.class, penaltyCard.getColor());
-    }
 
     @Test
     @DisplayName("Should map entities to their referent fields in PenaltyCard when they are passed")
     void Should_MapEntitiesToTheirReferentFieldsInPenaltyCard_When_TheyArePassed() {
 
-        var sport = Sports.FUTSAL;
-        var matchSport = createNewMatch();
-        var player = createNewPlayer();
-        var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
+        var player = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player));
 
-        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, matchSport);
+        var penaltyCardDto = PenaltyCardTestUtil
+                .createNewPenaltyCardDto(Sports.HANDBALL, PenaltyCardColor.RED, any(), any());
 
-        assertEquals(penaltyCard.getMatch(), matchSport);
-        assertEquals(penaltyCard.getPlayer(), player);
+        var result = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
+
+        assertEquals(result.getColor(), PenaltyCardColor.RED.name);
+        assertEquals(result.getPlayer(), player);
+        assertEquals(result.getMatch(), match);
     }
 
     @Test
     @DisplayName("Should update PenaltyCard when new values are passed")
     void Should_UpdatePenaltyCards_When_NewValuesArePassed() {
 
-        var sport = Sports.HANDBALL;
-        var matchSport = createNewMatch();
-        var player = createNewPlayer();
-        var penaltyCardDto = createNewPenaltyCardDto(sport, PenaltyCardColor.RED);
+        var playerA = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var playerB = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA));
 
-        var existingPenaltyCard = createNewPenaltyCard(Sports.FUTSAL, PenaltyCardColor.YELLOW);
-        var existingId = existingPenaltyCard.getId();
+        var penaltyCard = PenaltyCardTestUtil
+                .createNewPenaltyCard(PenaltyCardColor.YELLOW, playerA, match);
 
-        var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(existingId, penaltyCardDto, player, matchSport);
+        var penaltyCardDto = PenaltyCardTestUtil
+                .createNewPenaltyCardDto(Sports.FUTSAL, PenaltyCardColor.RED, any(), any());
 
-        assertNotEquals(existingPenaltyCard, updatedPenaltyCard);
+        var result = penaltyCardMapper.toExistingPenaltyCard(getRandomLongId(), penaltyCardDto, playerB, match);
+
+        assertNotEquals(result, penaltyCard);
     }
 
 }

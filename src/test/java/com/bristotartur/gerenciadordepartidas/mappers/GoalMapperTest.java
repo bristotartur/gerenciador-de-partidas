@@ -1,16 +1,15 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
-import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
-import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.utils.GoalTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalTime;
+import java.util.List;
 
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,70 +22,35 @@ class GoalMapperTest {
     @Autowired
     private GoalMapper goalMapper;
 
-    private Goal createNewGoal(Sports sport) {
-
-        return Goal.builder()
-                .goalTime(LocalTime.of(9, 27, 0))
-                .player(createNewPlayer())
-                .match(createNewMatch())
-                .build();
-    }
-
-    private GoalDto createNewGoalDto(Sports sport) {
-
-        var match = Match.builder().id(getRandomLongId()).build();
-
-        return GoalDto.builder()
-                .goalTime(LocalTime.of(9, 27, 0))
-                .playerId(getRandomLongId())
-                .matchId(createNewMatch().getId())
-                .sport(sport)
-                .build();
-    }
-
-    private Match createNewMatch() {
-        return Match.builder().id(getRandomLongId()).build();
-    }
-
-    private Participant createNewPlayer() {
-
-        return Participant.builder()
-                .name("sa")
-                .classNumber("2-53")
-                .team(any())
-                .build();
-    }
-
     @Test
     @DisplayName("Should map entities to their referent fields in Goal when they are passed")
     void Should_MapEntitiesToTheirReferentFieldsInGoal_When_TheyArePassed() {
 
-        var sport = Sports.FUTSAL;
-        var match = createNewMatch();
-        var player = createNewPlayer();
-        var goalDto = createNewGoalDto(sport);
+        var player = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player));
 
-        var goal = goalMapper.toNewGoal(goalDto, player, match);
+        var goalDto = GoalTestUtil.createNewGoalDto(any(), any(), Sports.HANDBALL);
+        var result = goalMapper.toNewGoal(goalDto, player, match);
 
-        assertEquals(goal.getMatch(), match);
-        assertEquals(goal.getPlayer(), player);
+        assertEquals(result.getGoalTime(), goalDto.goalTime());
+        assertEquals(result.getPlayer(), player);
+        assertEquals(result.getMatch(), match);
     }
 
     @Test
     @DisplayName("Should update Goal when new values are passed")
     void Should_UpdateGoal_When_NewValuesArePassed() {
 
-        var sport = Sports.FUTSAL;
-        var match = createNewMatch();
-        var player = createNewPlayer();
-        var goalDto = createNewGoalDto(sport);
+        var playerA = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var playerB = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA));
 
-        var existingGoal = createNewGoal(Sports.FUTSAL);
-        var existingId = existingGoal.getId();
+        var goal = GoalTestUtil.createNewGoal(playerA, match);
+        var goalDto = GoalTestUtil.createNewGoalDto(any(), any(), Sports.HANDBALL);
 
-        var updatedGoal = goalMapper.toExistingGoal(existingId, goalDto, player, match);
+        var result = goalMapper.toExistingGoal(getRandomLongId(), goalDto, playerB, match);
 
-        assertNotEquals(existingGoal, updatedGoal);
+        assertNotEquals(result, goal);
     }
 
 }

@@ -32,11 +32,8 @@ public class TeamController {
         log.info("Request to find all Teams was made.");
 
         List<Team> teamList = teamService.findAllTeams();
-
-        if (teamList.isEmpty())
-            return ResponseEntity.noContent().build();
-
         teamList.forEach(this::addSingleTeamLink);
+
         return ResponseEntity.ok().body(teamList);
     }
 

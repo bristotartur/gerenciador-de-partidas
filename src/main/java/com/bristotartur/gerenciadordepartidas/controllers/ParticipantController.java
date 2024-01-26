@@ -31,11 +31,8 @@ public class ParticipantController {
         log.info("Request to find all Participants was made.");
 
         List<Participant> participantList = participantService.findAllParticipants();
-
-        if (participantList.isEmpty())
-            return ResponseEntity.noContent().build();
-
         participantList.forEach(this::addSingleParticipantLink);
+
         return ResponseEntity.ok().body(participantList);
     }
 

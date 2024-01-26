@@ -31,11 +31,8 @@ public class PenaltyCardController {
         log.info("Request to find all Penalty Cards was made.");
 
         List<PenaltyCard> penaltyCardList = penaltyCardService.findAllPenaltyCards();
-
-        if (penaltyCardList.isEmpty())
-            return ResponseEntity.noContent().build();
-
         penaltyCardList.forEach(this::addSinglePenaltyCardLink);
+
         return ResponseEntity.ok().body(penaltyCardList);
     }
 

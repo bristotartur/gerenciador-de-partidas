@@ -35,9 +35,6 @@ public class MatchController {
 
         List<Match> matchList = matchService.findAllMatches();
 
-        if (matchList.isEmpty())
-            return ResponseEntity.noContent().build();
-
         var dtos = matchList.stream()
                 .map(this::addSingleMatchLink)
                 .toList();
@@ -51,9 +48,6 @@ public class MatchController {
         log.info("Request to find all Matches of type '{}' was made.", sport);
 
         List<? extends Match> matchList = matchService.findMatchesBySport(sport);
-
-        if (matchList.isEmpty())
-            return ResponseEntity.noContent().build();
 
         var dtos = matchList.stream()
                 .map(this::addSingleMatchLink)

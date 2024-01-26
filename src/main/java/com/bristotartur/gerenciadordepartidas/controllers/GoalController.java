@@ -31,11 +31,8 @@ public class GoalController {
         log.info("Request to find all Goals was made.");
 
         List<Goal> goalList = goalService.findAllGoals();
-
-        if (goalList.isEmpty())
-            return ResponseEntity.noContent().build();
-
         goalList.forEach(this::addSingleGoalLink);
+        
         return ResponseEntity.ok().body(goalList);
     }
 

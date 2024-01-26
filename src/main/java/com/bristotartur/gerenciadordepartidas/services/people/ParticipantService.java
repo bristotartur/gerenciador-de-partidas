@@ -9,6 +9,7 @@ import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.ParticipantRepository;
 import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
@@ -37,7 +39,11 @@ public class ParticipantService {
      * @return Uma lista contendo todos os participantes.
      */
     public List<Participant> findAllParticipants() {
-        return participantRepository.findAll();
+
+        List<Participant> participants = participantRepository.findAll();
+
+        log.info("List with all Participants was found.");
+        return participants;
     }
 
     /**
@@ -52,6 +58,7 @@ public class ParticipantService {
         var participant = participantRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.PARTICIPANT_NOT_FOUND.message));
 
+        log.info("Participant '{}' with name '{}' was found.", participant.getId(), participant.getName());
         return participant;
     }
 
@@ -70,8 +77,10 @@ public class ParticipantService {
         var participant = participantMapper.toNewParticipant(participantDto, team);
 
         this.reformatClassNumber(participant);
+        var newParticipant = participantRepository.save(participant);
 
-        return participantRepository.save(participant);
+        log.info("Participant '{}' with name '{}' was created.", newParticipant.getId(), newParticipant.getName());
+        return newParticipant;
     }
 
     /**
@@ -82,8 +91,10 @@ public class ParticipantService {
      */
     public void deleteParticipantById(Long id) {
 
-        this.findParticipantById(id);
+        var participant = findParticipantById(id);
         participantRepository.deleteById(id);
+
+        log.info("Participant '{}' with name '{}' was deleted.", id, participant.getName());
     }
 
     /**
@@ -105,8 +116,10 @@ public class ParticipantService {
         var participant = participantMapper.toExistingParticipant(id, participantDto, team);
 
         this.reformatClassNumber(participant);
+        var updatedParticipant = participantRepository.save(participant);
 
-        return participantRepository.save(participant);
+        log.info("Participant '{}' with name '{}' was updated.", id, updatedParticipant.getName());
+        return updatedParticipant;
     }
 
     /**

@@ -11,6 +11,7 @@ import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
 import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class GoalService {
 
     private final GoalRepository goalRepository;
@@ -40,7 +42,11 @@ public class GoalService {
      * @return Uma lista contendo todos os gols.
      */
     public List<Goal> findAllGoals() {
-        return goalRepository.findAll();
+
+        List<Goal> goals = goalRepository.findAll();
+
+        log.info("List with all Goals was found.");
+        return goals;
     }
 
     /**
@@ -55,6 +61,7 @@ public class GoalService {
         var goal = goalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.GOAL_NOT_FOUND.message));
 
+        log.info("Goal '{}' from Match '{}' was found.", id, goal.getMatch().getId());
         return goal;
     }
 
@@ -73,9 +80,10 @@ public class GoalService {
         var player = participantService.findParticipantById(goalDto.playerId());
 
         this.increaseScore(player.getTeam(), match);
-        var goal = goalMapper.toNewGoal(goalDto, player, match);
+        var savedGoal = goalRepository.save(goalMapper.toNewGoal(goalDto, player, match));
 
-        return goalRepository.save(goal);
+        log.info("Goal '{}' was created in Match '{}'.", savedGoal.getId(), match.getId());
+        return savedGoal;
     }
 
     /**
@@ -89,9 +97,12 @@ public class GoalService {
 
         var goal = findGoalById(id);
         var team = goal.getPlayer().getTeam();
+        var match = goal.getMatch();
 
-        this.decreaseScore(team, goal.getMatch());
+        this.decreaseScore(team, match);
         goalRepository.deleteById(id);
+
+        log.info("Goal '{}' from Match '{}' was deleted.", id, match.getId());
     }
 
     /**
@@ -121,8 +132,10 @@ public class GoalService {
             this.increaseScore(newPlayer.getTeam(), newMatch);
             this.decreaseScore(originalPlayerTeam, originaMatch);
         }
-        var goal = goalMapper.toExistingGoal(id, goalDto, newPlayer, newMatch);
-        return goalRepository.save(goal);
+        var updatedGoal = goalRepository.save(goalMapper.toExistingGoal(id, goalDto, newPlayer, newMatch));
+
+        log.info("Goal '{}' from Match '{}' was updated.", id, updatedGoal.getMatch().getId());
+        return updatedGoal;
     }
 
     /**
@@ -141,7 +154,6 @@ public class GoalService {
             return;
         }
         match.setTeamScoreB(match.getTeamScoreB() + 1);
-        return;
     }
 
     /**
@@ -160,7 +172,6 @@ public class GoalService {
             return;
         }
         match.setTeamScoreB(match.getTeamScoreB() - 1);
-        return;
     }
 
 }

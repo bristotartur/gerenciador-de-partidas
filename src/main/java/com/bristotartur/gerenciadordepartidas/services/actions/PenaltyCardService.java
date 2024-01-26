@@ -9,6 +9,7 @@ import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository
 import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class PenaltyCardService {
 
     private final PenaltyCardRepository penaltyCardRepository;
@@ -39,7 +41,11 @@ public class PenaltyCardService {
      * @return Uma lista contendo todos os cartões.
      */
     public List<PenaltyCard> findAllPenaltyCards() {
-        return penaltyCardRepository.findAll();
+
+        List<PenaltyCard> penaltyCards = penaltyCardRepository.findAll();
+
+        log.info("List with all Penalty Cards was found.");
+        return penaltyCards;
     }
 
     /**
@@ -54,6 +60,7 @@ public class PenaltyCardService {
         var penaltyCard = penaltyCardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.PENALTY_CARD_NOT_FOUND.message));
 
+        log.info("Penalty Card '{}' from Match '{}' was found.", id, penaltyCard.getMatch().getId());
         return penaltyCard;
     }
 
@@ -69,9 +76,11 @@ public class PenaltyCardService {
         var match = matchServiceMediator.findMatch(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
-        var penaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
+        var savedPenaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
+        savedPenaltyCard =  penaltyCardRepository.save(savedPenaltyCard);
 
-        return penaltyCardRepository.save(penaltyCard);
+        log.info("Penalty Card '{}' was created in Match '{}'.", savedPenaltyCard.getId(), match.getId());
+        return savedPenaltyCard;
     }
 
     /**
@@ -80,7 +89,13 @@ public class PenaltyCardService {
      * @param id Identificador único do cartão.
      */
     public void deletePenaltyCardById(Long id) {
+
+        var penaltyCard = findPenaltyCardById(id);
+        var match = penaltyCard.getMatch();
+
         penaltyCardRepository.deleteById(id);
+
+        log.info("Penalty Card '{}' from Match '{}' was deleted.", id, match.getId());
     }
 
     /**
@@ -101,9 +116,11 @@ public class PenaltyCardService {
         var match = matchServiceMediator.findMatchForCard(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
 
-        var penaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, match);
+        var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, match);
+        updatedPenaltyCard = penaltyCardRepository.save(updatedPenaltyCard);
 
-        return penaltyCardRepository.save(penaltyCard);
+        log.info("Penalty Card '{}' from Match '{}' was updated.", id, match.getId());
+        return updatedPenaltyCard;
     }
 
 }

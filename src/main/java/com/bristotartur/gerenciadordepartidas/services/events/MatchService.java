@@ -15,6 +15,7 @@ import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class MatchService {
 
     @PersistenceContext
@@ -52,6 +54,10 @@ public class MatchService {
      * @return Uma lista contendo todas as partidas.
      */
     public List<Match> findAllMatches() {
+
+        List<Match> matches = matchRepository.findAll();
+
+        log.info("List with all Matches was found.");
         return matchRepository.findAll();
     }
 
@@ -62,7 +68,11 @@ public class MatchService {
      * @return Uma lista contendo todas as instâncias da especialização de {@link Match} definida;
      */
     public List<? extends Match> findMatchesBySport(Sports sport) {
-        return matchServiceMediator.findMatchesBySport(sport);
+
+        List<? extends Match> matches = matchServiceMediator.findMatchesBySport(sport);
+
+        log.info("List with all Matches of type '{}' was found.", sport);
+        return matches;
     }
 
     /**
@@ -74,8 +84,26 @@ public class MatchService {
      */
     public Match findMatchById(Long id) {
 
-        return matchRepository.findById(id)
+        var match = matchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.MATCH_NOT_FOUND.message));
+
+        log.info("Match '{}' of type '{}' was found.", id, matchRepository.findMatchTypeById(id, entityManager));
+        return match;
+    }
+
+    /**
+     * Retorna todos os jogadores presentes em uma partida.
+     *
+     * @param id Identificador único da partida.
+     * @return Uma lista com todos os jogadores da partida.
+     */
+    public List<Participant> findAllMatchPlayers(Long id) {
+
+        List<Participant> players = findMatchById(id).getPlayers();
+        var sport =  matchRepository.findMatchTypeById(id, entityManager);
+
+        log.info("List with all players from Match '{}' of type '{}' was found.", id, sport);
+        return players;
     }
 
     /**
@@ -86,33 +114,8 @@ public class MatchService {
      */
     public ExposingMatchDto createExposingMatchDto(Match match) {
 
-        var sport = findMatchSportById(match.getId());
+        var sport = matchRepository.findMatchTypeById(match.getId(), entityManager);
         return matchMapper.toNewExposingMatchDto(match, sport);
-    }
-
-    /**
-     * Busca pela modalidade esportiva de uma determinada partida com base no seu ID. O valor
-     * retornado por este método não corresponde ao valor interno das opções do enum {@link Sports},
-     * mas sim ao nome dessas opções.
-     *
-     * @param id Identificador único da partida.
-     * @return A modalidade esportiva correspondente a partida.
-     * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada.
-     */
-    private String findMatchSportById(Long id) {
-
-        this.findMatchById(id);
-        return matchRepository.findMatchTypeById(id, entityManager);
-    }
-
-    /**
-     * Retorna todos os jogadores presentes em uma partida.
-     *
-     * @param id Identificador único da partida.
-     * @return Uma lista com todos os jogadores da partida.
-     */
-    public List<Participant> findAllMatchPlayers(Long id) {
-        return findMatchById(id).getPlayers();
     }
 
     /**
@@ -138,8 +141,11 @@ public class MatchService {
 
         this.checkPlayers(players, matchDto);
 
-        var match = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
-        return matchServiceMediator.saveMatch(match, matchDto.sport());
+        var savedMatch = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
+        savedMatch = matchServiceMediator.saveMatch(savedMatch, matchDto.sport());
+
+        log.info("Match '{}' with type '{}' was created.", savedMatch.getId(), matchDto.sport());
+        return savedMatch;
     }
 
     /**
@@ -151,7 +157,11 @@ public class MatchService {
     public void deleteMatchById(Long id) {
 
         this.findMatchById(id);
+        var sport =  matchRepository.findMatchTypeById(id, entityManager);
+
         matchRepository.deleteById(id);
+
+        log.info("Match '{}' of type '{}' was deleted.", id, sport);
     }
 
     /**
@@ -182,11 +192,14 @@ public class MatchService {
 
         this.checkPlayers(players, matchDto);
 
-        var match = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
-        match.setTeamScoreA(existingMatch.getTeamScoreA());
-        match.setTeamScoreB(existingMatch.getTeamScoreB());
+        var updatedMatch = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
+        updatedMatch.setTeamScoreA(existingMatch.getTeamScoreA());
+        updatedMatch.setTeamScoreB(existingMatch.getTeamScoreB());
 
-        return matchServiceMediator.saveMatch(match, matchDto.sport());
+        updatedMatch = matchServiceMediator.saveMatch(updatedMatch, matchDto.sport());
+
+        log.info("Match '{}' of type '{}' was updated.", id, matchDto.sport());
+        return updatedMatch;
     }
 
     /**

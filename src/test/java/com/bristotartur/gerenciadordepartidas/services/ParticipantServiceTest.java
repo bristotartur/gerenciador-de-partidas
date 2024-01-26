@@ -42,14 +42,29 @@ class ParticipantServiceTest {
     @DisplayName("Should retrieve all Participants from repository when searching for all Participants")
     void Should_RetrieveAllParticipantsFromRepository_When_SearchingForAllParticipants() {
 
-        var existingParticipants = List.of(
+        var participants = List.of(
                 ParticipantTestUtil.createNewParticipant("1-53", team, entityManager),
                 ParticipantTestUtil.createNewParticipant("2-53", team, entityManager),
                 ParticipantTestUtil.createNewParticipant("3-53", team, entityManager));
 
-        var participantList = participantService.findAllParticipants();
+        var result = participantService.findAllParticipants();
 
-        assertEquals(existingParticipants, participantList);
+        assertEquals(result, participants);
+    }
+
+    @Test
+    @DisplayName("Should retrieve all Participants from repository when their names are similar to the given name")
+    void Should_RetrieveAllParticipantsFromRepository_When_TheirNamesAreSimilarToTheGivenName() {
+
+        var participants = List.of(
+                ParticipantTestUtil.createNewParticipant("Carlos Henrique","1-53", team, entityManager),
+                ParticipantTestUtil.createNewParticipant("Carlos Eduardo","2-53", team, entityManager),
+                ParticipantTestUtil.createNewParticipant("Carol","3-53", team, entityManager));
+
+        var result = participantService.findParticipantsByNameLike("Carlos");
+
+        assertFalse(participants.isEmpty());
+        assertNotEquals(result, participants);
     }
 
     @Test

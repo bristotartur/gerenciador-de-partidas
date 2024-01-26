@@ -52,6 +52,28 @@ public final class ParticipantTestUtil {
     }
 
     /**
+     * Cria uma nova instância de {@link Participant} e a persiste no banco de dados.
+     *
+     * @param name O nome do participante.
+     * @param classNumber O número da turma do participante.
+     * @param team A equipe associada ao participante.
+     * @param entityManager Instância de {@link EntityManager} responsável por gerenciar o ciclo de vida de
+     *                      entidades e persistí-las no banco de dados.
+     * @return Ua nova instância de {@link Participant}.
+     */
+    public static Participant createNewParticipant(String name, String classNumber, Team team, EntityManager entityManager) {
+
+        var participant = Participant.builder()
+                .name(name)
+                .classNumber(classNumber)
+                .team(team)
+                .build();
+
+        entityManager.merge(participant);
+        return participant;
+    }
+
+    /**
      * Gera uma nova instância de {@link ParticipantDto}.
      *
      * @param classNumber O número da turma do participante.

@@ -138,6 +138,21 @@ class MatchServiceTest {
     }
 
     @Test
+    @DisplayName("Should create new ExposingMatchDto when Match is passed to create ExposingMatchDto")
+    void Should_CreateNewExposingMatchDto_When_MatchIsPassedToCreateExposingMatchDto() {
+
+        var sport = Sports.HANDBALL;
+        var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MASCULINE);
+        var handballMatch = matchServiceMediator.saveMatch(match, sport);
+
+        var result = matchService.createExposingMatchDto(handballMatch);
+
+        assertEquals(result.getSport(), sport.name());
+        assertEquals(result.getTeamA(), handballMatch.getTeamA().getName());
+        assertEquals(result.getTeamB(), handballMatch.getTeamB().getName());
+    }
+
+    @Test
     @DisplayName("Should save Match when valid MatchDto is passed to save")
     void Should_SaveMatch_When_ValidMatchDtoIsPassedToSave() {
 

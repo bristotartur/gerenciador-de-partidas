@@ -41,9 +41,11 @@ public class TeamService {
      */
     public Page<Team> findAllTeams(Pageable pageable) {
 
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
         var teamPage = teamRepository.findAll(pageable);
 
-        log.info("Team page of number '{}' and size '{}' was returned.", pageable.getPageNumber(), pageable.getPageSize());
+        log.info("Team page of number '{}' and size '{}' was returned.", number, size);
         return teamPage;
     }
 

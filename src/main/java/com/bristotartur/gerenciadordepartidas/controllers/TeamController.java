@@ -70,15 +70,6 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.CREATED).body(team);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> deleteTeamById(@PathVariable Long id) {
-
-        log.info("Request to delete Team '{}' was made.", id);
-
-        teamService.deleteTeamById(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping(path = "/{id}")
     public ResponseEntity<Team> replaceTeam(@PathVariable Long id,
                                             @RequestBody @Valid TeamDto teamDto) {

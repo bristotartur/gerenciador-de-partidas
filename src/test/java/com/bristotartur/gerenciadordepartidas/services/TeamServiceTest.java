@@ -115,16 +115,6 @@ class TeamServiceTest {
     }
 
     @Test
-    @DisplayName("Should delete Team from database when existing Team ID is passed to delete")
-    void Should_DeleteTeamFromDatabase_When_ExistingTeamIdIsPassedToDelete() {
-
-        var team = TeamTestUtil.createNewTeam(TeamName.ATOMICA, entityManager);
-        teamService.deleteTeamById(team.getId());
-
-        assertTrue(teamRepository.findById(team.getId()).isEmpty());
-    }
-
-    @Test
     @DisplayName("Should update Team when valid TeamDto with new values is passed to update")
     void Should_UpdateTeam_When_ValidTeamDtoWithNewValuesIsPassedToUpdate() {
 
@@ -168,9 +158,6 @@ class TeamServiceTest {
         });
         assertThrows(NotFoundException.class, () -> {
             teamService.findAllTeamMembers(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            teamService.deleteTeamById(id);
         });
         assertThrows(NotFoundException.class, () -> {
             teamService.replaceTeam(id, teamDto);

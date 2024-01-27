@@ -83,7 +83,7 @@ public class TeamService {
      */
     public List<Participant> findAllTeamMembers(Long id) {
 
-        var team = findTeamById(id);
+        var team = this.findTeamById(id);
         var members = teamRepository.findTeamMembers(id);
 
         log.info("List with all members from team '{}' with name '{}' was found.", id, team.getName());
@@ -111,20 +111,6 @@ public class TeamService {
     }
 
     /**
-     * Remove uma equipe do sistema com base em seu ID.
-     *
-     * @param id Identificador único da equipe a ser removida.
-     * @throws NotFoundException Se nenhuma equipe correspondente ao ID fornecido for encontrada.
-     */
-    public void deleteTeamById(Long id) {
-
-        var team = findTeamById(id);
-        teamRepository.deleteById(id);
-
-        log.info("Team '{}' with name '{}' was deleted.", id, team.getName());
-    }
-
-    /**
      * Atualiza uma equipe existente no sistema com base em seu ID e os dados fornecidos em {@link TeamDto}.
      * Isso envolve a substituição completa dos dados da equipe existente pelos novos dados fornecidos.
      *
@@ -136,7 +122,7 @@ public class TeamService {
      */
     public Team replaceTeam(Long id, TeamDto teamDto) {
 
-        var originalTeamName = findTeamById(id).getName();
+        var originalTeamName = this.findTeamById(id).getName();
         var newTeamName = teamDto.teamName().value;
         var teamWithSameName = teamRepository.findByName(newTeamName);
 

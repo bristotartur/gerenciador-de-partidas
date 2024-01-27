@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -39,32 +41,39 @@ class ParticipantServiceTest {
     }
 
     @Test
-    @DisplayName("Should retrieve all Participants from repository when searching for all Participants")
-    void Should_RetrieveAllParticipantsFromRepository_When_SearchingForAllParticipants() {
+    @DisplayName("Should retrieve all Participants in paged form when searching for all Participants")
+    void Should_RetrieveAllParticipantsInPagedForm_When_SearchingForAllParticipants() {
+
+        var pageable = PageRequest.of(0, 3);
 
         var participants = List.of(
                 ParticipantTestUtil.createNewParticipant("1-53", team, entityManager),
                 ParticipantTestUtil.createNewParticipant("2-53", team, entityManager),
                 ParticipantTestUtil.createNewParticipant("3-53", team, entityManager));
 
-        var result = participantService.findAllParticipants();
+        var participantPage = new PageImpl<>(participants, pageable, participants.size());
+        var result = participantService.findAllParticipants(pageable);
 
-        assertEquals(result, participants);
+        assertEquals(result.getContent(), participantPage.getContent());
+        assertEquals(result.getTotalPages(), participantPage.getTotalPages());
     }
 
     @Test
-    @DisplayName("Should retrieve all Participants from repository when their names are similar to the given name")
-    void Should_RetrieveAllParticipantsFromRepository_When_TheirNamesAreSimilarToTheGivenName() {
+    @DisplayName("Should retrieve Participants in paged form when their names are similar to the given name")
+    void Should_RetrieveParticipantsInPagedForm_When_TheirNamesAreSimilarToTheGivenName() {
+
+        var pageable = PageRequest.of(0, 3);
 
         var participants = List.of(
                 ParticipantTestUtil.createNewParticipant("Carlos Henrique","1-53", team, entityManager),
                 ParticipantTestUtil.createNewParticipant("Carlos Eduardo","2-53", team, entityManager),
                 ParticipantTestUtil.createNewParticipant("Carol","3-53", team, entityManager));
 
-        var result = participantService.findParticipantsByNameLike("Carlos");
+        var participantPage = new PageImpl<>(participants, pageable, participants.size());
+        var result = participantService.findParticipantsByNameLike("Carlos", pageable);
 
-        assertFalse(participants.isEmpty());
-        assertNotEquals(result, participants);
+        assertFalse(result.getContent().isEmpty());
+        assertNotEquals(result.getContent(), participantPage.getContent());
     }
 
     @Test

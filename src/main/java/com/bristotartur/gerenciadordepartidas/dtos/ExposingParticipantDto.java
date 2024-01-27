@@ -7,7 +7,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 @RequiredArgsConstructor
 @Getter
-public class ExposingParticipantDto extends RepresentationModel<Participant> {
+public class ExposingParticipantDto extends RepresentationModel<ExposingParticipantDto> {
 
     private final String name;
     private final String classNumber;

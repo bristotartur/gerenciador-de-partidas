@@ -12,6 +12,8 @@ import com.bristotartur.gerenciadordepartidas.mappers.TeamMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,16 +34,17 @@ public class TeamService {
     private final TeamMapper teamMapper;
 
     /**
-     * Recupera todas as equipes disponíveis no sistema.
+     * Retorna uma lista paginada de todas as equipes disponíveis no sistema.
      *
-     * @return Uma lista contendo todas as equipes.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo as equipes para página especificada.
      */
-    public List<Team> findAllTeams() {
+    public Page<Team> findAllTeams(Pageable pageable) {
 
-        List<Team> teams = teamRepository.findAll();
+        var teamPage = teamRepository.findAll(pageable);
 
-        log.info("List with all Teams was found.");
-        return teams;
+        log.info("Team page of number '{}' and size '{}' was returned.", pageable.getPageNumber(), pageable.getPageSize());
+        return teamPage;
     }
 
     /**

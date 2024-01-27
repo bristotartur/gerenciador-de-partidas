@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @Getter
 public class ExposingMatchDto extends RepresentationModel<Match> {
 
-    private final Long id;
     private final String sport;
     private final String teamA;
     private final String teamB;

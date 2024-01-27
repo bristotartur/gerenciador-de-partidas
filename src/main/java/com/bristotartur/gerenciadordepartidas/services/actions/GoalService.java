@@ -1,10 +1,12 @@
 package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
+import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
@@ -66,6 +68,16 @@ public class GoalService {
     }
 
     /**
+     * Gera um DTO do tipo {@link ExposingGoalDto} com base no gol fornecido.
+     *
+     * @param goal Gol que terá seus dados mapeados para o DTO.
+     * @return Uma nova instância de {@link ExposingGoalDto} contendo os dados fornecidos.
+     */
+    public ExposingGoalDto createExposingGoalDto(Goal goal) {
+        return goalMapper.toNewExposingGoalDto(goal);
+    }
+
+    /**
      * Salva um gol no sistema com base nos dados fornecidos em {@link GoalDto}, realizando uma validação
      * prévia destes dados antes de gerar o gol e persistí-lo. A partida na qual este gol estiver associado
      * terá seu placar alterado.
@@ -95,7 +107,7 @@ public class GoalService {
      */
     public void deleteGoalById(Long id) {
 
-        var goal = findGoalById(id);
+        var goal = this.findGoalById(id);
         var team = goal.getPlayer().getTeam();
         var match = goal.getMatch();
 
@@ -118,12 +130,13 @@ public class GoalService {
      * @return O gol atualizado.
      * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado ou
      * alguma entidade não corresponda aos IDs fornecidos por {@link GoalDto}.
+     * @throws BadRequestException Caso a modalidade esportiva da partida fornecida não seja suportada para gols.
      */
     public Goal replaceGoal(Long id, GoalDto goalDto) {
 
-        var existingGoal = findGoalById(id);
-        var originaMatch = existingGoal.getMatch();
-        var originalPlayerTeam = existingGoal.getPlayer().getTeam();
+        var originalGol = this.findGoalById(id);
+        var originaMatch = originalGol.getMatch();
+        var originalPlayerTeam = originalGol.getPlayer().getTeam();
 
         var newMatch = matchServiceMediator.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var newPlayer = participantService.findParticipantById(goalDto.playerId());

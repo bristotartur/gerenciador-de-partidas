@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class Team extends RepresentationModel<Team> {
+public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

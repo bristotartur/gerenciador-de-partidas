@@ -10,10 +10,10 @@ import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Participant},
@@ -34,30 +34,35 @@ public class ParticipantService {
     private final TeamService teamService;
 
     /**
-     * Retorna todos os participantes disponíveis no banco de dados.
+     * Retorna uma lista paginada dos participantes disponíveis no sistema.
      *
-     * @return Uma lista contendo todos os participantes.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo os participantes para a página especificada.
      */
-    public List<Participant> findAllParticipants() {
+    public Page<Participant> findAllParticipants(Pageable pageable) {
 
-        List<Participant> participants = participantRepository.findAll();
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var participantPage = participantRepository.findAll(pageable);
 
-        log.info("List with all Participants was found.");
-        return participants;
+        log.info("Participant page of number '{}' and size '{}' was returned.", number, size);
+        return participantPage;
     }
 
     /**
-     * Retorna todos os participantes que tenham um nome semelhante ao fornecido.
+     * Retorna uma lista paginada dos participantes que tenham um nome semelhante ao fornecido.
      *
      * @param name Nome usado para a busca.
      * @return Uma lista contendo todos os participantes cujo o nome se assemelhe ao nome passado como parâmetro.
      */
-    public List<Participant> findParticipantsByNameLike(String name) {
+    public Page<Participant> findParticipantsByNameLike(String name, Pageable pageable) {
 
-        List<Participant> participants = participantRepository.findParticipantsByNameLike(name);
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var participantPage = participantRepository.findParticipantsByNameLike(name, pageable);
 
-        log.info("List with all Participants with name like '{}' was found.", name);
-        return participants;
+        log.info("Participant page of number '{}' and size '{}' with name like '{}' was returned.", name, number, size);
+        return participantPage;
     }
 
     /**

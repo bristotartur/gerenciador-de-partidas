@@ -12,6 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -31,17 +33,21 @@ class TeamServiceTest {
     private TeamRepository teamRepository;
 
     @Test
-    @DisplayName("Should retrieve all Teams from database when searching for all Teams")
-    void Should_RetrieveAllTeamsFromDatabase_When_SearchingForAllTeams() {
+    @DisplayName("Should retrieve all Teams in paged form when searching for all Teams")
+    void Should_RetrieveAllTeamsInPagedForm_When_SearchingForAllTeams() {
+
+        var pageable = PageRequest.of(0, 3);
 
         var teams = List.of(
                 TeamTestUtil.createNewTeam(TeamName.ATOMICA, entityManager),
                 TeamTestUtil.createNewTeam(TeamName.MESTRES_DE_OBRAS, entityManager),
                 TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager));
 
-        var result = teamService.findAllTeams();
+        var teamPage = new PageImpl<>(teams, pageable, teams.size());
+        var result = teamService.findAllTeams(pageable);
 
-        assertEquals(result, teams);
+        assertEquals(result.getContent(), teamPage.getContent());
+        assertEquals(result.getTotalPages(), teamPage.getTotalPages());
     }
 
     @Test
@@ -98,7 +104,7 @@ class TeamServiceTest {
         var team = TeamTestUtil.createNewTeam(TeamName.ATOMICA, entityManager);
         var result = teamService.createExposingTeamDto(team);
 
-        assertEquals(result.getName(), team.getName());
+        assertEquals(result.getTeamName(), team.getName());
     }
 
     @Test

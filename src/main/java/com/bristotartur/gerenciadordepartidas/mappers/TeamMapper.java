@@ -52,6 +52,7 @@ public interface TeamMapper {
      * @param team Equipe contenco os dados a serem mapeados.
      * @return Uma nova instância de {@link Team}.
      */
+    @Mapping(target = "teamName", source = "team.name")
     ExposingTeamDto toNewExposingTeamDto(Team team);
 
 }

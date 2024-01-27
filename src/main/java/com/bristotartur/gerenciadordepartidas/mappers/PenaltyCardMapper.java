@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -40,5 +41,14 @@ public interface PenaltyCardMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "color", source = "penaltyCardDto.color.name")
     PenaltyCard toExistingPenaltyCard(Long id, PenaltyCardDto penaltyCardDto, Participant player, Match match);
+
+    /**
+     * Gera uma nova instância de {@link ExposingPenaltyCardDto} a partir de qualquer instância de {@link PenaltyCard}.
+     *
+     * @param penaltyCard Cartão de penalidade contendo os dados a serem mapeados.
+     * @return Uma nova instância de {@link PenaltyCard}.
+     */
+    @Mapping(target = "player", source = "player.name")
+    ExposingPenaltyCardDto toNewExposinfPenaltyCardDto(PenaltyCard penaltyCard);
 
 }

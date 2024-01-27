@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -43,5 +44,14 @@ public interface ParticipantMapper {
     @Mapping(target = "goal", ignore = true)
     @Mapping(target = "penaltyCards", ignore = true)
     Participant toExistingParticipant(Long id, ParticipantDto participantDto, Team team);
+
+    /**
+     * Gera uma nova instância de {@link ExposingParticipantDto} a partir de qualquer instância de {@link Participant}.
+     *
+     * @param participant Participante contendo os dados a serem mapeados.
+     * @return Uma nova instãncia de {@link ExposingParticipantDto}.
+     */
+    @Mapping(target = "team", source = "team.name")
+    ExposingParticipantDto toNewExposingParticipantDto(Participant participant);
 
 }

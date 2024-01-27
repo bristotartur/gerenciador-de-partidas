@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -38,5 +39,14 @@ public interface GoalMapper {
      */
     @Mapping(target = "id", source = "id")
     Goal toExistingGoal(Long id, GoalDto goalDto, Participant player, Match match);
+
+    /**
+     * Gera um nova instância de {@link ExposingGoalDto} a partir de qualquer instância de {@link Goal}.
+     *
+     * @param goal Gol contendo os dados a serem mapeados.
+     * @return Uma nova instância de {@link ExposingGoalDto}.
+     */
+    @Mapping(target = "player", source = "player.name")
+    ExposingGoalDto toNewExposingGoalDto(Goal goal);
 
 }

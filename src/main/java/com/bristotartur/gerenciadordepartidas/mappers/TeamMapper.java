@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingTeamDto;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -44,5 +45,13 @@ public interface TeamMapper {
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)
     Team toExistingTeam(Long id, TeamDto teamDto);
+
+    /**
+     * Gera um nova instância de {@link ExposingTeamDto} a partir de qualquer instância de {@link Team}.
+     *
+     * @param team Equipe contenco os dados a serem mapeados.
+     * @return Uma nova instância de {@link Team}.
+     */
+    ExposingTeamDto toNewExposingTeamDto(Team team);
 
 }

@@ -98,6 +98,16 @@ class ParticipantServiceTest {
     }
 
     @Test
+    @DisplayName("Should create new ExposingParticipantDto when Participant is passed to create ExposingParticipantDto")
+    void Should_CreateNewExposingParticipantDto_When_ParticipantIsPassedToCreateExposingParticipantDto() {
+
+        var participant = ParticipantTestUtil.createNewParticipant("3-53", team, entityManager);
+        var result = participantService.createExposingParticipantDto(participant);
+
+        assertEquals(result.getTeam(), participant.getTeam().getName());
+    }
+
+    @Test
     @DisplayName("Should save Participant when valid ParticipantDto is passed to save")
     void Should_SaveParticipant_When_ValidParticipantDtoIsPassedToSave() {
 

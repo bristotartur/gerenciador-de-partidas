@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
@@ -76,6 +77,16 @@ public class ParticipantService {
     }
 
     /**
+     * Gera um DTO do tipo {@link ExposingParticipantDto} com base no participante fornecido.
+     *
+     * @param participant Participante terá seus dados mapeados para o DTO.
+     * @return Uma nova instância de {@link ExposingParticipantDto} contendo os dados fornecidos.
+     */
+    public ExposingParticipantDto createExposingParticipantDto(Participant participant) {
+        return participantMapper.toNewExposingParticipantDto(participant);
+    }
+
+    /**
      * Salva um participante no sistema com base nos dados fornecidos em {@link ParticipantDto}, realizando
      * uma validação prévia destes dados antes de gerar o participante e persistí-lo.
      *
@@ -104,7 +115,7 @@ public class ParticipantService {
      */
     public void deleteParticipantById(Long id) {
 
-        var participant = findParticipantById(id);
+        var participant = this.findParticipantById(id);
         participantRepository.deleteById(id);
 
         log.info("Participant '{}' with name '{}' was deleted.", id, participant.getName());

@@ -92,6 +92,16 @@ class TeamServiceTest {
     }
 
     @Test
+    @DisplayName("Should create new ExposingTeamDto when a Team is passed to create an ExposingTeamDto")
+    void Should_CreateNewExposingTeamDto_When_TeamIsPassedToCreateExposingTeamDto() {
+
+        var team = TeamTestUtil.createNewTeam(TeamName.ATOMICA, entityManager);
+        var result = teamService.createExposingTeamDto(team);
+
+        assertEquals(result.getName(), team.getName());
+    }
+
+    @Test
     @DisplayName("Should save team when valid TeamDto is passed to save")
     void Should_SaveTeam_When_ValidTeamDtoIsPassedToSave() {
 

@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.services.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingTeamDto;
 import com.bristotartur.gerenciadordepartidas.dtos.TeamDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
@@ -88,6 +89,16 @@ public class TeamService {
 
         log.info("List with all members from team '{}' with name '{}' was found.", id, team.getName());
         return members;
+    }
+
+    /**
+     * Gera um DTO do tipo {@link ExposingTeamDto} com base na equipe fornecida.
+     *
+     * @param team Equipe que terá seus dados mapeados para o DTO.
+     * @return Uma nova instância de {@link ExposingTeamDto} contendo os dados fornecidos.
+     */
+    public ExposingTeamDto createExposingTeamDto(Team team) {
+        return teamMapper.toNewExposingTeamDto(team);
     }
 
     /**

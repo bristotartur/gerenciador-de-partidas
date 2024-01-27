@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -65,6 +66,16 @@ public class PenaltyCardService {
     }
 
     /**
+     * Gera um DTO do tipo {@link ExposingPenaltyCardDto} com base no cartão forecido.
+     *
+     * @param penaltyCard Cartão de penalidade que terá seus dados mapeados para o DTO.
+     * @return Uma nova instância de {@link ExposingPenaltyCardDto} contendo os dados fornecidos.
+     */
+    public ExposingPenaltyCardDto createExposingPenaltyCardDto(PenaltyCard penaltyCard) {
+        return penaltyCardMapper.toNewExposinfPenaltyCardDto(penaltyCard);
+    }
+
+    /**
      * Salva um cartão no sistema com base nos dados fornecidos em {@link PenaltyCardDto}.
      *
      * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados do cartão a ser salvo.
@@ -90,7 +101,7 @@ public class PenaltyCardService {
      */
     public void deletePenaltyCardById(Long id) {
 
-        var penaltyCard = findPenaltyCardById(id);
+        var penaltyCard = this.findPenaltyCardById(id);
         var match = penaltyCard.getMatch();
 
         penaltyCardRepository.deleteById(id);

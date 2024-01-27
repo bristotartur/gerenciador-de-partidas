@@ -3,9 +3,11 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.services.events.MatchService;
+import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class MatchController {
 
     private final MatchService matchService;
+    private final ParticipantService participantService;
 
     @GetMapping
     public ResponseEntity<List<ExposingMatchDto>> findAllMatches() {
@@ -57,14 +60,16 @@ public class MatchController {
     }
 
     @GetMapping(path = "/{id}/players")
-    public ResponseEntity<List<Participant>> findAllMatchPlayers(@PathVariable Long id) {
+    public ResponseEntity<List<ExposingParticipantDto>> findAllMatchPlayers(@PathVariable Long id) {
 
         log.info("Request to find all players from Macth '{}' was made.", id);
 
-        List<Participant> players = matchService.findAllMatchPlayers(id);
-        players.forEach(player -> addPlayerLink(player, id));
+        var players = matchService.findAllMatchPlayers(id);
+        var dtos = players.stream()
+                .map(player -> this.addPlayerLink(player, id))
+                .toList();
 
-        return ResponseEntity.ok().body(players);
+        return ResponseEntity.ok().body(dtos);
     }
 
     @GetMapping(path = "/{id}")
@@ -119,9 +124,9 @@ public class MatchController {
         var dto = matchService.createExposingMatchDto(match);
 
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("Team A"));
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("Team B"));
-        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("Match players list"));
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
+        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("match_players"));
 
         return dto;
     }
@@ -134,22 +139,25 @@ public class MatchController {
 
         var dto = matchService.createExposingMatchDto(match);
 
-        dto.add(linkTo(methodOn(this.getClass()).findAllMatches()).withRel("Match list"));
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("Team A"));
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("Team B"));
-        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("Match players list"));
+        dto.add(linkTo(methodOn(this.getClass()).findAllMatches()).withRel("matches"));
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
+        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("match_playes"));
 
         return dto;
     }
 
-    private void addPlayerLink(Participant player, Long matchId) {
+    private ExposingParticipantDto addPlayerLink(Participant player, Long matchId) {
 
-        Long id = player.getId();
-        Long teamId = player.getTeam().getId();
+        var id = player.getId();
+        var teamId = player.getTeam().getId();
+        var dto = participantService.createExposingParticipantDto(player);
 
-        player.add(linkTo(methodOn(ParticipantController.class).findParticipantById(id)).withSelfRel());
-        player.add(linkTo(methodOn(TeamController.class).findTeamById(teamId)).withRel("Team"));
-        player.add(linkTo(methodOn(this.getClass()).findMatchById(matchId)).withRel("Match"));
+        dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamId)).withRel("team"));
+        dto.add(linkTo(methodOn(this.getClass()).findMatchById(matchId)).withRel("match"));
+
+        return dto;
     }
 
 }

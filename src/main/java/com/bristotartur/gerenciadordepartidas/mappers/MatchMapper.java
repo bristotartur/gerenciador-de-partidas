@@ -23,7 +23,7 @@ public interface MatchMapper {
     /**
      * Gera uma nova instância de {@link Match} com base nos dados fornecidos.
      *
-     * @param goalDto DTO do tipo {@link MatchDto} contendo os dados e metadados da nova partida.
+     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados e metadados da nova partida.
      * @param players Lista do tipo {@link Participant} contendo todos os jogadores da partida.
      * @param teamA A instância de {@link Team} associada a partida que representa a equipe A.
      * @param teamB A instância de {@link Team} associada a partida que representa a equipe B.
@@ -40,7 +40,7 @@ public interface MatchMapper {
      * Atualiza uma instância existente de {@link Match} com base nos dados fornecidos.
      *
      * @param id Identificador único da partida que será atualizada.
-     * @param goalDto DTO do tipo {@link MatchDto} contendo os dados da partida que será atualizada.
+     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida que será atualizada.
      * @param players Lista do tipo {@link Participant} contendo todos os jogadores da partida.
      * @param teamA Instância de {@link Team} associada a partida que representa a equipe A.
      * @param teamB Instância de {@link Team} associada a partida que representa a equipe B.

@@ -20,7 +20,7 @@ public interface PenaltyCardMapper {
     /**
      * Gera uma nova instância de {@link PenaltyCard} com base nos dados fornecidos.
      *
-     * @param goalDto DTO do tipo {@link PenaltyCardDto} contendo os dados e metadados do novo cartão.
+     * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados e metadados do novo cartão.
      * @param player Jogador do tipo {@link Participant} associado ao cartão.
      * @param match A instância de {@link Match} associada ao cartão.
      * @return Uma nova instância de {@link PenaltyCard} com base nos dados fornecidos.
@@ -33,7 +33,7 @@ public interface PenaltyCardMapper {
      * Atualiza uma instância existente de {@link PenaltyCard} com base nos dados fornecidos.
      *
      * @param id Identificador único do cartão que será atualizado.
-     * @param goalDto DTO do tipo {@link PenaltyCardDto} contendo os dados do cartão que será atualizado.
+     * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados do cartão que será atualizado.
      * @param player Jogador do tipo {@link Participant} associado ao cartão.
      * @param match Instância de {@link Match} associada ao cartão.
      * @return Uma nova instância atualizada de {@link PenaltyCard} com base nos dados fornecidos.

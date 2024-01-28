@@ -1,6 +1,5 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
@@ -20,6 +19,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -58,18 +59,21 @@ class PenaltyCardServiceTest {
     }
 
     @Test
-    @DisplayName("Should retrieve all PenaltyCards from repository when searching for all PenaltyCards")
-    void Should_RetrieveAllPenaltyCardsFromRepository_When_SearchingForAllPenaltyCards() {
+    @DisplayName("Should retrieve all PenaltyCards in paged form when searching for all PenaltyCards")
+    void Should_RetrieveAllPenaltyCardsInPagedForm_When_SearchingForAllPenaltyCards() {
 
+        var pageable = PageRequest.of(0, 2);
         var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
-        List<PenaltyCard> penaltyCards = List.of(
+        var penaltyCards = List.of(
                 PenaltyCardTestUtil.createNewPenaltyCard(PenaltyCardColor.RED, playerA, futsalMatch, entityManager),
                 PenaltyCardTestUtil.createNewPenaltyCard(PenaltyCardColor.YELLOW, playerA, futsalMatch, entityManager));
 
-        List<PenaltyCard> result = penaltyCardService.findAllPenaltyCards();
+        var penaltyCardPage = new PageImpl<>(penaltyCards, pageable, penaltyCards.size());
+        var result = penaltyCardService.findAllPenaltyCards(pageable);
 
-        assertEquals(result, penaltyCards);
+        assertEquals(result.getContent(), penaltyCardPage.getContent());
+        assertEquals(result.getTotalPages(), penaltyCardPage.getTotalPages());
     }
 
     @Test
@@ -92,15 +96,9 @@ class PenaltyCardServiceTest {
         var id = getRandomLongId();
         var penaltyCardDto = PenaltyCardTestUtil.createNewPenaltyCardDto(any(), any(), any(), any());
 
-        assertThrows(NotFoundException.class, () -> {
-            penaltyCardService.findPenaltyCardById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-           penaltyCardService.deletePenaltyCardById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
-        });
+        assertThrows(NotFoundException.class, () -> penaltyCardService.findPenaltyCardById(id));
+        assertThrows(NotFoundException.class, () -> penaltyCardService.deletePenaltyCardById(id));
+        assertThrows(NotFoundException.class, () -> penaltyCardService.replacePenaltyCard(id, penaltyCardDto));
     }
 
     @Test
@@ -158,7 +156,6 @@ class PenaltyCardServiceTest {
                 .createNewPenaltyCardDto(Sports.HANDBALL, PenaltyCardColor.RED, playerB.getId(), handballMatch.getId());
 
         var result = penaltyCardService.replacePenaltyCard(penaltyCard.getId(), penaltyCardDto);
-        System.out.println(penaltyCard.getId());
 
         assertNotEquals(result, penaltyCard);
     }

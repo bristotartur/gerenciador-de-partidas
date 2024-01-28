@@ -11,10 +11,10 @@ import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediat
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link PenaltyCard},
@@ -37,15 +37,18 @@ public class PenaltyCardService {
     private final MatchServiceMediator matchServiceMediator;
 
     /**
-     * Retorna todos os cartões disponíveis no banco de dados.
+     * Retorna uma lista paginada dos cartões de penalidade disponíveis no sistema.
      *
-     * @return Uma lista contendo todos os cartões.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo os cartões para a página especificada.
      */
-    public List<PenaltyCard> findAllPenaltyCards() {
+    public Page<PenaltyCard> findAllPenaltyCards(Pageable pageable) {
 
-        List<PenaltyCard> penaltyCards = penaltyCardRepository.findAll();
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var penaltyCards = penaltyCardRepository.findAll(pageable);
 
-        log.info("List with all Penalty Cards was found.");
+        log.info("Penalty Card page of number '{}' and size '{}' was returned.", number, size);
         return penaltyCards;
     }
 

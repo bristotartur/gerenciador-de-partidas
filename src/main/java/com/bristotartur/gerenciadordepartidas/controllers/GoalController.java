@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
+import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,19 @@ public class GoalController {
         log.info("Request to get Goal page of number '{}' and size '{}' was made.", number, size);
 
         var dtoPage = this.createExposingDtoPage(goalService.findAllGoals(pageable));
+        return ResponseEntity.ok().body(dtoPage);
+    }
+
+    @GetMapping(path = "/from")
+    public ResponseEntity<Page<ExposingGoalDto>> listGoalsFromMatch(@RequestParam("match") Long matchId,
+                                                                    @RequestParam("type") Sports sport,
+                                                                    Pageable pageable) {
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+
+        log.info("Request to get Goal page of number '{}' and size '{}' from Match '{}' was made.", number, size, matchId);
+
+        var dtoPage = this.createExposingDtoPage(goalService.findGoalsFromMatch(matchId, sport, pageable));
         return ResponseEntity.ok().body(dtoPage);
     }
 

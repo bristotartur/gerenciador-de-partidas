@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
@@ -20,6 +21,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
@@ -38,15 +41,15 @@ class MatchServiceTest {
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private MatchRepository matchRepository;
+    private MatchRepository<Match> matchRepository;
     @Autowired
     private MatchServiceMediator matchServiceMediator;
 
     private Team teamA;
     private Team teamB;
     private Team teamC;
-    private List<Participant> players = new LinkedList<>();
-    private List<Participant> invalidPlayers = new LinkedList<>();
+    private final List<Participant> players = new LinkedList<>();
+    private final List<Participant> invalidPlayers = new LinkedList<>();
 
     @BeforeEach
     void setUp() {
@@ -64,22 +67,28 @@ class MatchServiceTest {
     }
 
     @Test
-    @DisplayName("Should retrieve all Matches from repository when searching for all Matches")
-    void Should_RetrieveAllMatchesFromRepository_When_SearchingForAllMatches() {
+    @DisplayName("Should retrieve all Matches in paged form when searching for all Matches")
+    void Should_RetrieveAllMatchesInPagedForm_When_SearchingForAllMatches() {
+
+        var pageable = PageRequest.of(0, 2);
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var matches = List.of(
                 matchServiceMediator.saveMatch(match, Sports.FUTSAL),
                 matchServiceMediator.saveMatch(match, Sports.HANDBALL));
 
-        var result = matchService.findAllMatches();
+        var matchPage = new PageImpl<>(matches, pageable, matches.size());
+        var result = matchService.findAllMatches(pageable);
 
-        assertEquals(result, matches);
+        assertEquals(result.getContent(), matchPage.getContent());
+        assertEquals(result.getTotalPages(), matchPage.getTotalPages());
     }
 
     @Test
-    @DisplayName("Should retrieve all Matches of a specific sport when specific sport is passed to search")
-    void Should_RetrieveMatchesOfSpecificSport_When_SpecificSportIsPassedToSearch() {
+    @DisplayName("Should retrieve all Matches of a specific sport in paged form when specific sport is passed to search")
+    void Should_RetrieveMatchesOfSpecificSportInPagedForm_When_SpecificSportIsPassedToSearch() {
+
+        var pageable = PageRequest.of(0, 3);
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var futsalMatches = List.of(
@@ -87,12 +96,14 @@ class MatchServiceTest {
                 matchServiceMediator.saveMatch(match, Sports.FUTSAL));
 
         var genericMatchList = new LinkedList<>(List.of(matchServiceMediator.saveMatch(match, Sports.HANDBALL)));
+        genericMatchList.addAll(futsalMatches);
 
-        futsalMatches.forEach(genericMatchList::add);
-        var result = matchService.findMatchesBySport(Sports.FUTSAL);
+        var genericMatchPage = new PageImpl<>(genericMatchList, pageable, genericMatchList.size());
+        var result = matchService.findMatchesBySport(Sports.FUTSAL, pageable);
 
-        assertEquals(result, futsalMatches);
-        assertNotEquals(result, genericMatchList);
+        assertEquals(result.getTotalPages(), genericMatchPage.getTotalPages());
+        assertEquals(result.getContent(), futsalMatches);
+        assertNotEquals(result.getContent(), genericMatchList);
     }
 
     @Test
@@ -114,27 +125,25 @@ class MatchServiceTest {
         var id = getRandomLongId();
         var matchDto = MatchTestUtil.createNewMatchDto(any(), any(), any(), any());
 
-        assertThrows(NotFoundException.class, () -> {
-            matchService.findMatchById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            matchService.deleteMatchById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            matchService.replaceMatch(id, matchDto);
-        });
+        assertThrows(NotFoundException.class, () -> matchService.findMatchById(id));
+        assertThrows(NotFoundException.class, () -> matchService.deleteMatchById(id));
+        assertThrows(NotFoundException.class, () -> matchService.replaceMatch(id, matchDto));
     }
 
     @Test
     @DisplayName("Should retrieve all Match players when searching for Match players")
     void Should_RetrieveAllMatchPlayers_When_SearchingForMatchPlayers() {
 
+        var pageable = PageRequest.of(0, 2);
+
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.FEMININE);
         var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
 
-        var result = matchService.findAllMatchPlayers(handballMatch.getId());
+        var playerPage = new PageImpl<>(handballMatch.getPlayers(), pageable, handballMatch.getPlayers().size());
+        var result = matchService.findAllMatchPlayers(handballMatch.getId(), pageable);
 
-        assertEquals(result, handballMatch.getPlayers());
+        assertEquals(result.getContent(), playerPage.getContent());
+        assertEquals(result.getTotalPages(), playerPage.getTotalPages());
     }
 
     @Test
@@ -175,12 +184,8 @@ class MatchServiceTest {
 
         var matchDto = MatchTestUtil.createNewMatchDto(any(), 1L, 1L, any());
 
-        assertThrows(BadRequestException.class, () -> {
-            matchService.saveMatch(matchDto);
-        });
-        assertThrows(BadRequestException.class, () -> {
-            matchService.replaceMatch(futsalMatch.getId(), matchDto);
-        });
+        assertThrows(BadRequestException.class, () -> matchService.saveMatch(matchDto));
+        assertThrows(BadRequestException.class, () -> matchService.replaceMatch(futsalMatch.getId(), matchDto));
     }
 
     @Test
@@ -230,12 +235,8 @@ class MatchServiceTest {
 
         var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA.getId(), teamC.getId(), playerIds);
 
-        assertThrows(BadRequestException.class, () -> {
-            matchService.saveMatch(matchDto);
-        });
-        assertThrows(BadRequestException.class, () -> {
-            matchService.replaceMatch(volleyballMatch.getId(), matchDto);
-        });
+        assertThrows(BadRequestException.class, () -> matchService.saveMatch(matchDto));
+        assertThrows(BadRequestException.class, () -> matchService.replaceMatch(volleyballMatch.getId(), matchDto));
     }
 
     @Test

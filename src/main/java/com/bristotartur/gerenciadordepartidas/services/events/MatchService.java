@@ -16,6 +16,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,30 +51,56 @@ public class MatchService {
     private final MatchServiceMediator matchServiceMediator;
 
     /**
-     * Retorna todas as partidas disponíveis no banco de dados.
+     * Retorna uma lista paginada das partidas disponíveis no sistema.
      *
-     * @return Uma lista contendo todas as partidas.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo as partidas para a página especificada.
      */
-    public List<Match> findAllMatches() {
+    public Page<Match> findAllMatches(Pageable pageable) {
 
-        List<Match> matches = matchRepository.findAll();
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var matches = matchRepository.findAll(pageable);
 
-        log.info("List with all Matches was found.");
-        return matchRepository.findAll();
+        log.info("Match page of number '{}' and size '{}' was returned.", number, size);
+        return matches;
     }
 
     /**
-     * Recupera uma lista contendo todas as instâncias de uma especialização específica de {@link Match}.
+     * Recupera uma lista paginada contendo todas as instâncias de uma especialização específica de {@link Match}.
      *
      * @param sport Esporte no qual as instâncias retornadas na lista serão especializadas.
-     * @return Uma lista contendo todas as instâncias da especialização de {@link Match} definida;
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as instâncias da especialização de {@link Match} definida.
      */
-    public List<? extends Match> findMatchesBySport(Sports sport) {
+    public Page<? extends Match> findMatchesBySport(Sports sport, Pageable pageable) {
 
-        List<? extends Match> matches = matchServiceMediator.findMatchesBySport(sport);
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var matches = matchServiceMediator.findMatchesBySport(sport, pageable);
 
-        log.info("List with all Matches of type '{}' was found.", sport);
+        log.info("Matches page of number '{}' and size '{}' with type '{}' was returned.", number, size, sport);
         return matches;
+    }
+
+    /**
+     * Retorna uma lista paginada com todos os jogadores presentes em uma partida.
+     *
+     * @param id Identificador único da partida.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} com todos os jogadores da partida.
+     * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada.
+     */
+    public Page<Participant> findAllMatchPlayers(Long id, Pageable pageable) {
+
+        this.findMatchById(id);
+
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var players = matchRepository.findMatchPlayers(id, pageable);
+
+        log.info("Player page of number '{}' and size '{}' from Match '{}' was returned.", number, size, id);
+        return players;
     }
 
     /**
@@ -89,21 +117,6 @@ public class MatchService {
 
         log.info("Match '{}' of type '{}' was found.", id, matchRepository.findMatchTypeById(id, entityManager));
         return match;
-    }
-
-    /**
-     * Retorna todos os jogadores presentes em uma partida.
-     *
-     * @param id Identificador único da partida.
-     * @return Uma lista com todos os jogadores da partida.
-     */
-    public List<Participant> findAllMatchPlayers(Long id) {
-
-        List<Participant> players = findMatchById(id).getPlayers();
-        var sport =  matchRepository.findMatchTypeById(id, entityManager);
-
-        log.info("List with all players from Match '{}' of type '{}' was found.", id, sport);
-        return players;
     }
 
     /**
@@ -178,7 +191,7 @@ public class MatchService {
      */
     public Match replaceMatch(Long id, MatchDto matchDto) {
 
-        var existingMatch = findMatchById(id);
+        var existingMatch = this.findMatchById(id);
 
         if (matchDto.teamAId() == matchDto.teamBId())
             throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);

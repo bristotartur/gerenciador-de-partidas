@@ -5,7 +5,6 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,7 +36,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class Match extends RepresentationModel<Match> {
+public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

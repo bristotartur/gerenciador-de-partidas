@@ -5,7 +5,6 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalTime;
 
@@ -23,7 +22,7 @@ import java.time.LocalTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class Goal extends RepresentationModel<Goal> {
+public class Goal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

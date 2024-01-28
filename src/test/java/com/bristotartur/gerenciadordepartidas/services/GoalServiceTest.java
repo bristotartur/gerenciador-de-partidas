@@ -18,6 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -56,17 +58,21 @@ class GoalServiceTest {
     }
 
     @Test
-    @DisplayName("Should retrieve all Goals from repository when searching for all Goals")
-    void Should_RetrieveAllGoalsFromRepository_When_SearchingForAllGoals() {
+    @DisplayName("Should retrieve all Goals in paged form when searching for all Goals")
+    void Should_RetrieveAllGoalsInPagedForm_When_SearchingForAllGoals() {
+
+        var pageable = PageRequest.of(0, 2);
 
         var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
         var goals = List.of(
                 GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager),
                 GoalTestUtil.createNewGoal(playerB, futsalMatch, entityManager));
 
-        var result = goalService.findAllGoals();
+        var goalPage = new PageImpl<>(goals, pageable, goals.size());
+        var result = goalService.findAllGoals(pageable);
 
-        assertEquals(result, goals);
+        assertEquals(result.getContent(), goalPage.getContent());
+        assertEquals(result.getTotalPages(), goalPage.getTotalPages());
     }
 
     @Test
@@ -88,15 +94,9 @@ class GoalServiceTest {
         var id = getRandomLongId();
         var goalDto = GoalTestUtil.createNewGoalDto(any(), any(), any());
 
-        assertThrows(NotFoundException.class, () -> {
-            goalService.findGoalById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            goalService.deleteGoalById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            goalService.replaceGoal(id, goalDto);
-        });
+        assertThrows(NotFoundException.class, () -> goalService.findGoalById(id));
+        assertThrows(NotFoundException.class, () -> goalService.deleteGoalById(id));
+        assertThrows(NotFoundException.class, () -> goalService.replaceGoal(id, goalDto));
     }
 
     @Test

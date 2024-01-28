@@ -14,10 +14,10 @@ import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediat
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Goal},
@@ -39,15 +39,18 @@ public class GoalService {
     private final MatchServiceMediator matchServiceMediator;
 
     /**
-     * Retorna todos os gols disponíveis no banco de dados.
+     * Retorna uma lista paginada dos gols disponíveis no sistema.
      *
-     * @return Uma lista contendo todos os gols.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo os gols para a página especificada.
      */
-    public List<Goal> findAllGoals() {
+    public Page<Goal> findAllGoals(Pageable pageable) {
 
-        List<Goal> goals = goalRepository.findAll();
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var goals = goalRepository.findAll(pageable);
 
-        log.info("List with all Goals was found.");
+        log.info("Goal page of number '{}' and size '{}' was returned.", number, size);
         return goals;
     }
 
@@ -111,8 +114,8 @@ public class GoalService {
         var team = goal.getPlayer().getTeam();
         var match = goal.getMatch();
 
-        this.decreaseScore(team, match);
         goalRepository.deleteById(id);
+        this.decreaseScore(team, match);
 
         log.info("Goal '{}' from Match '{}' was deleted.", id, match.getId());
     }

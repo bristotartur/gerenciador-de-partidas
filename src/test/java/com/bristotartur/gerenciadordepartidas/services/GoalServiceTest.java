@@ -76,6 +76,25 @@ class GoalServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve Goals from a Match in paged form when searching for Goals from a Match")
+    void Should_RetrieveGoalsFromMatchInPagedForm_When_SearchingForGoalFromMatch() {
+
+        var pageable = PageRequest.of(0, 2);
+
+        var sport = Sports.FUTSAL;
+        var futsalMatch = matchServiceMediator.saveMatch(match, sport);
+        var goals = List.of(
+                GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager),
+                GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager));
+
+        var goalPage = new PageImpl<>(goals, pageable, goals.size());
+        var result = goalService.findGoalsFromMatch(futsalMatch.getId(), sport, pageable);
+
+        assertEquals(result.getContent(), goals);
+        assertEquals(result.getTotalPages(), goalPage.getTotalPages());
+    }
+
+    @Test
     @DisplayName("Should find Goal when existing Goal ID is passed to search")
     void Should_FindGoal_When_ExistingGoalIdIsPassedToSearch() {
 

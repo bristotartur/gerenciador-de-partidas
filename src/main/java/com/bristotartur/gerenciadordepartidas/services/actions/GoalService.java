@@ -6,6 +6,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
+import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
@@ -51,6 +52,26 @@ public class GoalService {
         var goals = goalRepository.findAll(pageable);
 
         log.info("Goal page of number '{}' and size '{}' was returned.", number, size);
+        return goals;
+    }
+
+    /**
+     * Retorna uma lista paginada de gols relacionados a uma determinada partida.
+     *
+     * @param matchId Identificador único da partida.
+     * @param sport Modalidade esportiva da partida.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo os gols relacionados a partida especificada.
+     */
+    public Page<Goal> findGoalsFromMatch(Long matchId, Sports sport, Pageable pageable) {
+
+        matchServiceMediator.findMatch(matchId, sport);
+
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var goals = goalRepository.findMatchGoals(matchId, pageable);
+
+        log.info("Goal page of number '{}' and size '{}' from Match '{}' was returned.", number, size, matchId);
         return goals;
     }
 

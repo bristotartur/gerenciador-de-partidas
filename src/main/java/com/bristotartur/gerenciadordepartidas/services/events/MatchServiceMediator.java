@@ -7,9 +7,9 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Esta classe atua como uma camada de serviço centralizada para operações relacionadas a diferentes
@@ -28,15 +28,16 @@ public class MatchServiceMediator {
     private final ApplicationContext context;
 
     /**
-     * Retorna uma lista contendo todas as instâncias de uma determinada especialização de {@link Match}.
+     * Retorna uma lista paginada contendo todas as instâncias de uma determinada especialização de {@link Match}.
      *
      * @param sport Esporte no qual as instâncias retornadas na lista serão especializadas.
-     * @return Uma lista contendo as instâncias da especialização de {@link Match} definida.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo as instâncias da especialização de {@link Match} definida.
      */
-    public List<? extends Match> findMatchesBySport(Sports sport) {
+    public Page<? extends Match> findMatchesBySport(Sports sport, Pageable pageable) {
 
-        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
-        return service.findAll();
+        var service = MatchServiceFactory.newMatchSportService(sport, context);
+        return service.findAll(pageable);
     }
 
     /**
@@ -50,7 +51,7 @@ public class MatchServiceMediator {
      */
     public Match findMatch(Long id, Sports sport) {
 
-        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
+        var service = MatchServiceFactory.newMatchSportService(sport, context);
         return service.findMatchById(id);
     }
 
@@ -62,7 +63,7 @@ public class MatchServiceMediator {
      */
     public Match saveMatch(Match match, Sports sport) {
 
-        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
+        var service = MatchServiceFactory.newMatchSportService(sport, context);
         return service.saveMatch(match);
     }
 
@@ -77,7 +78,7 @@ public class MatchServiceMediator {
      */
     public Match findMatchForGoal(Long id, Sports sport) {
 
-        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
+        var service = MatchServiceFactory.newMatchSportService(sport, context);
 
         if (sport.equals(Sports.FUTSAL) || sport.equals(Sports.HANDBALL))
             return service.findMatchById(id);
@@ -97,7 +98,7 @@ public class MatchServiceMediator {
      */
     public Match findMatchForCard(Long id, Sports sport) {
 
-        MatchStrategy service = MatchServiceFactory.newMatchSportService(sport, context);
+        var service = MatchServiceFactory.newMatchSportService(sport, context);
         Match match;
 
         switch (sport) {

@@ -1,10 +1,10 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.domain.events.ChessMatch;
 import com.bristotartur.gerenciadordepartidas.domain.events.FutsalMatch;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
@@ -20,6 +20,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
@@ -37,11 +39,11 @@ class MatchServiceMediatorTest {
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private MatchRepository matchRepository;
+    private MatchRepository<Match> matchRepository;
 
     private Team teamA;
     private Team teamB;
-    private List<Participant> players = new LinkedList<>();
+    private final List<Participant> players = new LinkedList<>();
 
     @BeforeEach
     void setUp() {
@@ -54,8 +56,10 @@ class MatchServiceMediatorTest {
     }
 
     @Test
-    @DisplayName("Should retrieve all Matches of a specific sport when specific sport is passed to search")
-    void Should_RetrieveAllMatchesOfSpecificSport_When_SpecificSportIsPassedToSearch() {
+    @DisplayName("Should retrieve all Matches of a specific sport in paged form when specific sport is passed to search")
+    void Should_RetrieveAllMatchesOfSpecificSportInPagedForm_When_SpecificSportIsPassedToSearch() {
+
+        var pageable = PageRequest.of(0, 3);
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var matches = List.of(
@@ -64,9 +68,13 @@ class MatchServiceMediatorTest {
                 matchServiceMediator.saveMatch(match, Sports.HANDBALL));
 
 
-        var result = matchServiceMediator.findMatchesBySport(Sports.FUTSAL);
+        var matchPage = new PageImpl<>(matches, pageable, matches.size());
+        var result = matchServiceMediator.findMatchesBySport(Sports.FUTSAL, pageable);
 
-        for (Match r : result) {
+        assertNotEquals(result.getContent(), matchPage.getContent());
+        assertEquals(result.getTotalPages(), matchPage.getTotalPages());
+
+        for (Match r : result.getContent()) {
             assertInstanceOf(FutsalMatch.class, r);
         }
     }
@@ -100,15 +108,9 @@ class MatchServiceMediatorTest {
 
         var randomId = getRandomLongId();
 
-        assertThrows(NotFoundException.class, () -> {
-            matchServiceMediator.findMatch(randomId, Sports.FUTSAL);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            matchServiceMediator.findMatchForGoal(randomId, Sports.FUTSAL);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            matchServiceMediator.findMatchForCard(randomId, Sports.HANDBALL);
-        });
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatch(randomId, Sports.FUTSAL));
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForGoal(randomId, Sports.FUTSAL));
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForCard(randomId, Sports.HANDBALL));
     }
 
     @Test
@@ -118,15 +120,9 @@ class MatchServiceMediatorTest {
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
-        assertThrows(NotFoundException.class, () -> {
-            matchServiceMediator.findMatch(futsalMatch.getId(), Sports.CHESS);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            matchServiceMediator.findMatchForGoal(futsalMatch.getId(), Sports.HANDBALL);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            matchServiceMediator.findMatchForCard(futsalMatch.getId(), Sports.BASKETBALL);
-        });
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatch(futsalMatch.getId(), Sports.CHESS));
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForGoal(futsalMatch.getId(), Sports.HANDBALL));
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForCard(futsalMatch.getId(), Sports.BASKETBALL));
     }
 
     @Test
@@ -159,12 +155,8 @@ class MatchServiceMediatorTest {
 
         var randomId = getRandomLongId();
 
-        assertThrows(BadRequestException.class, () -> {
-            matchServiceMediator.findMatchForGoal(randomId, Sports.CHESS);
-        });
-        assertThrows(BadRequestException.class, () -> {
-            matchServiceMediator.findMatchForCard(randomId, Sports.CHESS);
-        });
+        assertThrows(BadRequestException.class, () -> matchServiceMediator.findMatchForGoal(randomId, Sports.CHESS));
+        assertThrows(BadRequestException.class, () -> matchServiceMediator.findMatchForCard(randomId, Sports.CHESS));
     }
 
 }

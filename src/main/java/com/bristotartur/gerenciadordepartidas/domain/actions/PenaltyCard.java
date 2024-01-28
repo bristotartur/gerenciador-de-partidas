@@ -6,7 +6,6 @@ import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalTime;
 
@@ -26,7 +25,7 @@ import java.time.LocalTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Builder
-public class PenaltyCard extends RepresentationModel<PenaltyCard> {
+public class PenaltyCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

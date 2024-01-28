@@ -11,18 +11,20 @@ import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/gerenciador-de-partidas/api/matches")
+@RequestMapping("/gerenciador-de-partidas/api/matches")
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
@@ -32,44 +34,42 @@ public class MatchController {
     private final ParticipantService participantService;
 
     @GetMapping
-    public ResponseEntity<List<ExposingMatchDto>> findAllMatches() {
+    public ResponseEntity<Page<ExposingMatchDto>> listAllMatches(Pageable pageable) {
 
-        log.info("Request to find all Matches was made.");
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
 
-        List<Match> matchList = matchService.findAllMatches();
+        log.info("Request to get Match page of number '{}' and size '{}' was made.", number, size);
 
-        var dtos = matchList.stream()
-                .map(this::addSingleMatchLink)
-                .toList();
-
+        var dtos = this.createExposingDtoPage(matchService.findAllMatches(pageable));
         return ResponseEntity.ok().body(dtos);
     }
 
     @GetMapping(path = "/list")
-    public ResponseEntity<List<ExposingMatchDto>> findMatchesBySport(@RequestParam Sports sport) {
+    public ResponseEntity<Page<ExposingMatchDto>> listMatchesBySport(@RequestParam Sports sport, Pageable pageable) {
 
-        log.info("Request to find all Matches of type '{}' was made.", sport);
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        log.info("Request to get Match page of number '{}' and size '{}' with type '{}' was made.", number, size, sport);
 
-        List<? extends Match> matchList = matchService.findMatchesBySport(sport);
-
-        var dtos = matchList.stream()
-                .map(this::addSingleMatchLink)
-                .toList();
-
+        var dtos = this.createExposingDtoPage(matchService.findMatchesBySport(sport, pageable));
         return ResponseEntity.ok().body(dtos);
     }
 
     @GetMapping(path = "/{id}/players")
-    public ResponseEntity<List<ExposingParticipantDto>> findAllMatchPlayers(@PathVariable Long id) {
+    public ResponseEntity<Page<ExposingParticipantDto>> listMatchPlayers(@PathVariable Long id, Pageable pageable) {
 
-        log.info("Request to find all players from Macth '{}' was made.", id);
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        log.info("Request to get Player page of number '{}' and size '{}' from Macth '{}' was made.", number, size, id);
 
-        var players = matchService.findAllMatchPlayers(id);
-        var dtos = players.stream()
+        var players = matchService.findAllMatchPlayers(id, pageable);
+        var dtos = players.getContent().stream()
                 .map(player -> this.addPlayerLink(player, id))
                 .toList();
 
-        return ResponseEntity.ok().body(dtos);
+        var dtoPage = new PageImpl<>(dtos, pageable, dtos.size());
+        return ResponseEntity.ok().body(dtoPage);
     }
 
     @GetMapping(path = "/{id}")
@@ -78,7 +78,7 @@ public class MatchController {
         log.info("Request to find Match '{}' was made.", id);
 
         var match = matchService.findMatchById(id);
-        var dto = addMatchListLink(match);
+        var dto = this.addMatchListLink(match, PageRequest.of(0, 20));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -89,7 +89,7 @@ public class MatchController {
         log.info("Request to create a new Match of type '{}' was made.", matchDto.sport());
 
         var match = matchService.saveMatch(matchDto);
-        var dto = addMatchListLink(match);
+        var dto = this.addMatchListLink(match, PageRequest.of(0, 20));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -110,9 +110,19 @@ public class MatchController {
         log.info("Request to update Match '{}' of type '{}' was made.", id, matchDto.sport());
 
         var match = matchService.replaceMatch(id, matchDto);
-        var dto = addMatchListLink(match);
+        var dto = this.addMatchListLink(match, PageRequest.of(0, 20));
 
         return ResponseEntity.ok().body(dto);
+    }
+
+    private Page<ExposingMatchDto> createExposingDtoPage(Page<? extends Match> matchPage) {
+
+        var matches = matchPage.getContent();
+        var dtos = matches.stream()
+                .map(this::addSingleMatchLink)
+                .toList();
+
+        return new PageImpl<>(dtos, matchPage.getPageable(), matchPage.getSize());
     }
 
     private ExposingMatchDto addSingleMatchLink(Match match) {
@@ -126,12 +136,13 @@ public class MatchController {
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
-        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("match_players"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, PageRequest.of(0, 20))).withRel("match_players"));
+        this.addExtraLinks(dto, match.getId(), PageRequest.of(0, 20));
 
         return dto;
     }
 
-    private ExposingMatchDto addMatchListLink(Match match) {
+    private ExposingMatchDto addMatchListLink(Match match, Pageable pageable) {
 
         var id = match.getId();
         var teamAId = match.getTeamA().getId();
@@ -139,10 +150,11 @@ public class MatchController {
 
         var dto = matchService.createExposingMatchDto(match);
 
-        dto.add(linkTo(methodOn(this.getClass()).findAllMatches()).withRel("matches"));
+        dto.add(linkTo(methodOn(this.getClass()).listAllMatches(pageable)).withRel("matches"));
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
-        dto.add(linkTo(methodOn(this.getClass()).findAllMatchPlayers(id)).withRel("match_playes"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, PageRequest.of(0, 20))).withRel("match_playes"));
+        this.addExtraLinks(dto, match.getId(), pageable);
 
         return dto;
     }
@@ -158,6 +170,16 @@ public class MatchController {
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(matchId)).withRel("match"));
 
         return dto;
+    }
+
+    private void addExtraLinks(ExposingMatchDto dto, Long matchId, Pageable pageable) {
+
+        var sport = Sports.valueOf(dto.getSport());
+
+        if (sport.equals(Sports.FUTSAL) || sport.equals(Sports.HANDBALL)) {
+            dto.add(linkTo(methodOn(GoalController.class).listGoalsFromMatch(matchId, sport, pageable)).withRel("goals"));
+            // TODO link para cartões de penalidade
+        }
     }
 
 }

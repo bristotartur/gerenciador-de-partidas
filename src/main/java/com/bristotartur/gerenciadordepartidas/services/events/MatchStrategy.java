@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Estratégia para serviços relacionados a especializações de {@link Match}, fornecendo
@@ -16,12 +16,13 @@ import java.util.List;
 public interface MatchStrategy<T extends Match> {
 
     /**
-     * Recupera uma lista contendo todas as instâncias da especialização de {@link Match}
+     * Recupera uma lista paginada contendo todas as instâncias da especialização de {@link Match}
      * associada a esta estratégia.
      *
-     * @return Uma lista contendo todas as instâncias de {@link Match} específicas desta estratégia.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as instâncias de {@link Match} específicas desta estratégia.
      */
-    List<T> findAll();
+    Page<T> findAll(Pageable pageable);
 
     /**
      * Procura por uma instância de uma determinada especialização de {@link Match} no banco de dados

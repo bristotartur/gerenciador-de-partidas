@@ -1,23 +1,26 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.dtos.ExposingPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/gerenciador-de-partidas/api/penalty-cards")
+@RequestMapping("/gerenciador-de-partidas/api/penalty-cards")
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
@@ -26,36 +29,37 @@ public class PenaltyCardController {
     private final PenaltyCardService penaltyCardService;
 
     @GetMapping
-    public ResponseEntity<List<PenaltyCard>> findAllPenaltyCards() {
+    public ResponseEntity<Page<ExposingPenaltyCardDto>> listAllPenaltyCards(Pageable pageable) {
 
-        log.info("Request to find all Penalty Cards was made.");
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
 
-        List<PenaltyCard> penaltyCardList = penaltyCardService.findAllPenaltyCards();
-        penaltyCardList.forEach(this::addSinglePenaltyCardLink);
+        log.info("Request to get Penalty Card page of number '{}' and size '{}' was made.", number, size);
 
-        return ResponseEntity.ok().body(penaltyCardList);
+        var dtoPage = this.createExposingDtoPage(penaltyCardService.findAllPenaltyCards(pageable));
+        return ResponseEntity.ok().body(dtoPage);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<PenaltyCard> findPenaltyCardById(@PathVariable Long id) {
+    public ResponseEntity<ExposingPenaltyCardDto> findPenaltyCardById(@PathVariable Long id) {
 
         log.info("Request to find Penalty Card '{}' was made.", id);
 
         var penaltyCard = penaltyCardService.findPenaltyCardById(id);
-        this.addPenaltyCardListLink(penaltyCard);
+        var dto = this.addPenaltyCardListLink(penaltyCard, PageRequest.of(0, 20));
 
-        return ResponseEntity.ok().body(penaltyCard);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping
-    public ResponseEntity<PenaltyCard> savePenaltyCard(@RequestBody @Valid PenaltyCardDto penaltyCardDto) {
+    public ResponseEntity<ExposingPenaltyCardDto> savePenaltyCard(@RequestBody @Valid PenaltyCardDto penaltyCardDto) {
 
         log.info("Request to create a new Penalty Card was made.");
 
         var penaltyCard = penaltyCardService.savePenaltyCard(penaltyCardDto);
-        this.addPenaltyCardListLink(penaltyCard);
+        var dto = this.addPenaltyCardListLink(penaltyCard, PageRequest.of(0, 20));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(penaltyCard);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -68,24 +72,52 @@ public class PenaltyCardController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<PenaltyCard> replacePenaltyCard(@PathVariable Long id,
-                                                          @RequestBody @Valid PenaltyCardDto penaltyCardDto) {
+    public ResponseEntity<ExposingPenaltyCardDto> replacePenaltyCard(@PathVariable Long id,
+                                                                     @RequestBody @Valid PenaltyCardDto penaltyCardDto) {
 
         log.info("Request to update Penalty Card '{}' was made.", id);
 
         var penaltyCard = penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
-        this.addPenaltyCardListLink(penaltyCard);
+        var dto = this.addPenaltyCardListLink(penaltyCard, PageRequest.of(0, 20));
 
-        return ResponseEntity.ok().body(penaltyCard);
+        return ResponseEntity.ok().body(dto);
     }
 
-    private void addSinglePenaltyCardLink(PenaltyCard penaltyCard) {
+    private Page<ExposingPenaltyCardDto> createExposingDtoPage(Page<PenaltyCard> penaltyCardPage) {
+
+        var penaltyCards = penaltyCardPage.getContent();
+        var dtos = penaltyCards.stream()
+                .map(this::addSingleGoalLink)
+                .toList();
+
+        return new PageImpl<>(dtos, penaltyCardPage.getPageable(), penaltyCardPage.getSize());
+    }
+
+    private ExposingPenaltyCardDto addSingleGoalLink(PenaltyCard penaltyCard) {
+
         var id = penaltyCard.getId();
-        penaltyCard.add(linkTo(methodOn(this.getClass()).findPenaltyCardById(id)).withSelfRel());
+        var playerId = penaltyCard.getPlayer().getId();
+        var matchId = penaltyCard.getMatch().getId();
+        var dto = penaltyCardService.createExposingPenaltyCardDto(penaltyCard);
+
+        dto.add(linkTo(methodOn(this.getClass()).findPenaltyCardById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
+        dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
+
+        return dto;
     }
 
-    private void addPenaltyCardListLink(PenaltyCard penaltyCard) {
-        penaltyCard.add(linkTo(methodOn(this.getClass()).findAllPenaltyCards()).withRel("Penalty cards list"));
+    private ExposingPenaltyCardDto addPenaltyCardListLink(PenaltyCard penaltyCard, Pageable pageable) {
+
+        var playerId = penaltyCard.getPlayer().getId();
+        var matchId = penaltyCard.getMatch().getId();
+        var dto = penaltyCardService.createExposingPenaltyCardDto(penaltyCard);
+
+        dto.add(linkTo(methodOn(this.getClass()).listAllPenaltyCards(pageable)).withRel("penalty_cards"));
+        dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
+        dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
+
+        return dto;
     }
 
 }

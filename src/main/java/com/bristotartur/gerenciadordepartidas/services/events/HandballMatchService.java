@@ -7,9 +7,9 @@ import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.HandballMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de handebol ({@link HandballMatch}).
@@ -27,13 +27,14 @@ public class HandballMatchService implements MatchStrategy<HandballMatch> {
     private final HandballMatchRepository handballMatchRepository;
 
     /**
-     * Recupera uma lista contendo todas as instâncias da {@link HandballMatch}
+     * Recupera uma lista paginada contendo todas as instâncias da {@link HandballMatch}.
      *
-     * @return Uma lista contendo todas as instâncias de {@link HandballMatch};
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as instâncias de {@link HandballMatch};
      */
     @Override
-    public List<HandballMatch> findAll() {
-        return handballMatchRepository.findAll();
+    public Page<HandballMatch> findAll(Pageable pageable) {
+        return handballMatchRepository.findAll(pageable);
     }
 
     /**

@@ -7,9 +7,9 @@ import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.TableTennisMatchRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de tênis de mesa ({@link TableTennisMatch}).
@@ -27,13 +27,14 @@ public class TableTennisMatchService implements MatchStrategy<TableTennisMatch> 
     private final TableTennisMatchRepository tableTennisMatchRepository;
 
     /**
-     * Recupera uma lista contendo todas as instâncias da {@link TableTennisMatch}
+     * Recupera uma lista paginada contendo todas as instâncias da {@link TableTennisMatch}.
      *
-     * @return Uma lista contendo todas as instâncias de {@link TableTennisMatch};
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as instâncias de {@link TableTennisMatch};
      */
     @Override
-    public List<TableTennisMatch> findAll() {
-        return tableTennisMatchRepository.findAll();
+    public Page<TableTennisMatch> findAll(Pageable pageable) {
+        return tableTennisMatchRepository.findAll(pageable);
     }
 
     /**

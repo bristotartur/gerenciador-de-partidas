@@ -7,9 +7,9 @@ import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.VolleyballMatchRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de vôlei ({@link VolleyballMatch}).
@@ -27,13 +27,14 @@ public class VolleyballMatchService implements MatchStrategy<VolleyballMatch> {
     private final VolleyballMatchRepository volleyballMatchRepository;
 
     /**
-     * Recupera uma lista contendo todas as instâncias da {@link VolleyballMatch}
+     * Recupera uma lista paginada contendo todas as instâncias da {@link VolleyballMatch}.
      *
-     * @return Uma lista contendo todas as instâncias de {@link VolleyballMatch};
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as instâncias de {@link VolleyballMatch};
      */
     @Override
-    public List<VolleyballMatch> findAll() {
-        return volleyballMatchRepository.findAll();
+    public Page<VolleyballMatch> findAll(Pageable pageable) {
+        return volleyballMatchRepository.findAll(pageable);
     }
 
     /**

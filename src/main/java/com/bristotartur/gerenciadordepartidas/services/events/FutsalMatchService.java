@@ -7,9 +7,9 @@ import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.FutsalMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de futsal ({@link FutsalMatch}).
@@ -27,13 +27,14 @@ public class FutsalMatchService implements MatchStrategy<FutsalMatch> {
     private final FutsalMatchRepository futsalMatchRepository;
 
     /**
-     * Recupera uma lista contendo todas as instâncias da {@link FutsalMatch}
+     * Recupera uma lista paginada contendo todas as instâncias da {@link FutsalMatch}.
      *
-     * @return Uma lista contendo todas as instâncias de {@link FutsalMatch};
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as instâncias de {@link FutsalMatch};
      */
     @Override
-    public List<FutsalMatch> findAll() {
-        return futsalMatchRepository.findAll();
+    public Page<FutsalMatch> findAll(Pageable pageable) {
+        return futsalMatchRepository.findAll(pageable);
     }
 
     /**

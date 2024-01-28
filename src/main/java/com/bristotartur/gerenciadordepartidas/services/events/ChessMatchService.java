@@ -7,9 +7,9 @@ import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.ChessMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Serviço responsável por gerenciar operações relacionadas a partidas de xadrez ({@link ChessMatch}).
@@ -27,13 +27,14 @@ public class ChessMatchService implements MatchStrategy<ChessMatch> {
     private final ChessMatchRepository chessMatchRepository;
 
     /**
-     * Recupera uma lista contendo todas as instâncias da {@link ChessMatch}
+     * Recupera uma lista paginada contendo todas as instâncias da {@link ChessMatch}.
      *
-     * @return Uma lista contendo todas as instâncias de {@link ChessMatch};
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as instâncias de {@link ChessMatch};
      */
     @Override
-    public List<ChessMatch> findAll() {
-        return chessMatchRepository.findAll();
+    public Page<ChessMatch> findAll(Pageable pageable) {
+        return chessMatchRepository.findAll(pageable);
     }
 
     /**

@@ -38,7 +38,6 @@ public class MatchController {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-
         log.info("Request to get Match page of number '{}' and size '{}' was made.", number, size);
 
         var dtos = this.createExposingDtoPage(matchService.findAllMatches(pageable));
@@ -46,10 +45,12 @@ public class MatchController {
     }
 
     @GetMapping(path = "/list")
-    public ResponseEntity<Page<ExposingMatchDto>> listMatchesBySport(@RequestParam Sports sport, Pageable pageable) {
+    public ResponseEntity<Page<ExposingMatchDto>> listMatchesBySport(@RequestParam String sportType, Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
+        var sport = Sports.findSportByValue(sportType);
+
         log.info("Request to get Match page of number '{}' and size '{}' with type '{}' was made.", number, size, sport);
 
         var dtos = this.createExposingDtoPage(matchService.findMatchesBySport(sport, pageable));
@@ -78,7 +79,7 @@ public class MatchController {
         log.info("Request to find Match '{}' was made.", id);
 
         var match = matchService.findMatchById(id);
-        var dto = this.addMatchListLink(match, PageRequest.of(0, 20));
+        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -89,7 +90,7 @@ public class MatchController {
         log.info("Request to create a new Match of type '{}' was made.", matchDto.sport());
 
         var match = matchService.saveMatch(matchDto);
-        var dto = this.addMatchListLink(match, PageRequest.of(0, 20));
+        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -110,7 +111,7 @@ public class MatchController {
         log.info("Request to update Match '{}' of type '{}' was made.", id, matchDto.sport());
 
         var match = matchService.replaceMatch(id, matchDto);
-        var dto = this.addMatchListLink(match, PageRequest.of(0, 20));
+        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -132,12 +133,13 @@ public class MatchController {
         var teamBId = match.getTeamB().getId();
 
         var dto = matchService.createExposingMatchDto(match);
+        var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
-        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, PageRequest.of(0, 20))).withRel("match_players"));
-        this.addExtraLinks(dto, match.getId(), PageRequest.of(0, 20));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id,pageable)).withRel("match_players"));
+        this.addExtraLinks(dto, match.getId(), pageable);
 
         return dto;
     }
@@ -149,11 +151,13 @@ public class MatchController {
         var teamBId = match.getTeamB().getId();
 
         var dto = matchService.createExposingMatchDto(match);
+        var sport = dto.getSport().value;
 
         dto.add(linkTo(methodOn(this.getClass()).listAllMatches(pageable)).withRel("matches"));
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
         dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
-        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, PageRequest.of(0, 20))).withRel("match_playes"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, pageable)).withRel("match_players"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(sport, pageable)).withRel("matches_of_same_type"));
         this.addExtraLinks(dto, match.getId(), pageable);
 
         return dto;
@@ -174,9 +178,9 @@ public class MatchController {
 
     private void addExtraLinks(ExposingMatchDto dto, Long matchId, Pageable pageable) {
 
-        var sport = Sports.valueOf(dto.getSport());
+        var sport = dto.getSport().value;
 
-        if (sport.equals(Sports.FUTSAL) || sport.equals(Sports.HANDBALL)) {
+        if (sport.equals(Sports.FUTSAL.value) || sport.equals(Sports.HANDBALL.value)) {
             dto.add(linkTo(methodOn(GoalController.class).listGoalsFromMatch(matchId, sport, pageable)).withRel("goals"));
             // TODO link para cartões de penalidade
         }

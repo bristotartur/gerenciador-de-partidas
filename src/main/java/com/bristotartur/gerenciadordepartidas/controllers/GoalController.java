@@ -43,14 +43,15 @@ public class GoalController {
 
     @GetMapping(path = "/from")
     public ResponseEntity<Page<ExposingGoalDto>> listGoalsFromMatch(@RequestParam("match") Long matchId,
-                                                                    @RequestParam("type") Sports sport,
+                                                                    @RequestParam("type") String sportType,
                                                                     Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-
         log.info("Request to get Goal page of number '{}' and size '{}' from Match '{}' was made.", number, size, matchId);
 
+        var sport = Sports.findSportByValue(sportType);
         var dtoPage = this.createExposingDtoPage(goalService.findGoalsFromMatch(matchId, sport, pageable));
+
         return ResponseEntity.ok().body(dtoPage);
     }
 
@@ -60,7 +61,7 @@ public class GoalController {
         log.info("Request to find Goal '{}' was made.", id);
 
         var goal = goalService.findGoalById(id);
-        var dto = this.addGoalListLink(goal, PageRequest.of(0, 20));
+        var dto = this.addGoalListLink(goal, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -71,7 +72,7 @@ public class GoalController {
         log.info("Request to create a new Goal was made.");
 
         var goal = goalService.saveGoal(goalDto);
-        var dto = this.addGoalListLink(goal, PageRequest.of(0, 20));
+        var dto = this.addGoalListLink(goal, PageRequest.of(0, 12));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -92,7 +93,7 @@ public class GoalController {
         log.info("Request to update Goal '{}' was made.", id);
 
         var goal = goalService.replaceGoal(id, goalDto);
-        var dto = this.addGoalListLink(goal, PageRequest.of(0, 20));
+        var dto = this.addGoalListLink(goal, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);
     }

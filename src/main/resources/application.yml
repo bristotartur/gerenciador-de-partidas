@@ -3,6 +3,11 @@ server:
     include-stacktrace: on_param
 
 spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 12
+
   data-source:
     url: jdbc:h2:mem:test_db
     driver-class-name: org.h2.Driver

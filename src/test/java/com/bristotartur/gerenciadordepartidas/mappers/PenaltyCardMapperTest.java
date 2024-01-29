@@ -35,7 +35,7 @@ class PenaltyCardMapperTest {
 
         var result = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
 
-        assertEquals(result.getColor(), PenaltyCardColor.RED.name);
+        assertEquals(result.getColor(), PenaltyCardColor.RED);
         assertEquals(result.getPlayer(), player);
         assertEquals(result.getMatch(), match);
     }

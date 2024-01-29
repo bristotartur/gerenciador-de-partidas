@@ -72,7 +72,7 @@ class MatchMapperTest {
         var teamB = TeamTestUtil.createNewTeam(TeamName.MESTRES_DE_OBRAS);
         var match = MatchTestUtil.createNewMatch(teamA, teamB, any());
 
-        var sport = "FUTSAL";
+        var sport = Sports.FUTSAL;
         var result = matchMapper.toNewExposingMatchDto(match, sport);
 
         assertEquals(result.getTeamA(),teamA.getName());

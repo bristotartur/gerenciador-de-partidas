@@ -33,7 +33,6 @@ public class PenaltyCardController {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-
         log.info("Request to get Penalty Card page of number '{}' and size '{}' was made.", number, size);
 
         var dtoPage = this.createExposingDtoPage(penaltyCardService.findAllPenaltyCards(pageable));

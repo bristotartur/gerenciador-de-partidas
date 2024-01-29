@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
@@ -24,9 +25,9 @@ public interface MatchServiceFactory {
      * @return Uma implementação de {@link MatchStrategy} especializada no esporte fornecido.
      * @throws BadRequestException Se o tipo de esporte fornecida for nulo ou não suportado.
      */
-    public static MatchStrategy newMatchSportService(Sports sport, ApplicationContext context) {
+    static MatchStrategy<? extends Match> newMatchSportService(Sports sport, ApplicationContext context) {
 
-        MatchStrategy service;
+        MatchStrategy<? extends Match> service;
 
         switch (sport) {
 

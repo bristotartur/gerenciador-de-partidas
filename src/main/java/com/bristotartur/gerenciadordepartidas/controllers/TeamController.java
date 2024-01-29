@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/gerenciador-de-partidas/api/teams")
+@RequestMapping("/gerenciador-de-partidas/api/teams")
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
@@ -34,7 +35,6 @@ public class TeamController {
 
         var pageNumber = pageable.getPageNumber();
         var pageSize = pageable.getPageSize();
-
         log.info("Request to get Team page of number '{}' and size '{}' was made.", pageNumber, pageSize);
 
         var dtoPage = this.createExposingDtoPage(teamService.findAllTeams(pageable));
@@ -47,7 +47,7 @@ public class TeamController {
         log.info("Request to find Team '{}' was made.", id);
 
         var team = teamService.findTeamById(id);
-        var dto = this.addTeamListLink(team, PageRequest.of(0, 5));
+        var dto = this.addTeamListLink(team, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -58,7 +58,7 @@ public class TeamController {
         log.info("Request to find Team with name '{}' was made.", name);
 
         var team = teamService.findTeamByName(name);
-        var dto = this.addTeamListLink(team, PageRequest.of(0, 5));
+        var dto = this.addTeamListLink(team, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -69,7 +69,7 @@ public class TeamController {
         log.info("Request to create a new Team was made.");
 
         var team = teamService.saveTeam(teamDto);
-        var dto = this.addTeamListLink(team, PageRequest.of(0, 5));
+        var dto = this.addTeamListLink(team, PageRequest.of(0, 12));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
@@ -81,7 +81,7 @@ public class TeamController {
         log.info("Request to update Team '{}' was made.", id);
 
         var team = teamService.replaceTeam(id, teamDto);
-        var dto = this.addTeamListLink(team, PageRequest.of(0, 5));
+        var dto = this.addTeamListLink(team, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -100,8 +100,11 @@ public class TeamController {
 
         var id = team.getId();
         var dto = teamService.createExposingTeamDto(team);
+        var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findTeamById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(ParticipantController.class).listMembersFromTeam(id, pageable)).withRel("members"));
+
         return dto;
     }
 
@@ -109,7 +112,14 @@ public class TeamController {
 
         var dto = teamService.createExposingTeamDto(team);
 
-        dto.add(linkTo(methodOn(this.getClass()).listAllTeams(pageable)).withRel("teams"));
+        var teamsLink = Link.of(linkTo(this.getClass()).toUriComponentsBuilder()
+                .queryParam("page", pageable.getPageNumber())
+                .queryParam("size", pageable.getPageSize())
+                .build().toString(), "teams");
+
+        dto.add(teamsLink);
+        dto.add(linkTo(methodOn(ParticipantController.class).listMembersFromTeam(team.getId(), pageable)).withRel("members"));
+
         return dto;
     }
 

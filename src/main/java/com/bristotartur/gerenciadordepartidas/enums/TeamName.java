@@ -22,7 +22,8 @@ public enum TeamName {
      * Valor interno das opções deste enum.
      */
     public final String value;
-    private static Map<Integer, TeamName> courseTeamMap = new HashMap<>();
+
+    private static final Map<Integer, TeamName> courseTeamMap = new HashMap<>();
 
     static {
         courseTeamMap.put(1, TWISTER);

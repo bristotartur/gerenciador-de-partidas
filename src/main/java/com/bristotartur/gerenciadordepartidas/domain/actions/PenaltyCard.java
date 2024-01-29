@@ -33,7 +33,8 @@ public class PenaltyCard {
     private Long id;
 
     @Column(nullable = false)
-    private String color;
+    @Enumerated(EnumType.STRING)
+    private PenaltyCardColor color;
 
     @Column(nullable = false)
     private LocalTime penaltyCardTime;

@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.domain.people;
 
+import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,7 +32,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)
@@ -51,5 +52,10 @@ public class Team {
     @OneToMany(mappedBy = "teamB", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Match> matchesAsTeamB;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Goal> goals;
 
 }

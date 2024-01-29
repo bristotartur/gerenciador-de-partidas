@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.domain.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,9 +11,10 @@ import java.time.LocalTime;
 
 /**
  * Entidade responsável por representar gols no sistema. Esta entidade carrega consigo
- * o jogador que marcou o gol e a partida em que ele ocorreu.
+ * o jogador que marcou o gol, a equipe do jogador e a partida em que ele ocorreu.
  *
  * @see Participant
+ * @see Team
  * @see Match
  */
 @Entity
@@ -35,6 +37,11 @@ public class Goal {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "participant_id", nullable = false)
     private Participant player;
+
+    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)

@@ -17,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * Classe responsável por fornecer serviços relacionados a operações CRUD para a entidade {@link Team},
  * interagindo com o repositório {@link TeamRepository} para acessar e manipular os dados
@@ -47,6 +45,26 @@ public class TeamService {
 
         log.info("Team page of number '{}' and size '{}' was returned.", number, size);
         return teamPage;
+    }
+
+    /**
+     * Procura por todos os membros de uma determinada equipe.
+     *
+     * @param id Identificador único da equipe.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo todos os participantes relacionados a equipe
+     * @throws NotFoundException Se nenhuma equipe correspondente ao nome fornecido for encontrada.
+     */
+    public Page<Participant> findAllTeamMembers(Long id, Pageable pageable) {
+
+        var team = this.findTeamById(id);
+        var membersPage = teamRepository.findTeamMembers(id, pageable);
+
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        log.info("Members page of number '{}' and size '{}' from team '{}' was returned.", number, size, id);
+
+        return membersPage;
     }
 
     /**
@@ -82,21 +100,6 @@ public class TeamService {
     }
 
     /**
-     * Retorna todos os membros de uma equipe.
-     *
-     * @param id Identificador único da equipe.
-     * @return Uma lista contendo todos os membros da equipe.
-     */
-    public List<Participant> findAllTeamMembers(Long id) {
-
-        var team = this.findTeamById(id);
-        var members = teamRepository.findTeamMembers(id);
-
-        log.info("List with all members from team '{}' with name '{}' was found.", id, team.getName());
-        return members;
-    }
-
-    /**
      * Gera um DTO do tipo {@link ExposingTeamDto} com base na equipe fornecida.
      *
      * @param team Equipe que terá seus dados mapeados para o DTO.
@@ -117,7 +120,7 @@ public class TeamService {
 
         var teamName = teamDto.teamName().value;
 
-        if (!teamRepository.findByName(teamName).isEmpty())
+        if (teamRepository.findByName(teamName).isPresent())
             throw new BadRequestException(ExceptionMessages.NAME_ALREADY_IN_USE.message.formatted(teamName));
 
         var savedTeam = teamRepository.save(teamMapper.toNewTeam(teamDto));

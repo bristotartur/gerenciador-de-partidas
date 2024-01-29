@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -74,27 +75,27 @@ class TeamServiceTest {
     @Test
     @DisplayName("Should throw NotFoundException when invalid TeamName is passed to search")
     void Should_ThrowNotFoundException_When_InvalidTeamNameIsPassedToSearch() {
-
         var name = TeamName.MESTRES_DE_OBRAS;
-
-        assertThrows(NotFoundException.class, () -> {
-            teamService.findTeamByName(name);
-        });
+        assertThrows(NotFoundException.class, () -> teamService.findTeamByName(name));
     }
 
     @Test
     @DisplayName("Should retrieve all Team members when Team ID is passed to search Team members")
     void Should_RetrieveAllTeamMembers_When_TeamIdIsPassedToSearchTeamMembers() {
 
+        var pageable = PageRequest.of(0, 3);
+
         var team = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
         var teamMembers = List.of(
-                ParticipantTestUtil.createNewParticipant("1-41" ,team, entityManager),
-                ParticipantTestUtil.createNewParticipant("2-41" ,team, entityManager),
-                ParticipantTestUtil.createNewParticipant("3-41" ,team, entityManager));
+                ParticipantTestUtil.createNewParticipant("1-41", team, entityManager),
+                ParticipantTestUtil.createNewParticipant("2-41", team, entityManager),
+                ParticipantTestUtil.createNewParticipant("3-41", team, entityManager));
 
-        var result = teamService.findAllTeamMembers(team.getId());
+        var membersPage = new PageImpl<>(teamMembers, pageable, teamMembers.size());
+        var result = teamService.findAllTeamMembers(team.getId(), pageable);
 
-        assertEquals(result, teamMembers);
+        assertEquals(result.getContent(), membersPage.getContent());
+        assertEquals(result.getTotalPages(), membersPage.getTotalPages());
     }
 
     @Test
@@ -125,9 +126,7 @@ class TeamServiceTest {
         var teamDto = TeamTestUtil.createNewTeamDto(teamName, 1000);
         teamService.saveTeam(teamDto);
 
-        assertThrows(BadRequestException.class, () -> {
-            teamService.saveTeam(teamDto);
-        });
+        assertThrows(BadRequestException.class, () -> teamService.saveTeam(teamDto));
     }
 
     @Test
@@ -157,9 +156,7 @@ class TeamServiceTest {
         var existingTeamB = teamService.saveTeam(newTeamDto);
 
 
-        assertThrows(BadRequestException.class, () -> {
-            teamService.replaceTeam(existingTeamB.getId(), teamDto);
-        });
+        assertThrows(BadRequestException.class, () -> teamService.replaceTeam(existingTeamB.getId(), teamDto));
     }
 
     @Test
@@ -169,15 +166,9 @@ class TeamServiceTest {
         var id = getRandomLongId();
         var teamDto = TeamTestUtil.createNewTeamDto(TeamName.UNICONTTI, 500);
 
-        assertThrows(NotFoundException.class, () -> {
-            teamService.findTeamById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            teamService.findAllTeamMembers(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            teamService.replaceTeam(id, teamDto);
-        });
+        assertThrows(NotFoundException.class, () -> teamService.findTeamById(id));
+        assertThrows(NotFoundException.class, () -> teamService.findAllTeamMembers(id, Pageable.unpaged()));
+        assertThrows(NotFoundException.class, () -> teamService.replaceTeam(id, teamDto));
     }
 
 }

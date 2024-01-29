@@ -2,6 +2,8 @@ package com.bristotartur.gerenciadordepartidas.domain.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
+import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
+import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -67,10 +69,12 @@ public class Match {
     private Integer teamScoreB;
 
     @Column(nullable = false)
-    private String modality;
+    @Enumerated(EnumType.STRING)
+    private Modality modality;
 
     @Column(nullable = false)
-    private String matchStatus;
+    @Enumerated(EnumType.STRING)
+    private MatchStatus matchStatus;
 
     @Column(nullable = false)
     private LocalDateTime matchStart;

@@ -1,6 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
+import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
@@ -23,8 +25,8 @@ public class ExposingMatchDto extends RepresentationModel<ExposingMatchDto> {
     private final String teamB;
     private final Integer teamScoreA;
     private final Integer teamScoreB;
-    private final String modality;
-    private final String matchStatus;
+    private final Modality modality;
+    private final MatchStatus matchStatus;
     private final LocalDateTime matchStart;
     private final LocalDateTime matchEnd;
 

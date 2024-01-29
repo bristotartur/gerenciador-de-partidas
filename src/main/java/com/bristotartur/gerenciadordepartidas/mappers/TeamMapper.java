@@ -29,6 +29,8 @@ public interface TeamMapper {
     @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)
+    @Mapping(target = "goals", ignore = true)
+    @Mapping(target = "penaltyCards", ignore = true)
     Team toNewTeam(TeamDto teamDto);
 
     /**
@@ -44,6 +46,8 @@ public interface TeamMapper {
     @Mapping(target = "members", ignore = true)
     @Mapping(target = "matchesAsTeamA", ignore = true)
     @Mapping(target = "matchesAsTeamB", ignore = true)
+    @Mapping(target = "goals", ignore = true)
+    @Mapping(target = "penaltyCards", ignore = true)
     Team toExistingTeam(Long id, TeamDto teamDto);
 
     /**
@@ -52,6 +56,7 @@ public interface TeamMapper {
      * @param team Equipe contenco os dados a serem mapeados.
      * @return Uma nova instância de {@link Team}.
      */
+    @Mapping(target = "teamId", source = "team.id")
     @Mapping(target = "teamName", source = "team.name")
     ExposingTeamDto toNewExposingTeamDto(Team team);
 

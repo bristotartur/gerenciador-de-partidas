@@ -51,6 +51,7 @@ public interface ParticipantMapper {
      * @param participant Participante contendo os dados a serem mapeados.
      * @return Uma nova instãncia de {@link ExposingParticipantDto}.
      */
+    @Mapping(target = "participantId", source = "participant.id")
     @Mapping(target = "team", source = "team.name")
     ExposingParticipantDto toNewExposingParticipantDto(Participant participant);
 

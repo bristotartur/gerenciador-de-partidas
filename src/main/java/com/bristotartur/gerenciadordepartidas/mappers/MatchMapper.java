@@ -5,6 +5,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
+import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -32,8 +33,8 @@ public interface MatchMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "teamScoreA", constant = "0")
     @Mapping(target = "teamScoreB", constant = "0")
-    @Mapping(target = "modality", source = "matchDto.modality.name")
-    @Mapping(target = "matchStatus", source = "matchDto.matchStatus.name")
+    @Mapping(target = "modality", source = "matchDto.modality")
+    @Mapping(target = "matchStatus", source = "matchDto.matchStatus")
     Match toNewMatch(MatchDto matchDto, List<Participant> players, Team teamA, Team teamB);
 
     /**
@@ -49,8 +50,8 @@ public interface MatchMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "teamScoreA", ignore = true)
     @Mapping(target = "teamScoreB", ignore = true)
-    @Mapping(target = "modality", source = "matchDto.modality.name")
-    @Mapping(target = "matchStatus", source = "matchDto.matchStatus.name")
+    @Mapping(target = "modality", source = "matchDto.modality")
+    @Mapping(target = "matchStatus", source = "matchDto.matchStatus")
     Match toExistingMatch(Long id, MatchDto matchDto, List<Participant> players, Team teamA, Team teamB);
 
     /**
@@ -61,8 +62,9 @@ public interface MatchMapper {
      * @param sport A modalidade esportiva da partida.
      * @return Uma nova instância de {@link ExposingMatchDto}.
      */
+    @Mapping(target = "matchId", source = "match.id")
     @Mapping(target = "teamA", source = "match.teamA.name")
     @Mapping(target = "teamB", source = "match.teamB.name")
-    ExposingMatchDto toNewExposingMatchDto(Match match, String sport);
+    ExposingMatchDto toNewExposingMatchDto(Match match, Sports sport);
 
 }

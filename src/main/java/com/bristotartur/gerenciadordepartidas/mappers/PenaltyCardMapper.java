@@ -26,7 +26,9 @@ public interface PenaltyCardMapper {
      * @return Uma nova instância de {@link PenaltyCard} com base nos dados fornecidos.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "color", source = "penaltyCardDto.color.name")
+    @Mapping(target = "color", source = "penaltyCardDto.color")
+    @Mapping(target = "player", source = "player")
+    @Mapping(target = "team", source = "player.team")
     PenaltyCard toNewPenaltyCard(PenaltyCardDto penaltyCardDto, Participant player, Match match);
 
     /**
@@ -39,7 +41,9 @@ public interface PenaltyCardMapper {
      * @return Uma nova instância atualizada de {@link PenaltyCard} com base nos dados fornecidos.
      */
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "color", source = "penaltyCardDto.color.name")
+    @Mapping(target = "color", source = "penaltyCardDto.color")
+    @Mapping(target = "player", source = "player")
+    @Mapping(target = "team", source = "player.team")
     PenaltyCard toExistingPenaltyCard(Long id, PenaltyCardDto penaltyCardDto, Participant player, Match match);
 
     /**
@@ -48,7 +52,9 @@ public interface PenaltyCardMapper {
      * @param penaltyCard Cartão de penalidade contendo os dados a serem mapeados.
      * @return Uma nova instância de {@link PenaltyCard}.
      */
+    @Mapping(target = "penaltyCardId", source = "penaltyCard.id")
     @Mapping(target = "player", source = "player.name")
+    @Mapping(target = "team", source = "player.team.name")
     ExposingPenaltyCardDto toNewExposinfPenaltyCardDto(PenaltyCard penaltyCard);
 
 }

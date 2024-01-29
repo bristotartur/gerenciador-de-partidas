@@ -26,6 +26,8 @@ public interface GoalMapper {
      * @return Uma nova instância de {@link Goal} com base nos dados fornecidos.
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "player", source = "player")
+    @Mapping(target = "team", source = "player.team")
     Goal toNewGoal(GoalDto goalDto, Participant player, Match match);
 
     /**
@@ -38,6 +40,8 @@ public interface GoalMapper {
      * @return Uma nova instância atualizada de {@link Goal} com base nos dados fornecidos.
      */
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "player", source = "player")
+    @Mapping(target = "team", source = "player.team")
     Goal toExistingGoal(Long id, GoalDto goalDto, Participant player, Match match);
 
     /**
@@ -46,7 +50,9 @@ public interface GoalMapper {
      * @param goal Gol contendo os dados a serem mapeados.
      * @return Uma nova instância de {@link ExposingGoalDto}.
      */
+    @Mapping(target = "goalId", source = "goal.id")
     @Mapping(target = "player", source = "player.name")
+    @Mapping(target = "team", source = "player.team.name")
     ExposingGoalDto toNewExposingGoalDto(Goal goal);
 
 }

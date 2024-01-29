@@ -113,16 +113,23 @@ public class ParticipantService {
     }
 
     /**
-     * Remove um participante do banco de dados com base no seu ID.
+     * Remove um participante da base de dados com base no seu ID. Esta operação só poderá ser utilizada ao
+     * adicionar participantes por engano ao sistema pois, ao associá-los a qualquer tipo de evento, eles não
+     * poderão mais ser removidos.
      *
      * @param id Identificador único do participante.
-     * @throws NotFoundException caso o ID fornecido não corresponda a nenhum participante.
+     * @throws NotFoundException Caso o ID fornecido não corresponda a nenhum participante.
+     * @throws BadRequestException Caso o participante já esteja atrelado a algum evento.
      */
     public void deleteParticipantById(Long id) {
 
         var participant = this.findParticipantById(id);
-        participantRepository.deleteById(id);
+        var participantMatches = participantRepository.findMatchesByParticipantId(id);
 
+        if (!participantMatches.isEmpty())
+            throw new BadRequestException(ExceptionMessages.INVALID_PARTICIPANT_EXCLUSION_OPERATION.message);
+
+        participantRepository.deleteById(id);
         log.info("Participant '{}' with name '{}' was deleted.", id, participant.getName());
     }
 
@@ -166,7 +173,7 @@ public class ParticipantService {
             throw new BadRequestException(ExceptionMessages.INVALID_PATTERN.message.formatted(classNumber));
 
         if (!classNumber.contains("-"))
-            classNumber = classNumber.substring(0, 1) + "-" + classNumber.substring(1);
+            classNumber = classNumber.charAt(0) + "-" + classNumber.substring(1);
 
         participant.setClassNumber(classNumber);
     }

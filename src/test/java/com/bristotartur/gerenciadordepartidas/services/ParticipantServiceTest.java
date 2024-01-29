@@ -6,6 +6,7 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.ParticipantRepository;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
+import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
 import jakarta.persistence.EntityManager;
@@ -95,15 +96,9 @@ class ParticipantServiceTest {
         var id = getRandomLongId();
         var participantDto = ParticipantTestUtil.createNewParticipantDto("2-14", getRandomLongId());
 
-        assertThrows(NotFoundException.class, () -> {
-            participantService.findParticipantById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-           participantService.deleteParticipantById(id);
-        });
-        assertThrows(NotFoundException.class, () -> {
-            participantService.replaceParticipant(id, participantDto);
-        });
+        assertThrows(NotFoundException.class, () -> participantService.findParticipantById(id));
+        assertThrows(NotFoundException.class, () -> participantService.deleteParticipantById(id));
+        assertThrows(NotFoundException.class, () -> participantService.replaceParticipant(id, participantDto));
     }
 
     @Test
@@ -134,6 +129,18 @@ class ParticipantServiceTest {
         participantService.deleteParticipantById(participant.getId());
 
         assertTrue(participantRepository.findById(participant.getId()).isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when trying to remove a Participant already associated to any event")
+    void Should_ThrowBadRequestException_When_TrtingToRemoveParticipantAlreadyAssociatedToAnyEvent() {
+
+        var teamB = TeamTestUtil.createNewTeam(TeamName.ATOMICA, entityManager);
+        var participant = ParticipantTestUtil.createNewParticipant("3-53", team, entityManager);
+        var match = MatchTestUtil.createNewMatch(team, teamB, List.of(participant));
+
+        entityManager.merge(match);
+        assertThrows(BadRequestException.class, () -> participantService.deleteParticipantById(participant.getId()));
     }
 
     @Test
@@ -168,9 +175,7 @@ class ParticipantServiceTest {
 
         var participantDto = ParticipantTestUtil.createNewParticipantDto("4-61", team.getId());
 
-        assertThrows(BadRequestException.class, () -> {
-            participantService.saveParticipant(participantDto);
-        });
+        assertThrows(BadRequestException.class, () -> participantService.saveParticipant(participantDto));
     }
 
 }

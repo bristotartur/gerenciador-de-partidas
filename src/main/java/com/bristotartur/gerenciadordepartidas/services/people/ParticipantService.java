@@ -66,6 +66,18 @@ public class ParticipantService {
     }
 
     /**
+     * Procura por todos os membros de uma determinada equipe.
+     *
+     * @param id Identificador único da equipe.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo todos os participantes relacionados a equipe
+     * @throws NotFoundException Se nenhuma equipe correspondente ao nome fornecido for encontrada.
+     */
+    public Page<Participant> findMambersFromTeam(Long id, Pageable pageable) {
+        return teamService.findAllTeamMembers(id, pageable);
+    }
+
+    /**
      * Busca por uma entidade específica do tipo {@link Participant} com base no seu ID.
      *
      * @param id Identificador único do participant.

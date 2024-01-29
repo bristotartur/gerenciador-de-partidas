@@ -9,7 +9,7 @@ public final class RandomIdUtil {
 
     public static Long getRandomLongId() {
 
-        Long timestamp = System.currentTimeMillis();
+        long timestamp = System.currentTimeMillis();
         Random random = new Random();
 
         return Math.abs(random.nextLong() + timestamp);

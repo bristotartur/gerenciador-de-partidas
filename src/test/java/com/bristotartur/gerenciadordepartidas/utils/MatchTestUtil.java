@@ -36,8 +36,8 @@ public final class MatchTestUtil {
                 .players(players)
                 .teamScoreA(0)
                 .teamScoreB(0)
-                .modality(Modality.MASCULINE.name)
-                .matchStatus(MatchStatus.IN_PROGRESS.name)
+                .modality(Modality.MASCULINE)
+                .matchStatus(MatchStatus.IN_PROGRESS)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();
@@ -60,8 +60,8 @@ public final class MatchTestUtil {
                 .players(players)
                 .teamScoreA(0)
                 .teamScoreB(0)
-                .modality(modality.name)
-                .matchStatus(MatchStatus.IN_PROGRESS.name)
+                .modality(modality)
+                .matchStatus(MatchStatus.IN_PROGRESS)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();
@@ -84,8 +84,8 @@ public final class MatchTestUtil {
                 .players(players)
                 .teamScoreA(0)
                 .teamScoreB(0)
-                .modality(Modality.MASCULINE.name)
-                .matchStatus(status.name)
+                .modality(Modality.MASCULINE)
+                .matchStatus(status)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();

@@ -30,8 +30,9 @@ public final class PenaltyCardTestUtil {
     public static PenaltyCard createNewPenaltyCard(PenaltyCardColor color, Participant player, Match match) {
 
         return PenaltyCard.builder()
-                .color(color.name)
+                .color(color)
                 .player(player)
+                .team(player.getTeam())
                 .match(match)
                 .penaltyCardTime(LocalTime.now())
                 .build();
@@ -50,8 +51,9 @@ public final class PenaltyCardTestUtil {
     public static PenaltyCard createNewPenaltyCard(PenaltyCardColor color, Participant player, Match match, EntityManager entityManager) {
 
         var penaltyCard = PenaltyCard.builder()
-                .color(color.name)
+                .color(color)
                 .player(player)
+                .team(player.getTeam())
                 .match(match)
                 .penaltyCardTime(LocalTime.now())
                 .build();
@@ -61,13 +63,13 @@ public final class PenaltyCardTestUtil {
     }
 
     /**
-     * Cria uma nova instância de {@link PenaltyCard}.
+     * Cria uma nova instância de {@link PenaltyCardDto}.
      *
      * @param sport Modalidade esportica da partida em a penalidade ocorreu.
      * @param color A cor do cartão.
      * @param playerId Identificador único do jogador que recebeu o cartão.
      * @param matchId Identificador único da partida em que a penalidade ocorreu.
-     * @return
+     * @return Uma nova instância de {@link PenaltyCardDto}
      */
     public static PenaltyCardDto createNewPenaltyCardDto(Sports sport, PenaltyCardColor color, Long playerId, Long matchId) {
 

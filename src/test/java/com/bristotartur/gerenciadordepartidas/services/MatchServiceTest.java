@@ -156,7 +156,7 @@ class MatchServiceTest {
 
         var result = matchService.createExposingMatchDto(handballMatch);
 
-        assertEquals(result.getSport(), sport.name());
+        assertEquals(result.getSport(), sport);
         assertEquals(result.getTeamA(), handballMatch.getTeamA().getName());
         assertEquals(result.getTeamB(), handballMatch.getTeamB().getName());
     }
@@ -219,7 +219,7 @@ class MatchServiceTest {
         var result = matchService.replaceMatch(tableTennisMatch.getId(), matchDto);
 
         assertNotNull(result);
-        assertNotEquals(result.getModality(), originalModality.name);
+        assertNotEquals(result.getModality(), originalModality);
     }
 
     @Test

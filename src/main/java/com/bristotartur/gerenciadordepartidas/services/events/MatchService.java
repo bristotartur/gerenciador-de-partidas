@@ -127,7 +127,9 @@ public class MatchService {
      */
     public ExposingMatchDto createExposingMatchDto(Match match) {
 
-        var sport = matchRepository.findMatchTypeById(match.getId(), entityManager);
+        var sportType = matchRepository.findMatchTypeById(match.getId(), entityManager);
+        var sport = Sports.valueOf(sportType);
+
         return matchMapper.toNewExposingMatchDto(match, sport);
     }
 

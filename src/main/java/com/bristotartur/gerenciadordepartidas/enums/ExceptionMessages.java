@@ -8,6 +8,7 @@ public enum ExceptionMessages {
     INVALID_TEAMS_FOR_MATCH("Uma partida não pode ter duas equipes iguais."),
     NAME_ALREADY_IN_USE("O nome '%s' já está em uso."),
     INVALID_CLASS_NUMBER("Número de turma inválido."),
+    INVALID_PARTICIPANT_EXCLUSION_OPERATION("Participantes atrelados a eventos não podem ser excluídos."),
     PARTICIPANT_NOT_FOUND("Participante não encontrado."),
     PARTICIPANT_INVALID_FOR_MATCH("Participante com id '%d' não pertence a nenhuma equipe da partida."),
     GOAL_NOT_FOUND("Gol não encontrado."),

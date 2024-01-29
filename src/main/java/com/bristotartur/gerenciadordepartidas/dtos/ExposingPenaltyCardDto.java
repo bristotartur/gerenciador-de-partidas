@@ -10,8 +10,10 @@ import java.time.LocalTime;
 @Getter
 public class ExposingPenaltyCardDto extends RepresentationModel<ExposingPenaltyCardDto> {
 
-    private final String player;
+    private final Long penaltyCardId;
     private final String color;
+    private final String player;
+    private final String team;
     private final LocalTime penaltyCardTime;
 
 }

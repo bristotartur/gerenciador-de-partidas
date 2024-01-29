@@ -9,6 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Getter
 public class ExposingTeamDto extends RepresentationModel<ExposingTeamDto> {
 
+    private final Long teamId;
     private final String teamName;
     private final Integer points;
 

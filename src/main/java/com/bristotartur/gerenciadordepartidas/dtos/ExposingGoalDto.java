@@ -10,7 +10,9 @@ import java.time.LocalTime;
 @Getter
 public class ExposingGoalDto extends RepresentationModel<ExposingGoalDto> {
 
+    private final Long goalId;
     private final String player;
+    private final String team;
     private final LocalTime goalTime;
 
 }

@@ -9,12 +9,13 @@ spring:
         default-page-size: 12
 
   data-source:
-    url: jdbc:h2:mem:test_db
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/gerenciador_de_partidas
+    username: postgres
+    password: 1234
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database: POSTGRESQL
     hibernate:
       ddl-auto: update

@@ -4,7 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
-import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 
@@ -37,7 +37,7 @@ public final class MatchTestUtil {
                 .teamScoreA(0)
                 .teamScoreB(0)
                 .modality(Modality.MASCULINE)
-                .matchStatus(MatchStatus.IN_PROGRESS)
+                .matchStatus(Status.IN_PROGRESS)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();
@@ -61,7 +61,7 @@ public final class MatchTestUtil {
                 .teamScoreA(0)
                 .teamScoreB(0)
                 .modality(modality)
-                .matchStatus(MatchStatus.IN_PROGRESS)
+                .matchStatus(Status.IN_PROGRESS)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();
@@ -76,7 +76,7 @@ public final class MatchTestUtil {
      * @param status O status da partida, podendo ser agendada, em andamento ou encerrada.
      * @return Uma nova instância de {@link Match} com os dados fornecidos.
      */
-    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, MatchStatus status) {
+    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, Status status) {
 
         return Match.builder()
                 .teamA(teamA)
@@ -108,7 +108,7 @@ public final class MatchTestUtil {
                 .teamBId(teamBId)
                 .playerIds(playerIds)
                 .modality(Modality.MASCULINE)
-                .matchStatus(MatchStatus.IN_PROGRESS)
+                .matchStatus(Status.IN_PROGRESS)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();
@@ -132,7 +132,7 @@ public final class MatchTestUtil {
                 .teamBId(teamBId)
                 .playerIds(playerIds)
                 .modality(modality)
-                .matchStatus(MatchStatus.IN_PROGRESS)
+                .matchStatus(Status.IN_PROGRESS)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();
@@ -148,7 +148,7 @@ public final class MatchTestUtil {
      * @param status O status da partida, podendo ser agendada, em andamento ou encerrada.
      * @return Uma nova instância de {@link MatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Long teamAId, Long teamBId, List<Long> playerIds, MatchStatus status) {
+    public static MatchDto createNewMatchDto(Sports sport, Long teamAId, Long teamBId, List<Long> playerIds, Status status) {
 
         return MatchDto.builder()
                 .sport(sport)

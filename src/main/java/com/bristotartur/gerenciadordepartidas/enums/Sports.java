@@ -13,7 +13,7 @@ import java.util.Optional;
  * diversas ocasiões, como buscar partidas por um tipo específico, definir a modalidade esportiva
  * de uma partida, filtrar o acesso de determinadas ações a eventos esportivos, etc.
  *
- * @see MatchStatus
+ * @see Status
  * @see Modality
  * @see MatchStrategy
  * @see MatchServiceFactory

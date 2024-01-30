@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class ExposingMatchDto extends RepresentationModel<ExposingMatchDto> {
     private final Integer teamScoreA;
     private final Integer teamScoreB;
     private final Modality modality;
-    private final MatchStatus matchStatus;
+    private final Status matchStatus;
     private final LocalDateTime matchStart;
     private final LocalDateTime matchEnd;
 

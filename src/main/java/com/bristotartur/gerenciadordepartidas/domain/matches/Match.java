@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.domain.matches;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
-import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -74,7 +74,7 @@ public class Match {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private MatchStatus matchStatus;
+    private Status matchStatus;
 
     @Column(nullable = false)
     private LocalDateTime matchStart;

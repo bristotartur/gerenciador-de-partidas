@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.domain.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

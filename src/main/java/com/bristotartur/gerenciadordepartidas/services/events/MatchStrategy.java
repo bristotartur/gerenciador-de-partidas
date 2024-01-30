@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

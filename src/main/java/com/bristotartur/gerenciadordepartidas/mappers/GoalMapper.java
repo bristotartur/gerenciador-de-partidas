@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;

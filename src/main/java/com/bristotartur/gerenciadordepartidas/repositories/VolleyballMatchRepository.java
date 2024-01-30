@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.repositories;
 
-import com.bristotartur.gerenciadordepartidas.domain.events.VolleyballMatch;
+import com.bristotartur.gerenciadordepartidas.domain.matches.VolleyballMatch;
 import org.springframework.stereotype.Repository;
 
 @Repository

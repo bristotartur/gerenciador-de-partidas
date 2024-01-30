@@ -1,5 +1,6 @@
-package com.bristotartur.gerenciadordepartidas.domain.events;
+package com.bristotartur.gerenciadordepartidas.domain.matches;
 
+import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -14,16 +15,22 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 /**
- * Classe filha de {@link Match} especializada em partidas de basquete.
+ * Classe filha de {@link Match} especializada em partidas de futsal.
  *
+ * @see Goal
  * @see PenaltyCard
  */
 @Entity
-@DiscriminatorValue("BASKETBALL")
+@DiscriminatorValue("FUTSAL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
-public class BasketballMatch extends Match {
+public class FutsalMatch extends Match {
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Goal> goals;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)

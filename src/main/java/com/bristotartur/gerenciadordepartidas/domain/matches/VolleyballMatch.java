@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.domain.events;
+package com.bristotartur.gerenciadordepartidas.domain.matches;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -7,13 +7,13 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Classe filha de {@link Match} especializada em partidas de xadrez.
+ * Classe filha de {@link Match} especializada em partidas de vôlei.
  */
 @Entity
-@DiscriminatorValue("CHESS")
+@DiscriminatorValue("VOLLEYBALL")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @RequiredArgsConstructor
-public class ChessMatch extends Match {
+public class VolleyballMatch extends Match {
 
 }

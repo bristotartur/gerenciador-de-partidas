@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.MatchStatus;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;

@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.events.ChessMatch;
-import com.bristotartur.gerenciadordepartidas.domain.events.FutsalMatch;
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.matches.ChessMatch;
+import com.bristotartur.gerenciadordepartidas.domain.matches.FutsalMatch;
+import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;

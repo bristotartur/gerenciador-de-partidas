@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
-import com.bristotartur.gerenciadordepartidas.domain.events.Match;
+import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;

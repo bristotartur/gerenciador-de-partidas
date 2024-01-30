@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.domain.events;
+package com.bristotartur.gerenciadordepartidas.domain.matches;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;

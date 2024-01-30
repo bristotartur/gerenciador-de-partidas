@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.services.events;
+package com.bristotartur.gerenciadordepartidas.services.matches;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import org.springframework.data.domain.Page;

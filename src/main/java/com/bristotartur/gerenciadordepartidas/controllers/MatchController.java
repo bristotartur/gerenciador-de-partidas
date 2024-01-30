@@ -6,7 +6,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.services.events.MatchService;
+import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

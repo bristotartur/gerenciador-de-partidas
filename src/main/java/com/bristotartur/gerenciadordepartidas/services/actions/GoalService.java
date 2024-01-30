@@ -11,7 +11,7 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
-import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
+import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

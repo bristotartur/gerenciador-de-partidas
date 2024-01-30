@@ -6,7 +6,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
-import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceMediator;
+import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;

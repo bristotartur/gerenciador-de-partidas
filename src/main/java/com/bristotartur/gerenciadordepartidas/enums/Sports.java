@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
-import com.bristotartur.gerenciadordepartidas.services.events.MatchServiceFactory;
-import com.bristotartur.gerenciadordepartidas.services.events.MatchStrategy;
+import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceFactory;
+import com.bristotartur.gerenciadordepartidas.services.matches.MatchStrategy;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;

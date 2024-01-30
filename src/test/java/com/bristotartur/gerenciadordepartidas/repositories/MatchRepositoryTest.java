@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.repositories;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
@@ -24,10 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
 class MatchRepositoryTest {
 
     @Autowired
-    private MatchRepository matchRepository;
+    private MatchRepository<Match> matchRepository;
     @Autowired
     private EntityManager entityManager;
     @Autowired
@@ -35,7 +38,7 @@ class MatchRepositoryTest {
 
     private Team teamA;
     private Team teamB;
-    private List<Participant> players = new LinkedList<>();
+    private final List<Participant> players = new LinkedList<>();
 
     @BeforeEach
     void setUp() {

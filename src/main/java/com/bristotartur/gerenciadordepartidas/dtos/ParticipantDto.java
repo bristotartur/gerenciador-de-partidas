@@ -7,5 +7,6 @@ import lombok.Builder;
 @Builder
 public record ParticipantDto(@NotBlank String name,
                              @NotBlank String classNumber,
-                             @NotNull Long teamId) {
+                             @NotNull Long teamId,
+                             @NotNull Long editionId) {
 }

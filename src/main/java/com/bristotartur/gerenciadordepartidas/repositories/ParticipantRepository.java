@@ -33,4 +33,14 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     @Query("SELECT m FROM Match m JOIN m.players p WHERE p.id = :participantId")
     List<Match> findMatchesByParticipantId(@Param("participantId") Long participantId);
 
+    /**
+     * Procura por todos os membros de uma equipe pelo seu ID.
+     *
+     * @param teamId Identificador único da equipe.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Uma {@link Page} contendo todos os participantes relacionados a equipe
+     */
+    @Query("SELECT p FROM Participant p WHERE p.team.id = :teamId")
+    Page<Participant> findTeamMembers(@Param("teamId") Long teamId, Pageable pageable);
+
 }

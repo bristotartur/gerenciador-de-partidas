@@ -34,7 +34,7 @@ public enum Sports {
 
     /**
      * <p>Busca por uma das opções deste enum com base em seu valor interno. Os valores internos possíveis
-     * são: 'chess', 'basketball', 'futsal', 'handball', 'table-tenins' e 'volleyball'.</p> <br>
+     * são: 'chess', 'basketball', 'futsal', 'handball', 'table-tennis' e 'volleyball'.</p> <br>
      *
      * Exemplo de uso:
      * <pre>

@@ -1,10 +1,9 @@
 package com.bristotartur.gerenciadordepartidas.domain.matches;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +19,6 @@ import java.util.List;
  * que estas especializações possuem atributos específicos para o seu tipo esportivo, como gols
  * para uma especialização em futsal ou sets para uma especialização em vôlei.</p>
  *
- * @see Team
  * @see Participant
  * @see FutsalMatch
  * @see HandballMatch
@@ -44,15 +42,13 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_a_id", nullable = false)
-    private Team teamA;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TeamName teamA;
 
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_b_id", nullable = false)
-    private Team teamB;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TeamName teamB;
 
     @ManyToMany
     @JoinTable(

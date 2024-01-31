@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -17,7 +18,6 @@ import java.util.List;
  * Objetos que instanciam esta classe podem às vezes ser representados como "players"
  * em um contexto de partidas, ou como "members" quando se trata de equipes.
  *
- * @see Team
  * @see Match
  * @see Goal
  * @see PenaltyCard
@@ -41,10 +41,9 @@ public class Participant {
     @Column(nullable = false)
     private String classNumber;
 
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_id", nullable = false)
-    private Team team;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TeamName team;
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)

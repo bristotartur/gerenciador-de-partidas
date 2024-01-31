@@ -52,7 +52,7 @@ public interface GoalMapper {
      */
     @Mapping(target = "goalId", source = "goal.id")
     @Mapping(target = "player", source = "player.name")
-    @Mapping(target = "team", source = "player.team.name")
+    @Mapping(target = "team", source = "player.team")
     ExposingGoalDto toNewExposingGoalDto(Goal goal);
 
 }

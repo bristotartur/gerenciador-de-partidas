@@ -54,7 +54,7 @@ public interface PenaltyCardMapper {
      */
     @Mapping(target = "penaltyCardId", source = "penaltyCard.id")
     @Mapping(target = "player", source = "player.name")
-    @Mapping(target = "team", source = "player.team.name")
+    @Mapping(target = "team", source = "player.team")
     ExposingPenaltyCardDto toNewExposinfPenaltyCardDto(PenaltyCard penaltyCard);
 
 }

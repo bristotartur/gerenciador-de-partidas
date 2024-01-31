@@ -15,6 +15,7 @@ public interface EditionMapper {
     @Mapping(target = "papaPontuation", constant = "0")
     @Mapping(target = "twisterPontuation", constant = "0")
     @Mapping(target = "uniconttiPontuation", constant = "0")
+    @Mapping(target = "participants", ignore = true)
     Edition toNewEdition(EditionDto editionDto);
 
     @Mapping(target = "atomicaPontuation", source = "originalEdition.atomicaPontuation")

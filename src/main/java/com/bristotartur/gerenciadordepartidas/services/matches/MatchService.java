@@ -11,7 +11,6 @@ import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.MatchMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
-import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
@@ -33,7 +32,6 @@ import java.util.Optional;
  *
  * @see MatchMapper
  * @see ParticipantService
- * @see TeamService
  * @see MatchServiceMediator
  */
 @Service
@@ -47,7 +45,6 @@ public class MatchService {
     private final MatchRepository<Match> matchRepository;
     private final MatchMapper matchMapper;
     private final ParticipantService participantService;
-    private final TeamService teamService;
     private final MatchServiceMediator matchServiceMediator;
 
     /**
@@ -144,11 +141,9 @@ public class MatchService {
      */
     public Match saveMatch(MatchDto matchDto) {
 
-        if (matchDto.teamAId() == matchDto.teamBId())
+        if (matchDto.teamA().equals(matchDto.teamB()))
             throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
 
-        var teamA = teamService.findTeamById(matchDto.teamAId());
-        var teamB = teamService.findTeamById(matchDto.teamBId());
         var players = matchDto.playerIds()
                 .stream()
                 .map(participantService::findParticipantById)
@@ -156,7 +151,7 @@ public class MatchService {
 
         this.checkPlayers(players, matchDto);
 
-        var savedMatch = matchMapper.toNewMatch(matchDto, players, teamA, teamB);
+        var savedMatch = matchMapper.toNewMatch(matchDto, players);
         savedMatch = matchServiceMediator.saveMatch(savedMatch, matchDto.sport());
 
         log.info("Match '{}' with type '{}' was created.", savedMatch.getId(), matchDto.sport());
@@ -195,11 +190,9 @@ public class MatchService {
 
         var existingMatch = this.findMatchById(id);
 
-        if (matchDto.teamAId() == matchDto.teamBId())
+        if (matchDto.teamA().equals(matchDto.teamB()))
             throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
 
-        var teamA = teamService.findTeamById(matchDto.teamAId());
-        var teamB = teamService.findTeamById(matchDto.teamBId());
         var players = matchDto.playerIds()
                 .stream()
                 .map(participantService::findParticipantById)
@@ -207,7 +200,7 @@ public class MatchService {
 
         this.checkPlayers(players, matchDto);
 
-        var updatedMatch = matchMapper.toExistingMatch(id, matchDto, players, teamA, teamB);
+        var updatedMatch = matchMapper.toExistingMatch(id, matchDto, players);
         updatedMatch.setTeamScoreA(existingMatch.getTeamScoreA());
         updatedMatch.setTeamScoreB(existingMatch.getTeamScoreB());
 
@@ -228,8 +221,8 @@ public class MatchService {
     private void checkPlayers(List<Participant> players, MatchDto matchDto) {
 
         Optional<Participant> invalidPlayer = players.stream()
-                .filter(player -> player.getTeam().getId() != matchDto.teamAId()
-                               && player.getTeam().getId() != matchDto.teamBId())
+                .filter(player -> !player.getTeam().equals(matchDto.teamA())
+                               && !player.getTeam().equals(matchDto.teamB()))
                 .findFirst();
 
         invalidPlayer.ifPresent(player -> {

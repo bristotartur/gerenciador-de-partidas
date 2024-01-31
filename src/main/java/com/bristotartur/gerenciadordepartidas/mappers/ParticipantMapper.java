@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
@@ -28,7 +29,7 @@ public interface ParticipantMapper {
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "goal", ignore = true)
     @Mapping(target = "penaltyCards", ignore = true)
-    Participant toNewParticipant(ParticipantDto participantDto, Team team);
+    Participant toNewParticipant(ParticipantDto participantDto, Team team, Edition edition);
 
     /**
      * Atualiza uma instância existente de {@link Participant} com base nos dados fornecidos.
@@ -43,7 +44,7 @@ public interface ParticipantMapper {
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "goal", ignore = true)
     @Mapping(target = "penaltyCards", ignore = true)
-    Participant toExistingParticipant(Long id, ParticipantDto participantDto, Team team);
+    Participant toExistingParticipant(Long id, ParticipantDto participantDto, Team team, Edition edition);
 
     /**
      * Gera uma nova instância de {@link ExposingParticipantDto} a partir de qualquer instância de {@link Participant}.
@@ -53,6 +54,7 @@ public interface ParticipantMapper {
      */
     @Mapping(target = "participantId", source = "participant.id")
     @Mapping(target = "team", source = "team.name")
+    @Mapping(target = "editionId", source = "participant.edition.id")
     ExposingParticipantDto toNewExposingParticipantDto(Participant participant);
 
 }

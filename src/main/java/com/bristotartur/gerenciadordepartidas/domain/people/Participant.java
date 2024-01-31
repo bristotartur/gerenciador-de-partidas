@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.domain.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
+import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -44,6 +45,11 @@ public class Participant {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
+
+    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "edition_id", nullable = false)
+    private Edition edition;
 
     @JsonBackReference
     @ManyToMany(mappedBy = "players", cascade = CascadeType.ALL)

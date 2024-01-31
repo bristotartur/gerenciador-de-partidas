@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,13 +52,13 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/from")
-    public ResponseEntity<Page<ExposingParticipantDto>> listMembersFromTeam(@RequestParam("team") Long teamId,
+    public ResponseEntity<Page<ExposingParticipantDto>> listMembersFromTeam(@RequestParam("team") TeamName team,
                                                                             Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-        log.info("Request to get Participant page of number '{}' and size '{}' from team'{}' was made.", number, size, teamId);
+        log.info("Request to get Participant page of number '{}' and size '{}' from team'{}' was made.", number, size, team);
 
-        var dtoPage = this.createExposingDtoPage(participantService.findMambersFromTeam(teamId, pageable));
+        var dtoPage = this.createExposingDtoPage(participantService.findMambersFromTeam(team, pageable));
         return ResponseEntity.ok().body(dtoPage);
     }
 
@@ -117,23 +118,18 @@ public class ParticipantController {
     private ExposingParticipantDto addSingleParticipantLink(Participant participant) {
 
         var id = participant.getId();
-        var teamId = participant.getTeam().getId();
         var dto = participantService.createExposingParticipantDto(participant);
 
         dto.add(linkTo(methodOn(this.getClass()).findParticipantById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamId)).withRel("team"));
 
         return dto;
     }
 
     private ExposingParticipantDto addParticipantListLink(Participant participant, Pageable pageable) {
 
-        var teamId = participant.getTeam().getId();
         var dto = participantService.createExposingParticipantDto(participant);
 
         dto.add(linkTo(methodOn(this.getClass()).listAllParticipants(pageable)).withRel("participants"));
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamId)).withRel("team"));
-
         return dto;
     }
 

@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
  * a participantes.
  *
  * @see ParticipantMapper
- * @see TeamService
  */
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,6 @@ public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
     private final ParticipantMapper participantMapper;
-    private final TeamService teamService;
     private final EditionService editionService;
 
     /**
@@ -75,14 +74,14 @@ public class ParticipantService {
      * @return Uma {@link Page} contendo todos os participantes relacionados a equipe
      * @throws NotFoundException Se nenhuma equipe correspondente ao nome fornecido for encontrada.
      */
-    public Page<Participant> findMambersFromTeam(Long id, Pageable pageable) {
+    public Page<Participant> findMambersFromTeam(TeamName team, Pageable pageable) {
 
-        var team = teamService.findTeamById(id);
-        var membersPage = participantRepository.findTeamMembers(id, pageable);
+        //TODO ajustar este método
+        var membersPage = participantRepository.findTeamMembers(team, pageable);
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-        log.info("Members page of number '{}' and size '{}' from team '{}' was returned.", number, size, id);
+        log.info("Members page of number '{}' and size '{}' from team '{}' was returned.", number, size, team);
 
         return membersPage;
     }
@@ -124,9 +123,8 @@ public class ParticipantService {
      */
     public Participant saveParticipant(ParticipantDto participantDto) {
 
-        var team = teamService.findTeamById(participantDto.teamId());
         var edition = editionService.findEditionById(participantDto.editionId());
-        var participant = participantMapper.toNewParticipant(participantDto, team, edition);
+        var participant = participantMapper.toNewParticipant(participantDto, edition);
 
         this.reformatClassNumber(participant);
         var savedParticipant = participantRepository.save(participant);
@@ -171,9 +169,8 @@ public class ParticipantService {
 
         this.findParticipantById(id);
 
-        var team = teamService.findTeamById(participantDto.teamId());
         var edition = editionService.findEditionById(participantDto.editionId());
-        var participant = participantMapper.toExistingParticipant(id, participantDto, team, edition);
+        var participant = participantMapper.toExistingParticipant(id, participantDto, edition);
 
         this.reformatClassNumber(participant);
         var updatedParticipant = participantRepository.save(participant);

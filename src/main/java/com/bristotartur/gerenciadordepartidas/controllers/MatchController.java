@@ -129,15 +129,11 @@ public class MatchController {
     private ExposingMatchDto addSingleMatchLink(Match match) {
 
         var id = match.getId();
-        var teamAId = match.getTeamA().getId();
-        var teamBId = match.getTeamB().getId();
 
         var dto = matchService.createExposingMatchDto(match);
         var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
         dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id,pageable)).withRel("match_players"));
         this.addExtraLinks(dto, match.getId(), pageable);
 
@@ -147,15 +143,11 @@ public class MatchController {
     private ExposingMatchDto addMatchListLink(Match match, Pageable pageable) {
 
         var id = match.getId();
-        var teamAId = match.getTeamA().getId();
-        var teamBId = match.getTeamB().getId();
 
         var dto = matchService.createExposingMatchDto(match);
         var sport = dto.getSport().value;
 
         dto.add(linkTo(methodOn(this.getClass()).listAllMatches(pageable)).withRel("matches"));
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamAId)).withRel("team_a"));
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamBId)).withRel("team_b"));
         dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, pageable)).withRel("match_players"));
         dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(sport, pageable)).withRel("matches_of_same_type"));
         this.addExtraLinks(dto, match.getId(), pageable);
@@ -166,11 +158,9 @@ public class MatchController {
     private ExposingParticipantDto addPlayerLink(Participant player, Long matchId) {
 
         var id = player.getId();
-        var teamId = player.getTeam().getId();
         var dto = participantService.createExposingParticipantDto(player);
 
         dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(TeamController.class).findTeamById(teamId)).withRel("team"));
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(matchId)).withRel("match"));
 
         return dto;

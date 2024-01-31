@@ -8,6 +8,7 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.ParticipantRepository;
+import com.bristotartur.gerenciadordepartidas.services.events.EditionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,7 @@ public class ParticipantService {
     private final ParticipantRepository participantRepository;
     private final ParticipantMapper participantMapper;
     private final TeamService teamService;
+    private final EditionService editionService;
 
     /**
      * Retorna uma lista paginada dos participantes disponíveis no sistema.
@@ -74,7 +76,15 @@ public class ParticipantService {
      * @throws NotFoundException Se nenhuma equipe correspondente ao nome fornecido for encontrada.
      */
     public Page<Participant> findMambersFromTeam(Long id, Pageable pageable) {
-        return teamService.findAllTeamMembers(id, pageable);
+
+        var team = teamService.findTeamById(id);
+        var membersPage = participantRepository.findTeamMembers(id, pageable);
+
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        log.info("Members page of number '{}' and size '{}' from team '{}' was returned.", number, size, id);
+
+        return membersPage;
     }
 
     /**
@@ -115,7 +125,8 @@ public class ParticipantService {
     public Participant saveParticipant(ParticipantDto participantDto) {
 
         var team = teamService.findTeamById(participantDto.teamId());
-        var participant = participantMapper.toNewParticipant(participantDto, team);
+        var edition = editionService.findEditionById(participantDto.editionId());
+        var participant = participantMapper.toNewParticipant(participantDto, team, edition);
 
         this.reformatClassNumber(participant);
         var savedParticipant = participantRepository.save(participant);
@@ -161,7 +172,8 @@ public class ParticipantService {
         this.findParticipantById(id);
 
         var team = teamService.findTeamById(participantDto.teamId());
-        var participant = participantMapper.toExistingParticipant(id, participantDto, team);
+        var edition = editionService.findEditionById(participantDto.editionId());
+        var participant = participantMapper.toExistingParticipant(id, participantDto, team, edition);
 
         this.reformatClassNumber(participant);
         var updatedParticipant = participantRepository.save(participant);

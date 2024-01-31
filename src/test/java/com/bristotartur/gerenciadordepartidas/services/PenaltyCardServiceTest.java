@@ -50,8 +50,8 @@ class PenaltyCardServiceTest {
     void setUp() {
 
         var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
-        var teamA = TeamTestUtil.createNewTeam(TeamName.MESTRES_DE_OBRAS, entityManager);
-        var teamB = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
+        var teamA = TeamName.MESTRES_DE_OBRAS;
+        var teamB = TeamName.PAPA_LEGUAS;
 
         playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, edition, entityManager);
         playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, edition, entityManager);

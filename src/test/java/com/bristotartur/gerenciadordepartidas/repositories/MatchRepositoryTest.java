@@ -2,7 +2,6 @@ package com.bristotartur.gerenciadordepartidas.repositories;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -11,7 +10,6 @@ import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMedia
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
-import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,16 +36,16 @@ class MatchRepositoryTest {
     @Autowired
     private MatchServiceMediator matchServiceMediator;
 
-    private Team teamA;
-    private Team teamB;
+    private TeamName teamA;
+    private TeamName teamB;
     private final List<Participant> players = new LinkedList<>();
 
     @BeforeEach
     void setUp() {
 
         var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
-        teamA = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
-        teamB = TeamTestUtil.createNewTeam(TeamName.TWISTER, entityManager);
+        teamA = TeamName.PAPA_LEGUAS;
+        teamB = TeamName.TWISTER;
 
         players.add(ParticipantTestUtil.createNewParticipant("3-53", teamA, edition, entityManager));
         players.add(ParticipantTestUtil.createNewParticipant("3-13", teamB, edition, entityManager));

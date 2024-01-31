@@ -2,7 +2,6 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -16,7 +15,6 @@ import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
-import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,9 +47,9 @@ class MatchServiceTest {
     @Autowired
     private MatchServiceMediator matchServiceMediator;
 
-    private Team teamA;
-    private Team teamB;
-    private Team teamC;
+    private TeamName teamA;
+    private TeamName teamB;
+    private TeamName teamC;
     private final List<Participant> players = new LinkedList<>();
     private final List<Participant> invalidPlayers = new LinkedList<>();
 
@@ -60,9 +58,9 @@ class MatchServiceTest {
 
         var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
 
-        teamA = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
-        teamB = TeamTestUtil.createNewTeam(TeamName.TWISTER, entityManager);
-        teamC = TeamTestUtil.createNewTeam(TeamName.UNICONTTI, entityManager);
+        teamA = TeamName.PAPA_LEGUAS;
+        teamB = TeamName.TWISTER;
+        teamC = TeamName.UNICONTTI;
 
         players.add(ParticipantTestUtil.createNewParticipant("3-53", teamA, edition, entityManager));
         players.add(ParticipantTestUtil.createNewParticipant("3-13", teamB, edition, entityManager));
@@ -163,8 +161,8 @@ class MatchServiceTest {
         var result = matchService.createExposingMatchDto(handballMatch);
 
         assertEquals(result.getSport(), sport);
-        assertEquals(result.getTeamA(), handballMatch.getTeamA().getName());
-        assertEquals(result.getTeamB(), handballMatch.getTeamB().getName());
+        assertEquals(result.getTeamA(), handballMatch.getTeamA());
+        assertEquals(result.getTeamB(), handballMatch.getTeamB());
     }
 
     @Test
@@ -175,7 +173,7 @@ class MatchServiceTest {
                 .map(Participant::getId)
                 .toList();
 
-        var matchDto = MatchTestUtil.createNewMatchDto(Sports.TABLE_TENNIS, teamA.getId(), teamB.getId(), playerIds);
+        var matchDto = MatchTestUtil.createNewMatchDto(Sports.TABLE_TENNIS, teamA, teamB, playerIds);
         var result = matchService.saveMatch(matchDto);
 
         assertEquals(result, matchRepository.findById(result.getId()).get());
@@ -188,7 +186,7 @@ class MatchServiceTest {
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
 
-        var matchDto = MatchTestUtil.createNewMatchDto(any(), 1L, 1L, any());
+        var matchDto = MatchTestUtil.createNewMatchDto(any(), teamA, teamA, any());
 
         assertThrows(BadRequestException.class, () -> matchService.saveMatch(matchDto));
         assertThrows(BadRequestException.class, () -> matchService.replaceMatch(futsalMatch.getId(), matchDto));
@@ -221,7 +219,7 @@ class MatchServiceTest {
                 .toList();
 
         var newModality = Modality.FEMININE;
-        var matchDto = MatchTestUtil.createNewMatchDto(sport, teamA.getId(), teamB.getId(), playerIds, newModality);
+        var matchDto = MatchTestUtil.createNewMatchDto(sport, teamA, teamB, playerIds, newModality);
         var result = matchService.replaceMatch(tableTennisMatch.getId(), matchDto);
 
         assertNotNull(result);
@@ -239,7 +237,7 @@ class MatchServiceTest {
         var match = MatchTestUtil.createNewMatch(teamA, teamB, players, Modality.MIXED);
         var volleyballMatch = matchServiceMediator.saveMatch(match, Sports.VOLLEYBALL);
 
-        var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA.getId(), teamC.getId(), playerIds);
+        var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA, teamC, playerIds);
 
         assertThrows(BadRequestException.class, () -> matchService.saveMatch(matchDto));
         assertThrows(BadRequestException.class, () -> matchService.replaceMatch(volleyballMatch.getId(), matchDto));
@@ -255,8 +253,8 @@ class MatchServiceTest {
         var result = matchService.createExposingMatchDto(tableTennisMatch);
 
         assertInstanceOf(ExposingMatchDto.class, result);
-        assertEquals(result.getTeamA(), teamA.getName());
-        assertEquals(result.getTeamB(), teamB.getName());
+        assertEquals(result.getTeamA(), teamA);
+        assertEquals(result.getTeamB(), teamB);
     }
 
 }

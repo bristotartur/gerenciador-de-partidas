@@ -1,12 +1,12 @@
 package com.bristotartur.gerenciadordepartidas.utils;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,12 +23,12 @@ public final class MatchTestUtil {
     /**
      * Cria uma nova instância de {@link Match} sem persistí-la no banco de dados.
      *
-     * @param teamA Instância de {@link Team} que representa a equipe A da partida.
-     * @param teamB Instância de {@link Team} que representa a equipe B da partida.
+     * @param teamA Constante de {@link TeamName} que representa a equipe A da partida.
+     * @param teamB Constante de {@link TeamName} que representa a equipe B da partida.
      * @param players Os jogadores presentes na partida.
      * @return Uma nova instância de {@link Match} com os dados fornecidos.
      */
-    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players) {
+    public static Match createNewMatch(TeamName teamA, TeamName teamB, List<Participant> players) {
 
         return Match.builder()
                 .teamA(teamA)
@@ -46,13 +46,13 @@ public final class MatchTestUtil {
     /**
      * Cria uma nova instância de {@link Match} sem persistí-la no banco de dados.
      *
-     * @param teamA Instância de {@link Team} que representa a equipe A da partida.
-     * @param teamB Instância de {@link Team} que representa a equipe B da partida.
+     * @param teamA Constante de {@link TeamName} que representa a equipe A da partida.
+     * @param teamB Constante de {@link TeamName} que representa a equipe B da partida.
      * @param players Os jogadores presentes na partida.
      * @param modality A modalidade da partida, podendo ser feminina, masculina ou mista.
      * @return Uma nova instância de {@link Match} com os dados fornecidos.
      */
-    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, Modality modality) {
+    public static Match createNewMatch(TeamName teamA, TeamName teamB, List<Participant> players, Modality modality) {
 
         return Match.builder()
                 .teamA(teamA)
@@ -70,13 +70,13 @@ public final class MatchTestUtil {
     /**
      * Cria uma nova instância de {@link Match} sem persistí-la no banco de dados.
      *
-     * @param teamA Instância de {@link Team} que representa a equipe A da partida.
-     * @param teamB Instância de {@link Team} que representa a equipe B da partida.
+     * @param teamA Constante de {@link TeamName} que representa a equipe A da partida.
+     * @param teamB Constante de {@link TeamName} que representa a equipe B da partida.
      * @param players Os jogadores presentes na partida.
      * @param status O status da partida, podendo ser agendada, em andamento ou encerrada.
      * @return Uma nova instância de {@link Match} com os dados fornecidos.
      */
-    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, Status status) {
+    public static Match createNewMatch(TeamName teamA, TeamName teamB, List<Participant> players, Status status) {
 
         return Match.builder()
                 .teamA(teamA)
@@ -95,17 +95,17 @@ public final class MatchTestUtil {
      * Cria uma nova instância de {@link MatchDto}.
      *
      * @param sport O tipo de esporte da partida.
-     * @param teamAId Identificador único da equipe que representa a equipe A na partida.
-     * @param teamBId Identificador único da equipe que representa a equipe B na partida.
+     * @param teamA Constante de {@link TeamName} que representa a equipe A da partida.
+     * @param teamB Constante de {@link TeamName} que representa a equipe B da partida.
      * @param playerIds Identificadores únicos dos jogadores presentes na partida.
      * @return Uma nova instância de {@link MatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Long teamAId, Long teamBId, List<Long> playerIds) {
+    public static MatchDto createNewMatchDto(Sports sport, TeamName teamA, TeamName teamB, List<Long> playerIds) {
 
         return MatchDto.builder()
                 .sport(sport)
-                .teamAId(teamAId)
-                .teamBId(teamBId)
+                .teamA(teamA)
+                .teamB(teamB)
                 .playerIds(playerIds)
                 .modality(Modality.MASCULINE)
                 .matchStatus(Status.IN_PROGRESS)
@@ -118,18 +118,18 @@ public final class MatchTestUtil {
      * Cria uma nova instância de {@link MatchDto}.
      *
      * @param sport O tipo de esporte da partida.
-     * @param teamAId Identificador único da equipe que representa a equipe A na partida.
-     * @param teamBId Identificador único da equipe que representa a equipe B na partida.
+     * @param teamA Constante de {@link TeamName} que representa a equipe A da partida.
+     * @param teamB Constante de {@link TeamName} que representa a equipe B da partida.
      * @param playerIds Identificadores únicos dos jogadores presentes na partida.
      * @param modality A modalidade da partida, podendo ser feminina, masculina ou mista.
      * @return Uma nova instância de {@link MatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Long teamAId, Long teamBId, List<Long> playerIds, Modality modality) {
+    public static MatchDto createNewMatchDto(Sports sport, TeamName teamA, TeamName teamB, List<Long> playerIds, Modality modality) {
 
         return MatchDto.builder()
                 .sport(sport)
-                .teamAId(teamAId)
-                .teamBId(teamBId)
+                .teamA(teamA)
+                .teamB(teamB)
                 .playerIds(playerIds)
                 .modality(modality)
                 .matchStatus(Status.IN_PROGRESS)
@@ -142,18 +142,18 @@ public final class MatchTestUtil {
      * Cria uma nova instância de {@link MatchDto}.
      *
      * @param sport O tipo de esporte da partida.
-     * @param teamAId Identificador único da equipe que representa a equipe A na partida.
-     * @param teamBId Identificador único da equipe que representa a equipe B na partida.
+     * @param teamA Constante de {@link TeamName} que representa a equipe A da partida.
+     * @param teamB Constante de {@link TeamName} que representa a equipe B da partida.
      * @param playerIds Identificadores únicos dos jogadores presentes na partida.
      * @param status O status da partida, podendo ser agendada, em andamento ou encerrada.
      * @return Uma nova instância de {@link MatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Long teamAId, Long teamBId, List<Long> playerIds, Status status) {
+    public static MatchDto createNewMatchDto(Sports sport, TeamName teamA, TeamName teamB, List<Long> playerIds, Status status) {
 
         return MatchDto.builder()
                 .sport(sport)
-                .teamAId(teamAId)
-                .teamBId(teamBId)
+                .teamA(teamA)
+                .teamB(teamB)
                 .playerIds(playerIds)
                 .modality(Modality.MASCULINE)
                 .matchStatus(status)

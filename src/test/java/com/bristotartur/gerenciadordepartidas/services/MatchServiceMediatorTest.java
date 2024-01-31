@@ -4,7 +4,6 @@ import com.bristotartur.gerenciadordepartidas.domain.matches.ChessMatch;
 import com.bristotartur.gerenciadordepartidas.domain.matches.FutsalMatch;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
@@ -15,7 +14,6 @@ import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMedia
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
-import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,8 +43,8 @@ class MatchServiceMediatorTest {
     @Autowired
     private MatchRepository<Match> matchRepository;
 
-    private Team teamA;
-    private Team teamB;
+    private TeamName teamA;
+    private TeamName teamB;
     private final List<Participant> players = new LinkedList<>();
 
     @BeforeEach
@@ -54,8 +52,8 @@ class MatchServiceMediatorTest {
 
         var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
 
-        teamA = TeamTestUtil.createNewTeam(TeamName.UNICONTTI, entityManager);
-        teamB = TeamTestUtil.createNewTeam(TeamName.ATOMICA, entityManager);
+        teamA = TeamName.UNICONTTI;
+        teamB = TeamName.ATOMICA;
 
         players.add(ParticipantTestUtil.createNewParticipant("3-31", teamA, edition, entityManager));
         players.add(ParticipantTestUtil.createNewParticipant("3-61", teamB, edition, entityManager));

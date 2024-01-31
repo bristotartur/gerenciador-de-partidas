@@ -3,15 +3,13 @@ package com.bristotartur.gerenciadordepartidas.services;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
-import com.bristotartur.gerenciadordepartidas.utils.GoalTestUtil;
-import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
-import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
-import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.*;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,11 +48,12 @@ class GoalServiceTest {
     @BeforeEach
     void setUp() {
 
+        var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
         var teamA = TeamTestUtil.createNewTeam(TeamName.MESTRES_DE_OBRAS, entityManager);
         var teamB = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
 
-        playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, entityManager);
-        playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, entityManager);
+        playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, edition, entityManager);
+        playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, edition, entityManager);
 
         match = MatchTestUtil.createNewMatch(teamA, teamB, List.of(playerA, playerB));
     }
@@ -216,7 +215,8 @@ class GoalServiceTest {
         var futsalMatch = matchServiceMediator.saveMatch(match, sport);
 
         var team = match.getTeamB();
-        var playerC = ParticipantTestUtil.createNewParticipant("1-52", team, entityManager);
+        var edition = playerA.getEdition();
+        var playerC = ParticipantTestUtil.createNewParticipant("1-52", team, edition, entityManager);
         futsalMatch.setPlayers(List.of(playerA, playerB, playerC));
 
         var originalGoalDto = GoalTestUtil.createNewGoalDto(playerB.getId(), futsalMatch.getId(), sport);

@@ -29,7 +29,7 @@ class PenaltyCardMapperTest {
     @DisplayName("Should map entities to their referent fields in PenaltyCard when they are passed")
     void Should_MapEntitiesToTheirReferentFieldsInPenaltyCard_When_TheyArePassed() {
 
-        var player = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var player = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
         var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player));
 
         var penaltyCardDto = PenaltyCardTestUtil
@@ -46,8 +46,8 @@ class PenaltyCardMapperTest {
     @DisplayName("Should update PenaltyCard when new values are passed")
     void Should_UpdatePenaltyCards_When_NewValuesArePassed() {
 
-        var playerA = ParticipantTestUtil.createNewParticipant("2-53", any());
-        var playerB = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var playerA = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
+        var playerB = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
         var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA));
 
         var penaltyCard = PenaltyCardTestUtil

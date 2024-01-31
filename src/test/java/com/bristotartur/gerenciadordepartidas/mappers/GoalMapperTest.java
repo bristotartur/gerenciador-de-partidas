@@ -28,7 +28,7 @@ class GoalMapperTest {
     @DisplayName("Should map entities to their referent fields in Goal when they are passed")
     void Should_MapEntitiesToTheirReferentFieldsInGoal_When_TheyArePassed() {
 
-        var player = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var player = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
         var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player));
 
         var goalDto = GoalTestUtil.createNewGoalDto(any(), any(), Sports.HANDBALL);
@@ -43,8 +43,8 @@ class GoalMapperTest {
     @DisplayName("Should update Goal when new values are passed")
     void Should_UpdateGoal_When_NewValuesArePassed() {
 
-        var playerA = ParticipantTestUtil.createNewParticipant("2-53", any());
-        var playerB = ParticipantTestUtil.createNewParticipant("2-53", any());
+        var playerA = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
+        var playerB = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
         var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA));
 
         var goal = GoalTestUtil.createNewGoal(playerA, match);

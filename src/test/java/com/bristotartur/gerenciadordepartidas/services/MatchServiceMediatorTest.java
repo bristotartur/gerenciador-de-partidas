@@ -6,11 +6,13 @@ import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
+import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
@@ -50,11 +52,13 @@ class MatchServiceMediatorTest {
     @BeforeEach
     void setUp() {
 
+        var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
+
         teamA = TeamTestUtil.createNewTeam(TeamName.UNICONTTI, entityManager);
         teamB = TeamTestUtil.createNewTeam(TeamName.ATOMICA, entityManager);
 
-        players.add(ParticipantTestUtil.createNewParticipant("3-31", teamA, entityManager));
-        players.add(ParticipantTestUtil.createNewParticipant("3-61", teamB, entityManager));
+        players.add(ParticipantTestUtil.createNewParticipant("3-31", teamA, edition, entityManager));
+        players.add(ParticipantTestUtil.createNewParticipant("3-61", teamB, edition, entityManager));
     }
 
     @Test

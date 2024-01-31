@@ -1,10 +1,12 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.TeamRepository;
 import com.bristotartur.gerenciadordepartidas.services.people.TeamService;
+import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
 import jakarta.persistence.EntityManager;
@@ -86,12 +88,13 @@ class TeamServiceTest {
     void Should_RetrieveAllTeamMembers_When_TeamIdIsPassedToSearchTeamMembers() {
 
         var pageable = PageRequest.of(0, 3);
+        var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
 
         var team = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
         var teamMembers = List.of(
-                ParticipantTestUtil.createNewParticipant("1-41", team, entityManager),
-                ParticipantTestUtil.createNewParticipant("2-41", team, entityManager),
-                ParticipantTestUtil.createNewParticipant("3-41", team, entityManager));
+                ParticipantTestUtil.createNewParticipant("1-41", team, edition, entityManager),
+                ParticipantTestUtil.createNewParticipant("2-41", team, edition, entityManager),
+                ParticipantTestUtil.createNewParticipant("3-41", team, edition, entityManager));
 
         var membersPage = new PageImpl<>(teamMembers, pageable, teamMembers.size());
         var result = teamService.findAllTeamMembers(team.getId(), pageable);

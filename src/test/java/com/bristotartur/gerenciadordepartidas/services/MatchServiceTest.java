@@ -6,12 +6,14 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Team;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
+import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.TeamTestUtil;
@@ -56,16 +58,18 @@ class MatchServiceTest {
     @BeforeEach
     void setUp() {
 
+        var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
+
         teamA = TeamTestUtil.createNewTeam(TeamName.PAPA_LEGUAS, entityManager);
         teamB = TeamTestUtil.createNewTeam(TeamName.TWISTER, entityManager);
         teamC = TeamTestUtil.createNewTeam(TeamName.UNICONTTI, entityManager);
 
-        players.add(ParticipantTestUtil.createNewParticipant("3-53", teamA, entityManager));
-        players.add(ParticipantTestUtil.createNewParticipant("3-13", teamB, entityManager));
+        players.add(ParticipantTestUtil.createNewParticipant("3-53", teamA, edition, entityManager));
+        players.add(ParticipantTestUtil.createNewParticipant("3-13", teamB, edition, entityManager));
 
-        invalidPlayers.add(ParticipantTestUtil.createNewParticipant("3-53", teamA, entityManager));
-        invalidPlayers.add(ParticipantTestUtil.createNewParticipant("3-13", teamB, entityManager));
-        invalidPlayers.add(ParticipantTestUtil.createNewParticipant("3-81", teamC, entityManager));
+        invalidPlayers.add(ParticipantTestUtil.createNewParticipant("3-53", teamA, edition, entityManager));
+        invalidPlayers.add(ParticipantTestUtil.createNewParticipant("3-13", teamB, edition, entityManager));
+        invalidPlayers.add(ParticipantTestUtil.createNewParticipant("3-81", teamC, edition, entityManager));
     }
 
     @Test

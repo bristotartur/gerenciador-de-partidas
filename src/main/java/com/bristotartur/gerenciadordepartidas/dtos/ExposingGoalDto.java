@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
+import com.bristotartur.gerenciadordepartidas.enums.TeamName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
@@ -12,7 +13,7 @@ public class ExposingGoalDto extends RepresentationModel<ExposingGoalDto> {
 
     private final Long goalId;
     private final String player;
-    private final String team;
+    private final TeamName team;
     private final LocalTime goalTime;
 
 }

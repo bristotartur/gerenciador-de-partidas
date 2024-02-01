@@ -16,7 +16,8 @@ public enum TeamName {
     MESTRES_DE_OBRAS("Mestres de Obras"),
     PAPA_LEGUAS("Papa-Léguas"),
     TWISTER("Twister"),
-    UNICONTTI("Unicontti");
+    UNICONTTI("Unicontti"),
+    NONE("Nenhum");
 
     /**
      * Valor interno das opções deste enum.

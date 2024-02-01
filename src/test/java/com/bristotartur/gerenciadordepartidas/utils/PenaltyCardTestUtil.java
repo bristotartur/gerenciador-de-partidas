@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import jakarta.persistence.EntityManager;

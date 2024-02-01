@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.services.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
-import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;

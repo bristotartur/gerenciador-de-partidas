@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
-import com.bristotartur.gerenciadordepartidas.dtos.EditionDto;
-import com.bristotartur.gerenciadordepartidas.dtos.ExposingEditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

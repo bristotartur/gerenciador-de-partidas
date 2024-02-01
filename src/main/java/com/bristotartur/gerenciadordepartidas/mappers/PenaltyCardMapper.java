@@ -3,8 +3,8 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.ExposingPenaltyCardDto;
-import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingPenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

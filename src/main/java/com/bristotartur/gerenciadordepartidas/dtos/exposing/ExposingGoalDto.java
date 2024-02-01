@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos;
+package com.bristotartur.gerenciadordepartidas.dtos.exposing;
 
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import lombok.Getter;

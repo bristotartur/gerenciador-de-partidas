@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos;
+package com.bristotartur.gerenciadordepartidas.dtos.input;
 
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import jakarta.validation.constraints.NotNull;

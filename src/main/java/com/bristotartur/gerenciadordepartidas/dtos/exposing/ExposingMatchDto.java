@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos;
+package com.bristotartur.gerenciadordepartidas.dtos.exposing;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Status;

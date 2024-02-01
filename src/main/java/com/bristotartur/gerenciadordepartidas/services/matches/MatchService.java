@@ -2,8 +2,8 @@ package com.bristotartur.gerenciadordepartidas.services.matches;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
-import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;

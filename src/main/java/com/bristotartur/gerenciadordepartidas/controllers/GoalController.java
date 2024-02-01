@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
-import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
-import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingGoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
 import jakarta.validation.Valid;

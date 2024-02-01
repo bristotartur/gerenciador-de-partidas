@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.dtos.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;

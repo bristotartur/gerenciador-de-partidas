@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import jakarta.persistence.EntityManager;
 

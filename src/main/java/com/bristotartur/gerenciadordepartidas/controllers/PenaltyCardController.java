@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.dtos.ExposingPenaltyCardDto;
-import com.bristotartur.gerenciadordepartidas.dtos.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingPenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

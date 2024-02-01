@@ -2,8 +2,8 @@ package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
-import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingGoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Team;

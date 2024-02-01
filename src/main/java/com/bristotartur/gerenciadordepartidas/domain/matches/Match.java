@@ -1,9 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.domain.matches;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,6 +59,11 @@ public class Match {
             inverseJoinColumns = @JoinColumn(name = "participant_id")
     )
     private List<Participant> players;
+
+    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "event_id") // Por enquanto não possui "nullable = false" para facilitar os testes
+    private SportEvent event;
 
     @Column(nullable = false)
     private Integer teamScoreA;

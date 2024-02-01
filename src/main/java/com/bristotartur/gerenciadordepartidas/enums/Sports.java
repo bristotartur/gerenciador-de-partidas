@@ -19,7 +19,7 @@ import java.util.Optional;
  * @see MatchServiceFactory
  */
 @RequiredArgsConstructor
-public enum Sports {
+public enum Sports implements EventType {
     CHESS("chess"),
     BASKETBALL("basketball"),
     FUTSAL("futsal"),

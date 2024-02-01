@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.ParticipantRepository;
@@ -51,7 +51,7 @@ class ParticipantServiceTest {
     void Should_RetrieveAllParticipantsInPagedForm_When_SearchingForAllParticipants() {
 
         var pageable = PageRequest.of(0, 3);
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
 
         var participants = List.of(
                 ParticipantTestUtil.createNewParticipant("1-53", team, edition, entityManager),
@@ -70,7 +70,7 @@ class ParticipantServiceTest {
     void Should_RetrieveParticipantsInPagedForm_When_TheirNamesAreSimilarToTheGivenName() {
 
         var pageable = PageRequest.of(0, 3);
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
 
         var participants = List.of(
                 ParticipantTestUtil.createNewParticipant("Carlos Henrique","1-53", team, edition, entityManager),
@@ -88,7 +88,7 @@ class ParticipantServiceTest {
     @DisplayName("Should find Participant when existing Participant ID is passed to search")
     void Should_FindParticipant_When_ExistingParticipantIdIsPassedToSearch() {
 
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
         var participant = ParticipantTestUtil.createNewParticipant("3-53", team, edition, entityManager);
 
         var existingId = participant.getId();
@@ -113,7 +113,7 @@ class ParticipantServiceTest {
     @DisplayName("Should create new ExposingParticipantDto when Participant is passed to create ExposingParticipantDto")
     void Should_CreateNewExposingParticipantDto_When_ParticipantIsPassedToCreateExposingParticipantDto() {
 
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
         var participant = ParticipantTestUtil.createNewParticipant("3-53", team, edition, entityManager);
         var result = participantService.createExposingParticipantDto(participant);
 
@@ -124,7 +124,7 @@ class ParticipantServiceTest {
     @DisplayName("Should save Participant when valid ParticipantDto is passed to save")
     void Should_SaveParticipant_When_ValidParticipantDtoIsPassedToSave() {
 
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
         var participantDto = ParticipantTestUtil.createNewParticipantDto("2-53", team, edition.getId());
         var result = participantService.saveParticipant(participantDto);
 
@@ -135,7 +135,7 @@ class ParticipantServiceTest {
     @DisplayName("Should delete Participant from database when Participant ID is passed to delete")
     void Should_DeleteParticipantFromDatabase_When_ParticipantIdIsPassedToDelete() {
 
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
         var participant = ParticipantTestUtil.createNewParticipant("3-54", team, edition, entityManager);
         participantService.deleteParticipantById(participant.getId());
 
@@ -146,8 +146,8 @@ class ParticipantServiceTest {
     @DisplayName("Should throw BadRequestException when trying to remove a Participant already associated to any event")
     void Should_ThrowBadRequestException_When_TrtingToRemoveParticipantAlreadyAssociatedToAnyEvent() {
 
-        var team = TeamName.PAPA_LEGUAS;
-        var teamB = TeamName.ATOMICA;
+        var team = Team.PAPA_LEGUAS;
+        var teamB = Team.ATOMICA;
         var participant = ParticipantTestUtil.createNewParticipant("3-53", team, edition, entityManager);
         var match = MatchTestUtil.createNewMatch(team, teamB, List.of(participant));
 
@@ -159,10 +159,10 @@ class ParticipantServiceTest {
     @DisplayName("Should update Participant when ParticipantDto with new values is passed")
     void Should_UpdateParticipant_When_ParticipantDtoWithNewValuesIsPassed() {
 
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
         var participant = ParticipantTestUtil.createNewParticipant("3-54", team, edition, entityManager);
 
-        var newTeam = TeamName.UNICONTTI;
+        var newTeam = Team.UNICONTTI;
         var participantDto = ParticipantTestUtil.createNewParticipantDto("2-31", newTeam, edition.getId());
 
         var result = participantService.replaceParticipant(participant.getId(), participantDto);
@@ -174,7 +174,7 @@ class ParticipantServiceTest {
     @DisplayName("Should reformat class number when valid class number is passed")
     void Should_ReformatClassNumber_When_ValidClassNumberIsPassed() {
 
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
         var expectClassNumber = "2-61";
         var participantDto = ParticipantTestUtil.createNewParticipantDto("261", team, edition.getId());
 
@@ -187,7 +187,7 @@ class ParticipantServiceTest {
     @DisplayName("Should throw BadRequestException when invalid class number is passed")
     void Should_ThrowBadRequestException_When_InvalidClassNumberIsPassed() {
 
-        var team = TeamName.PAPA_LEGUAS;
+        var team = Team.PAPA_LEGUAS;
         var participantDto = ParticipantTestUtil.createNewParticipantDto("4-61", team, edition.getId());
 
         assertThrows(BadRequestException.class, () -> participantService.saveParticipant(participantDto));

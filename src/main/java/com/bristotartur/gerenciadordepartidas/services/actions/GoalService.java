@@ -6,7 +6,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
@@ -184,7 +184,7 @@ public class GoalService {
      * @param team Equipe que receberá o ponto.
      * @param match Partida que terá o placar alterado.
      */
-    private void increaseScore(TeamName team, Match match) {
+    private void increaseScore(Team team, Match match) {
 
         if (team.equals(match.getTeamA())) {
             match.setTeamScoreA(match.getTeamScoreA() + 1);
@@ -202,7 +202,7 @@ public class GoalService {
      * @param team Equipe que perderá o ponto.
      * @param match Partida que terá o placar alterado.
      */
-    private void decreaseScore(TeamName team, Match match) {
+    private void decreaseScore(Team team, Match match) {
 
         if (team.equals(match.getTeamA())) {
             match.setTeamScoreA(match.getTeamScoreA() - 1);

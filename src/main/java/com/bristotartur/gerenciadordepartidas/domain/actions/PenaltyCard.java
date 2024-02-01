@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.domain.actions;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,7 +46,7 @@ public class PenaltyCard {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TeamName team;
+    private Team team;
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)

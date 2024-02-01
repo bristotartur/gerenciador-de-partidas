@@ -4,7 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -43,7 +43,7 @@ public class Participant {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TeamName team;
+    private Team team;
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)

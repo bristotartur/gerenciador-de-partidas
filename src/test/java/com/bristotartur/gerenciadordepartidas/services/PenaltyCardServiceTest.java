@@ -5,7 +5,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
@@ -50,8 +50,8 @@ class PenaltyCardServiceTest {
     void setUp() {
 
         var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
-        var teamA = TeamName.MESTRES_DE_OBRAS;
-        var teamB = TeamName.PAPA_LEGUAS;
+        var teamA = Team.MESTRES_DE_OBRAS;
+        var teamB = Team.PAPA_LEGUAS;
 
         playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, edition, entityManager);
         playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, edition, entityManager);

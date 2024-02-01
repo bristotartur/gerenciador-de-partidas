@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.domain.matches;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,11 +44,11 @@ public class Match {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TeamName teamA;
+    private Team teamA;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TeamName teamB;
+    private Team teamB;
 
     @ManyToMany
     @JoinTable(

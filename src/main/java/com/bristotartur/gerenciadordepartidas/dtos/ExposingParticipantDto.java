@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
@@ -12,7 +12,7 @@ public class ExposingParticipantDto extends RepresentationModel<ExposingParticip
     private final Long participantId;
     private final String name;
     private final String classNumber;
-    private final TeamName team;
+    private final Team team;
     private final Long editionId;
 
 }

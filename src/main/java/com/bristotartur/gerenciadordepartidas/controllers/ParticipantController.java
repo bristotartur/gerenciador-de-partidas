@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +52,7 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/from")
-    public ResponseEntity<Page<ExposingParticipantDto>> listMembersFromTeam(@RequestParam("team") TeamName team,
+    public ResponseEntity<Page<ExposingParticipantDto>> listMembersFromTeam(@RequestParam("team") Team team,
                                                                             Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();

@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
@@ -15,7 +15,7 @@ public class ExposingPenaltyCardDto extends RepresentationModel<ExposingPenaltyC
     private final Long penaltyCardId;
     private final PenaltyCardColor color;
     private final String player;
-    private final TeamName team;
+    private final Team team;
     private final LocalTime penaltyCardTime;
 
 }

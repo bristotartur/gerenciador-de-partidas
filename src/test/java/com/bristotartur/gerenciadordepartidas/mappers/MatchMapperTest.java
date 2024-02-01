@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +38,8 @@ class MatchMapperTest {
     @DisplayName("Should map entities to their referent fields in Match when they are passed to new Match")
     void Should_MapEntitiesToTheirReferentFieldsInMatch_When_TheyArePassedToNewMatch() {
 
-        var teamA = TeamName.MESTRES_DE_OBRAS;
-        var teamB = TeamName.ATOMICA;
+        var teamA = Team.MESTRES_DE_OBRAS;
+        var teamB = Team.ATOMICA;
         var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA, teamB, any());
 
         var result = matchMapper.toNewMatch(matchDto, any());
@@ -53,9 +53,9 @@ class MatchMapperTest {
     void Should_UpdateMatch_When_NewValuesArePassed() {
 
         var sport = Sports.HANDBALL;
-        var teamA = TeamName.PAPA_LEGUAS;
-        var teamB = TeamName.TWISTER;
-        var teamC = TeamName.UNICONTTI;
+        var teamA = Team.PAPA_LEGUAS;
+        var teamB = Team.TWISTER;
+        var teamC = Team.UNICONTTI;
 
         var match = MatchTestUtil.createNewMatch(teamA, teamB, any());
         var matchDto = MatchTestUtil.createNewMatchDto(Sports.HANDBALL, teamA, teamC, any());
@@ -69,8 +69,8 @@ class MatchMapperTest {
     @DisplayName("Should map Match fields to their equivalent fields in ExposingMatchDto when Match passed to map")
     void Should_MapMatchFieldsToTheirEquivalentFieldsInExposingMatchDto_When_MatchIsPassedToMap() {
 
-        var teamA = TeamName.ATOMICA;
-        var teamB = TeamName.MESTRES_DE_OBRAS;
+        var teamA = Team.ATOMICA;
+        var teamB = Team.MESTRES_DE_OBRAS;
         var match = MatchTestUtil.createNewMatch(teamA, teamB, any());
 
         var sport = Sports.FUTSAL;

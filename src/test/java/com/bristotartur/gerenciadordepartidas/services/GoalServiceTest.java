@@ -4,7 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
@@ -49,8 +49,8 @@ class GoalServiceTest {
     void setUp() {
 
         var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
-        var teamA = TeamName.TWISTER;
-        var teamB = TeamName.UNICONTTI;
+        var teamA = Team.TWISTER;
+        var teamB = Team.UNICONTTI;
 
         playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, edition, entityManager);
         playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, edition, entityManager);

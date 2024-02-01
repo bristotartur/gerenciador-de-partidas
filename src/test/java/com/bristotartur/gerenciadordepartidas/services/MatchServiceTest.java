@@ -6,7 +6,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
@@ -47,9 +47,9 @@ class MatchServiceTest {
     @Autowired
     private MatchServiceMediator matchServiceMediator;
 
-    private TeamName teamA;
-    private TeamName teamB;
-    private TeamName teamC;
+    private Team teamA;
+    private Team teamB;
+    private Team teamC;
     private final List<Participant> players = new LinkedList<>();
     private final List<Participant> invalidPlayers = new LinkedList<>();
 
@@ -58,9 +58,9 @@ class MatchServiceTest {
 
         var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
 
-        teamA = TeamName.PAPA_LEGUAS;
-        teamB = TeamName.TWISTER;
-        teamC = TeamName.UNICONTTI;
+        teamA = Team.PAPA_LEGUAS;
+        teamB = Team.TWISTER;
+        teamC = Team.UNICONTTI;
 
         players.add(ParticipantTestUtil.createNewParticipant("3-53", teamA, edition, entityManager));
         players.add(ParticipantTestUtil.createNewParticipant("3-13", teamB, edition, entityManager));

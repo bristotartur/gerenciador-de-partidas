@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.dtos;
 
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -8,6 +8,6 @@ import lombok.Builder;
 @Builder
 public record ParticipantDto(@NotBlank String name,
                              @NotBlank String classNumber,
-                             @NotNull TeamName team,
+                             @NotNull Team team,
                              @NotNull Long editionId) {
 }

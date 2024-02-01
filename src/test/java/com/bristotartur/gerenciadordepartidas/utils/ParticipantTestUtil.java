@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import jakarta.persistence.EntityManager;
 
 /**
@@ -23,7 +23,7 @@ public final class ParticipantTestUtil {
      * @param edition A ediçõa em que o participante está inscrito.
      * @return Ua nova instância de {@link Participant}.
      */
-    public static Participant createNewParticipant(String classNumber, TeamName team, Edition edition) {
+    public static Participant createNewParticipant(String classNumber, Team team, Edition edition) {
 
         return Participant.builder()
                 .name("sa")
@@ -43,7 +43,7 @@ public final class ParticipantTestUtil {
      *                      entidades e persistí-las no banco de dados.
      * @return Ua nova instância de {@link Participant}.
      */
-    public static Participant createNewParticipant(String classNumber, TeamName team, Edition edition, EntityManager entityManager) {
+    public static Participant createNewParticipant(String classNumber, Team team, Edition edition, EntityManager entityManager) {
 
         var participant = Participant.builder()
                 .name("sa")
@@ -67,7 +67,7 @@ public final class ParticipantTestUtil {
      *                      entidades e persistí-las no banco de dados.
      * @return Ua nova instância de {@link Participant}.
      */
-    public static Participant createNewParticipant(String name, String classNumber, TeamName team, Edition edition, EntityManager entityManager) {
+    public static Participant createNewParticipant(String name, String classNumber, Team team, Edition edition, EntityManager entityManager) {
 
         var participant = Participant.builder()
                 .name(name)
@@ -88,7 +88,7 @@ public final class ParticipantTestUtil {
      * @param editionId Identificador único da edição na qual o participante está associado.
      * @return uma nova instância de {@link ParticipantDto}.
      */
-    public static ParticipantDto createNewParticipantDto(String classNumber, TeamName team, Long editionId) {
+    public static ParticipantDto createNewParticipantDto(String classNumber, Team team, Long editionId) {
 
         return ParticipantDto.builder()
                 .name("sa")

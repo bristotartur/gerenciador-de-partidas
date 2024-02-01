@@ -4,7 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
@@ -74,7 +74,7 @@ public class ParticipantService {
      * @return Uma {@link Page} contendo todos os participantes relacionados a equipe
      * @throws NotFoundException Se nenhuma equipe correspondente ao nome fornecido for encontrada.
      */
-    public Page<Participant> findMambersFromTeam(TeamName team, Pageable pageable) {
+    public Page<Participant> findMambersFromTeam(Team team, Pageable pageable) {
 
         //TODO ajustar este método
         var membersPage = participantRepository.findTeamMembers(team, pageable);

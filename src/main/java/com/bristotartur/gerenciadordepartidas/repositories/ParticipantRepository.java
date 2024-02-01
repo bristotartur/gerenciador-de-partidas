@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.repositories;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,6 +42,6 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
      * @return Uma {@link Page} contendo todos os participantes relacionados a equipe
      */
     @Query("SELECT p FROM Participant p WHERE p.team = :team")
-    Page<Participant> findTeamMembers(@Param("team") TeamName team, Pageable pageable);
+    Page<Participant> findTeamMembers(@Param("team") Team team, Pageable pageable);
 
 }

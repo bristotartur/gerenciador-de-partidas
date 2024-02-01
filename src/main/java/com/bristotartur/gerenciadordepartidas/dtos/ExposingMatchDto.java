@@ -4,7 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.TeamName;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
@@ -23,8 +23,8 @@ public class ExposingMatchDto extends RepresentationModel<ExposingMatchDto> {
 
     private final Long matchId;
     private final Sports sport;
-    private final TeamName teamA;
-    private final TeamName teamB;
+    private final Team teamA;
+    private final Team teamB;
     private final Integer teamScoreA;
     private final Integer teamScoreB;
     private final Modality modality;

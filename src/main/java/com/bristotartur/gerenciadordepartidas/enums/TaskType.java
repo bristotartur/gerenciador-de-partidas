@@ -1,6 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
-public enum TaskType implements EventType {
+import com.bristotartur.gerenciadordepartidas.domain.events.TaskEvent;
+
+public enum TaskType implements EventType<TaskEvent> {
     NORMAL,
     ACCOMPLISHED,
     CULTURAL

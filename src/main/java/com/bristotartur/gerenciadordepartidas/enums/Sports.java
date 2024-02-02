@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceFactory;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchStrategy;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * @see MatchServiceFactory
  */
 @RequiredArgsConstructor
-public enum Sports implements EventType {
+public enum Sports implements EventType<SportEvent> {
     CHESS("chess"),
     BASKETBALL("basketball"),
     FUTSAL("futsal"),

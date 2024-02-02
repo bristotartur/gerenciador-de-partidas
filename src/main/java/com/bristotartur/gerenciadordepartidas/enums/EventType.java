@@ -1,4 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
-public interface EventType {
+import com.bristotartur.gerenciadordepartidas.domain.events.Event;
+
+public interface EventType<T extends Event> {
+
 }

@@ -16,13 +16,10 @@ public interface EditionMapper {
     @Mapping(target = "twisterPontuation", constant = "0")
     @Mapping(target = "uniconttiPontuation", constant = "0")
     @Mapping(target = "participants", ignore = true)
+    @Mapping(target = "taskEvents", ignore = true)
+    @Mapping(target = "sportEvents", ignore = true)
     Edition toNewEdition(EditionDto editionDto);
-
-    @Mapping(target = "atomicaPontuation", source = "originalEdition.atomicaPontuation")
-    @Mapping(target = "mestresPontuation", source = "originalEdition.mestresPontuation")
-    @Mapping(target = "papaPontuation", source = "originalEdition.papaPontuation")
-    @Mapping(target = "twisterPontuation", source = "originalEdition.twisterPontuation")
-    @Mapping(target = "uniconttiPontuation", source = "originalEdition.uniconttiPontuation")
+    
     @Mapping(target = "editionStatus", source = "editionDto.editionStatus")
     @Mapping(target = "opening", source = "editionDto.opening")
     @Mapping(target = "closure", source = "editionDto.closure")

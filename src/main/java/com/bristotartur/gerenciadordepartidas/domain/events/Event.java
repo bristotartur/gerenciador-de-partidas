@@ -4,8 +4,14 @@ import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = false)
+@SuperBuilder(toBuilder = true)
 public abstract class Event {
 
     @Id

@@ -3,21 +3,23 @@ package com.bristotartur.gerenciadordepartidas.domain.events;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
+import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Entity
 @Table(name = "SPORT_EVENT")
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Builder
+@SuperBuilder(toBuilder = true)
 public class SportEvent extends Event {
 
     @Column(nullable = false)
@@ -40,5 +42,14 @@ public class SportEvent extends Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Match> matches;
+
+    public SportEvent(Long id, Team firstPlace, Team secondPlace, Team thirdPlace, Team fourthPlace, Team fifthPlace, Status eventStatus, Sports type, Modality modality, Integer totalMatches, Edition edition, List<Match> matches) {
+        super(id, firstPlace, secondPlace, thirdPlace, fourthPlace, fifthPlace, eventStatus);
+        this.type = type;
+        this.modality = modality;
+        this.totalMatches = totalMatches;
+        this.edition = edition;
+        this.matches = matches;
+    }
 
 }

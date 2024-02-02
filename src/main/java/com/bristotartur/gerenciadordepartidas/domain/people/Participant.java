@@ -3,6 +3,8 @@ package com.bristotartur.gerenciadordepartidas.domain.people;
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
+import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
+import com.bristotartur.gerenciadordepartidas.domain.events.TaskEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -54,6 +56,16 @@ public class Participant {
     @ManyToMany(mappedBy = "players", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Match> matches;
+
+    @JsonBackReference
+    @ManyToMany(mappedBy = "participants", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<SportEvent> sportEvents;
+
+    @JsonBackReference
+    @ManyToMany(mappedBy = "participants", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<TaskEvent> taskEvents;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)

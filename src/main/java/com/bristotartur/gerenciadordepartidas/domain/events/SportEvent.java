@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.domain.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -43,13 +44,22 @@ public class SportEvent extends Event {
     @JsonIgnore
     private List<Match> matches;
 
-    public SportEvent(Long id, Team firstPlace, Team secondPlace, Team thirdPlace, Team fourthPlace, Team fifthPlace, Status eventStatus, Sports type, Modality modality, Integer totalMatches, Edition edition, List<Match> matches) {
+    @ManyToMany
+    @JoinTable(
+            name = "sport_event_participant",
+            joinColumns = @JoinColumn(name = "sport_event_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
+    private List<Participant> participants;
+
+    public SportEvent(Long id, Team firstPlace, Team secondPlace, Team thirdPlace, Team fourthPlace, Team fifthPlace, Status eventStatus, Sports type, Modality modality, Integer totalMatches, Edition edition, List<Match> matches, List<Participant> participants) {
         super(id, firstPlace, secondPlace, thirdPlace, fourthPlace, fifthPlace, eventStatus);
         this.type = type;
         this.modality = modality;
         this.totalMatches = totalMatches;
         this.edition = edition;
         this.matches = matches;
+        this.participants = participants;
     }
 
 }

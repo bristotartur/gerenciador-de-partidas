@@ -29,7 +29,7 @@ class SportEventValidatorTest {
 
     private SportEvent event;
     private Edition edition;
-    private List<Match> matches = new LinkedList<>();
+    private final List<Match> matches = new LinkedList<>();
 
     @BeforeEach
     void setUp() {
@@ -112,13 +112,32 @@ class SportEventValidatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException whe registerd Matches exceeds the limit of new total matches value")
+    @DisplayName("Should not throw anything when registerd Matches does not exceeds the limit of new total matches value")
+    void Should_NotThrowAnything_When_RegisteredMatchesDoesNotExceedsTheLimitOfNewTotalMatchesValue() {
+
+        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.SCHEDULED, 7, any());
+
+        assertDoesNotThrow(() -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when registerd Matches exceeds the limit of new total matches value")
     void Should_ThrowBadRequestException_When_RegisteredMatchesExceedsTheLimitOfNewTotalMatchesValue() {
 
         var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.SCHEDULED, 5, any());
 
         assertThrows(BadRequestException.class, () -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
     }
+
+    @Test
+    @DisplayName("Should not throw anything when trying to start SportEvent with sufficient matches")
+    void Should_NotThrowAnything_When_TryingToStartSportEventWithSufficientMatches() {
+
+        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.IN_PROGRESS, 6, any());
+
+        assertDoesNotThrow(() -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+    }
+
 
     @Test
     @DisplayName("Should throw BadRequestException when trying to start SportEvent with no sufficient matches")
@@ -130,15 +149,30 @@ class SportEventValidatorTest {
     }
 
     @Test
+    @DisplayName("Should not throw anything when trying to finish SportEvent with sufficient matches")
+    void Should_NotThrowanything_When_TryingToFinishSportEventWithSufficientMatches() {
+
+        matches.forEach(match -> match.setMatchStatus(Status.ENDED));
+        matches.addAll(List.of(
+                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED),
+                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED),
+                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED),
+                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED)));
+
+        event.setMatches(matches);
+        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
+
+        assertDoesNotThrow(() -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+    }
+
+    @Test
     @DisplayName("Should throw BadRequestException when trying to finish SportEvent with no sufficient matches")
     void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithNoSufficientMatches() {
 
-        matches.addAll(List.of(
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.SCHEDULED),
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.SCHEDULED),
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.SCHEDULED)));
-
+        matches.remove(0);
+        matches.forEach(match -> match.setMatchStatus(Status.IN_PROGRESS));
         event.setMatches(matches);
+
         var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
 
         assertThrows(BadRequestException.class, () -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
@@ -148,7 +182,7 @@ class SportEventValidatorTest {
     @DisplayName("Should throw BadRequestException when trying to finish SportEvent with unfinished matches")
     void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithUnfinishedMatches() {
 
-        matches.add(MatchTestUtil.createNewMatch(any(), any(), any(), Status.SCHEDULED));
+        matches.add(MatchTestUtil.createNewMatch(any(), any(), any(), Status.IN_PROGRESS));
         event.setMatches(matches);
         var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
 

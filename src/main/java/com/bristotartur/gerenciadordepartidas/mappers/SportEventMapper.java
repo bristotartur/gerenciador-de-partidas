@@ -16,13 +16,16 @@ public interface SportEventMapper {
     @Mapping(target = "fourthPlace", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Team.NONE)")
     @Mapping(target = "fifthPlace", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Team.NONE)")
     @Mapping(target = "matches", ignore = true)
+    @Mapping(target = "participants", ignore = true)
     SportEvent toNewSportEvent(SportEventDto sportEventDto, Edition edition);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "type", source = "sportEventDto.type")
     @Mapping(target = "modality", source = "sportEventDto.modality")
+    @Mapping(target = "eventStatus", source = "sportEventDto.eventStatus")
     @Mapping(target = "totalMatches", source = "sportEventDto.totalMatches")
     @Mapping(target = "edition", source = "edition")
+    @Mapping(target = "participants", source = "sportEvent.participants")
     SportEvent toExistingSportEvent(Long id, SportEventDto sportEventDto, SportEvent sportEvent, Edition edition);
 
 }

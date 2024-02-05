@@ -16,15 +16,17 @@ public enum Status {
 
         if (originalStatus.equals(newStatus)) return;
 
-        if (originalStatus.equals(SCHEDULED) && !newStatus.equals(IN_PROGRESS))
+        if (originalStatus.equals(SCHEDULED) && !newStatus.equals(IN_PROGRESS)) {
             throw new BadRequestException("Status 'SCHEDULED' só pode ser alterado para 'IN_PROGESS'.");
-
-        if (originalStatus.equals(IN_PROGRESS) && !newStatus.equals(ENDED))
+        }
+        if (originalStatus.equals(IN_PROGRESS) && !newStatus.equals(ENDED)) {
             throw new BadRequestException("Status 'IN_PROGRESS' só pode ser alterado para 'ENDED'.");
-
-        if(originalStatus.equals(ENDED) || originalStatus.equals(OPEN_FOR_EDITS))
-            if (!newStatus.equals(ENDED) && !newStatus.equals(OPEN_FOR_EDITS))
+        }
+        if(originalStatus.equals(ENDED) || originalStatus.equals(OPEN_FOR_EDITS)) {
+            if (!newStatus.equals(ENDED) && !newStatus.equals(OPEN_FOR_EDITS)) {
                 throw new BadRequestException("Status 'ENDED' e 'OPEN_FOR_EDITS' só podem ser alterados para eles mesmos.");
+            }
+        }
     }
 
 }

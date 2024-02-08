@@ -62,7 +62,7 @@ public class Match {
 
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "event_id") // Por enquanto não possui "nullable = false" para facilitar os testes
+    @JoinColumn(name = "event_id", nullable = false) 
     private SportEvent event;
 
     @Column(nullable = false)

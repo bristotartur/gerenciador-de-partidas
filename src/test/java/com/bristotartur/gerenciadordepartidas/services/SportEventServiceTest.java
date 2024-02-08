@@ -120,6 +120,7 @@ class SportEventServiceTest {
 
         assertThrows(NotFoundException.class, () -> sportEventService.findAllEventsFromEdition(id, pageable));
         assertThrows(NotFoundException.class, () -> sportEventService.findEventById(id));
+        assertThrows(NotFoundException.class, () -> sportEventService.findEventAndCheckStatus(id));
         assertThrows(NotFoundException.class, () -> sportEventService.deleteEventById(id));
         assertThrows(NotFoundException.class, () -> sportEventService.replaceEvent(id, dto));
     }
@@ -167,6 +168,25 @@ class SportEventServiceTest {
         var result = sportEventService.findEventById(sportEventA.getId());
 
         assertEquals(result, sportEventA);
+    }
+
+    @Test
+    @DisplayName("Should not throw anything when SportEvent with valid Status for Match is find")
+    void Should_NotThrowAnything_When_SportEventWithValidStatusForMatchIsFind() {
+
+        entityManager.merge(sportEventA);
+
+        assertDoesNotThrow(() -> sportEventService.findEventAndCheckStatus(sportEventA.getId()));
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when SportEvent with invalid Status for Match is find")
+    void Should_ThrowBadRequestException_When_SportEventWithInvalidStatusForMatchIsFind() {
+
+        sportEventA.setEventStatus(Status.ENDED);
+        entityManager.merge(sportEventA);
+
+        assertThrows(BadRequestException.class, () -> sportEventService.findEventAndCheckStatus(sportEventA.getId()));
     }
 
     @Test

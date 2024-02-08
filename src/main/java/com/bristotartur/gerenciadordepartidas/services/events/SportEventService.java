@@ -102,6 +102,18 @@ public class SportEventService implements EventStrategy<SportEvent> {
     }
 
     @Override
+    public SportEvent findEventAndCheckStatus(Long id) {
+
+        var event = this.findEventById(id);
+        var status = event.getEventStatus();
+
+        if (status.equals(Status.ENDED)) {
+            throw new BadRequestException(ExceptionMessages.INVALID_MATCH_OPERATION_ON_EVENT.message);
+        }
+        return event;
+    }
+
+    @Override
     public SportEvent saveEvent(TransferableEventData<SportEvent> eventDto) {
 
         var dto = (SportEventDto) eventDto;

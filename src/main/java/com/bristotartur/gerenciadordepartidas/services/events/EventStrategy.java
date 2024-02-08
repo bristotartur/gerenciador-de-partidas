@@ -7,6 +7,7 @@ import com.bristotartur.gerenciadordepartidas.domain.events.Event;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.input.TransferableEventData;
 import com.bristotartur.gerenciadordepartidas.enums.EventType;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -64,8 +65,17 @@ public interface EventStrategy<T extends Event> {
      * Busca por uma instância da especialização de {@link Event} pelo seu ID.
      *
      * @param id Identificador único do evento.
+     * @return A instância de {@link Event} correspondente ao ID.
      */
     T findEventById(Long id);
+
+    /**
+     * Busca por uma instância da especialização de {@link Event} pelo seu ID e verifica o seu {@link Status}.
+     *
+     * @param id Identificador único do evento.
+     * @return A instância de {@link Event} correspondente ao ID.
+     */
+    T findEventAndCheckStatus(Long id);
 
     /**
      * Salva um evento no sistema com base nos dados fornecidos no DTO.

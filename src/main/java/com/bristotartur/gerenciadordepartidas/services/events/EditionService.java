@@ -51,9 +51,9 @@ public class EditionService {
 
     public Edition saveEdition(EditionDto editionDto) {
 
-        if (!editionDto.editionStatus().equals(Status.SCHEDULED))
+        if (!editionDto.editionStatus().equals(Status.SCHEDULED)) {
             throw new BadRequestException("Novas partidas só podem ser criadas com o status 'SCHEDULED'.");
-
+        }
         var edition = editionRepository.save(editionMapper.toNewEdition(editionDto));
 
         log.info("Edition '{}' was created.", edition.getId());
@@ -64,9 +64,9 @@ public class EditionService {
 
         var edition = this.findEditionById(id);
 
-        if (!edition.getEditionStatus().equals(Status.SCHEDULED))
+        if (!edition.getEditionStatus().equals(Status.SCHEDULED)) {
             throw new BadRequestException("Uma edição só pode ser excluída antes de ser iniciada.");
-
+        }
         editionRepository.deleteById(id);
         log.info("Edition '{}' was deleted.", id);
     }
@@ -79,13 +79,23 @@ public class EditionService {
 
         Optional<Edition> alreadyInProgressEdition = editionRepository.findByEditionStatus(newStatus);
 
-        if (newStatus.equals(Status.IN_PROGRESS) && alreadyInProgressEdition.isPresent())
+        if (newStatus.equals(Status.IN_PROGRESS) && alreadyInProgressEdition.isPresent()) {
             throw new BadRequestException("Apenas uma edição de cada pode ter o status 'IN_PROGRESS'.");
-
+        }
         var updatedEdition = editionRepository.save(editionMapper.toExistingEdition(id, editionDto, originalEdition));
 
         log.info("Edition '{}' was updated", id);
         return updatedEdition;
+    }
+
+    public void checkEditionStatusById(Long id) {
+
+        var edition = this.findEditionById(id);
+        var status = edition.getEditionStatus();
+
+        if (status.equals(Status.ENDED)) {
+            throw new BadRequestException("Operações não podem ser realizadas em edições já encerradas.");
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
@@ -25,29 +26,33 @@ public interface MatchMapper {
      *
      * @param matchDto DTO do tipo {@link MatchDto} contendo os dados e metadados da nova partida.
      * @param players Lista do tipo {@link Participant} contendo todos os jogadores da partida.
+     * @param event Instância de {@link SportEvent} na qual a partida está associada.
      * @return Uma nova instância de {@link Match} com base nos dados fornecidos.
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "teamScoreA", constant = "0")
     @Mapping(target = "teamScoreB", constant = "0")
     @Mapping(target = "modality", source = "matchDto.modality")
-    @Mapping(target = "matchStatus", source = "matchDto.matchStatus")
-    Match toNewMatch(MatchDto matchDto, List<Participant> players);
+    Match toNewMatch(MatchDto matchDto, List<Participant> players, SportEvent event);
 
     /**
      * Atualiza uma instância existente de {@link Match} com base nos dados fornecidos.
      *
      * @param id Identificador único da partida que será atualizada.
      * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida que será atualizada.
+     * @param match Instância da partida que será atualizada.
      * @param players Lista do tipo {@link Participant} contendo todos os jogadores da partida.
+     * @param event Instância de {@link SportEvent} na qual a partida está associada.
      * @return Uma nova instância atualizada de {@link Match} com base nos dados fornecidos.
      */
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "teamScoreA", ignore = true)
-    @Mapping(target = "teamScoreB", ignore = true)
+    @Mapping(target = "teamA", source = "matchDto.teamA")
+    @Mapping(target = "teamB", source = "matchDto.teamB")
     @Mapping(target = "modality", source = "matchDto.modality")
     @Mapping(target = "matchStatus", source = "matchDto.matchStatus")
-    Match toExistingMatch(Long id, MatchDto matchDto, List<Participant> players);
+    @Mapping(target = "matchStart", source = "matchDto.matchStart")
+    @Mapping(target = "matchEnd", source = "matchDto.matchEnd")
+    Match toExistingMatch(Long id, MatchDto matchDto, Match match, List<Participant> players, SportEvent event);
 
     /**
      * Gera uma nova instância de {@link ExposingMatchDto} a partir de qualquer instância de {@link Match}
@@ -58,8 +63,6 @@ public interface MatchMapper {
      * @return Uma nova instância de {@link ExposingMatchDto}.
      */
     @Mapping(target = "matchId", source = "match.id")
-    @Mapping(target = "teamA", source = "match.teamA")
-    @Mapping(target = "teamB", source = "match.teamB")
     ExposingMatchDto toNewExposingMatchDto(Match match, Sports sport);
 
 }

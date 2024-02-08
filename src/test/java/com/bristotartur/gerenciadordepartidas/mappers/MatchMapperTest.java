@@ -28,7 +28,7 @@ class MatchMapperTest {
     void Should_ConvertScoresToZero_When_MappedToNewMatch() {
 
         var matchDto = MatchTestUtil.createNewMatchDto(Sports.CHESS, any(), any(), any());
-        var result = matchMapper.toNewMatch(matchDto, any());
+        var result = matchMapper.toNewMatch(matchDto, any(), any());
 
         assertEquals(result.getTeamScoreA(), 0);
         assertEquals(result.getTeamScoreB(), 0);
@@ -42,7 +42,7 @@ class MatchMapperTest {
         var teamB = Team.ATOMICA;
         var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA, teamB, any());
 
-        var result = matchMapper.toNewMatch(matchDto, any());
+        var result = matchMapper.toNewMatch(matchDto, any(), any());
 
         assertEquals(result.getTeamA(), teamA);
         assertEquals(result.getTeamB(), teamB);
@@ -52,17 +52,22 @@ class MatchMapperTest {
     @DisplayName("Should update Match when new values are passed")
     void Should_UpdateMatch_When_NewValuesArePassed() {
 
-        var sport = Sports.HANDBALL;
         var teamA = Team.PAPA_LEGUAS;
         var teamB = Team.TWISTER;
         var teamC = Team.UNICONTTI;
-
         var match = MatchTestUtil.createNewMatch(teamA, teamB, any());
-        var matchDto = MatchTestUtil.createNewMatchDto(Sports.HANDBALL, teamA, teamC, any());
 
-        var result = matchMapper.toExistingMatch(getRandomLongId(), matchDto, any());
+        match.setId(getRandomLongId());
+        match.setTeamScoreA(3);
+        match.setTeamScoreB(2);
 
-        assertNotEquals(result, match);
+        var dto = MatchTestUtil.createNewMatchDto(any(), teamB, teamC, any());
+        var result = matchMapper.toExistingMatch(match.getId(), dto, match, any(), any());
+
+        assertNotEquals(result.getTeamA(), match.getTeamA());
+        assertNotEquals(result.getTeamB(), match.getTeamB());
+        assertEquals(result.getTeamScoreA(), match.getTeamScoreA());
+        assertEquals(result.getTeamScoreB(), match.getTeamScoreB());
     }
 
     @Test

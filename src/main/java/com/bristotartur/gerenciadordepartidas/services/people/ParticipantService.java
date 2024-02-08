@@ -69,14 +69,13 @@ public class ParticipantService {
     /**
      * Procura por todos os membros de uma determinada equipe.
      *
-     * @param id Identificador único da equipe.
+     * @param team equipe do participante.
      * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
      * @return Uma {@link Page} contendo todos os participantes relacionados a equipe
      * @throws NotFoundException Se nenhuma equipe correspondente ao nome fornecido for encontrada.
      */
     public Page<Participant> findMambersFromTeam(Team team, Pageable pageable) {
 
-        //TODO ajustar este método
         var membersPage = participantRepository.findTeamMembers(team, pageable);
 
         var number = pageable.getPageNumber();
@@ -147,9 +146,9 @@ public class ParticipantService {
         var participant = this.findParticipantById(id);
         var participantMatches = participantRepository.findMatchesByParticipantId(id);
 
-        if (!participantMatches.isEmpty())
+        if (!participantMatches.isEmpty()) {
             throw new BadRequestException(ExceptionMessages.INVALID_PARTICIPANT_EXCLUSION_OPERATION.message);
-
+        }
         participantRepository.deleteById(id);
         log.info("Participant '{}' with name '{}' was deleted.", id, participant.getName());
     }
@@ -190,12 +189,12 @@ public class ParticipantService {
         var classNumber = participant.getClassNumber();
         var regex = "^[1-3]-?\\d{2}$";
 
-        if (!classNumber.matches(regex))
+        if (!classNumber.matches(regex)) {
             throw new BadRequestException(ExceptionMessages.INVALID_PATTERN.message.formatted(classNumber));
-
-        if (!classNumber.contains("-"))
+        }
+        if (!classNumber.contains("-")) {
             classNumber = classNumber.charAt(0) + "-" + classNumber.substring(1);
-
+        }
         participant.setClassNumber(classNumber);
     }
 

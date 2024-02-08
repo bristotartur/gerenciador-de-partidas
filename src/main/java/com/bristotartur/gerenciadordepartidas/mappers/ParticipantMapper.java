@@ -24,6 +24,7 @@ public interface ParticipantMapper {
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "name", source = "participantDto.name")
+    @Mapping(target = "edition", source = "edition")
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "goal", ignore = true)
     @Mapping(target = "penaltyCards", ignore = true)

@@ -10,6 +10,7 @@ import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.MatchMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.services.events.SportEventService;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -46,6 +47,7 @@ public class MatchService {
     private final MatchMapper matchMapper;
     private final ParticipantService participantService;
     private final MatchServiceMediator matchServiceMediator;
+    private final SportEventService sportEventService;
 
     /**
      * Retorna uma lista paginada das partidas disponíveis no sistema.
@@ -141,9 +143,11 @@ public class MatchService {
      */
     public Match saveMatch(MatchDto matchDto) {
 
-        if (matchDto.teamA().equals(matchDto.teamB()))
-            throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
+        var event = sportEventService.findEventAndCheckStatus(matchDto.eventId());
 
+        if (matchDto.teamA().equals(matchDto.teamB())) {
+            throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
+        }
         var players = matchDto.playerIds()
                 .stream()
                 .map(participantService::findParticipantById)
@@ -151,8 +155,8 @@ public class MatchService {
 
         this.checkPlayers(players, matchDto);
 
-        var savedMatch = matchMapper.toNewMatch(matchDto, players);
-        savedMatch = matchServiceMediator.saveMatch(savedMatch, matchDto.sport());
+        var match = matchMapper.toNewMatch(matchDto, players, event);
+        var savedMatch = matchServiceMediator.saveMatch(match, matchDto.sport());
 
         log.info("Match '{}' with type '{}' was created.", savedMatch.getId(), matchDto.sport());
         return savedMatch;
@@ -189,10 +193,11 @@ public class MatchService {
     public Match replaceMatch(Long id, MatchDto matchDto) {
 
         var existingMatch = this.findMatchById(id);
+        var event = sportEventService.findEventAndCheckStatus(matchDto.eventId());
 
-        if (matchDto.teamA().equals(matchDto.teamB()))
+        if (matchDto.teamA().equals(matchDto.teamB())) {
             throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
-
+        }
         var players = matchDto.playerIds()
                 .stream()
                 .map(participantService::findParticipantById)
@@ -200,11 +205,8 @@ public class MatchService {
 
         this.checkPlayers(players, matchDto);
 
-        var updatedMatch = matchMapper.toExistingMatch(id, matchDto, players);
-        updatedMatch.setTeamScoreA(existingMatch.getTeamScoreA());
-        updatedMatch.setTeamScoreB(existingMatch.getTeamScoreB());
-
-        updatedMatch = matchServiceMediator.saveMatch(updatedMatch, matchDto.sport());
+        var match = matchMapper.toExistingMatch(id, matchDto, existingMatch, players, event);
+        var updatedMatch = matchServiceMediator.saveMatch(match, matchDto.sport());
 
         log.info("Match '{}' of type '{}' was updated.", id, matchDto.sport());
         return updatedMatch;

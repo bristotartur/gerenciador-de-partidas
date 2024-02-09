@@ -1,6 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
+import com.bristotartur.gerenciadordepartidas.enums.Modality;
+import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
@@ -10,6 +12,7 @@ import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.SportEventTestUtil;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -148,8 +151,11 @@ class ParticipantServiceTest {
 
         var team = Team.PAPA_LEGUAS;
         var teamB = Team.ATOMICA;
+        var sportEvent = SportEventTestUtil.createNewSportEvent(
+                Sports.FUTSAL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
+        );
         var participant = ParticipantTestUtil.createNewParticipant("3-53", team, edition, entityManager);
-        var match = MatchTestUtil.createNewMatch(team, teamB, List.of(participant));
+        var match = MatchTestUtil.createNewMatch(team, teamB, List.of(participant), sportEvent);
 
         entityManager.merge(match);
         assertThrows(BadRequestException.class, () -> participantService.deleteParticipantById(participant.getId()));

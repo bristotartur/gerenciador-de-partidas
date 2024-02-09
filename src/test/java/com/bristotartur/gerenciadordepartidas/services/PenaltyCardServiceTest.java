@@ -1,15 +1,13 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
+import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
-import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.enums.Team;
+import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.enums.*;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
-import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
+import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.utils.*;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,23 +38,36 @@ class PenaltyCardServiceTest {
     @Autowired
     private PenaltyCardRepository penaltyCardRepository;
     @Autowired
-    private MatchServiceMediator matchServiceMediator;
+    private MatchService matchService;
 
+    private Edition edition;
     private Participant playerA;
     private Participant playerB;
-    private Match match;
+    private MatchDto futsalDto;
+    private MatchDto handballDto;
 
     @BeforeEach
     void setUp() {
 
-        var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
+        edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
         var teamA = Team.MESTRES_DE_OBRAS;
         var teamB = Team.PAPA_LEGUAS;
 
+        var sportEventA = SportEventTestUtil.createNewSportEvent(
+                Sports.FUTSAL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
+        );
+        var sportEventB = SportEventTestUtil.createNewSportEvent(
+                Sports.HANDBALL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
+        );
         playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, edition, entityManager);
         playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, edition, entityManager);
 
-        match = MatchTestUtil.createNewMatch(teamA, teamB, List.of(playerA, playerB));
+        futsalDto = MatchTestUtil.createNewMatchDto(
+                Sports.FUTSAL, teamA, teamB, List.of(playerA.getId(), playerB.getId()), sportEventA.getId()
+        );
+        handballDto = MatchTestUtil.createNewMatchDto(
+                Sports.HANDBALL, teamA, teamB, List.of(playerA.getId(), playerB.getId()), sportEventB.getId()
+        );
     }
 
     @Test
@@ -64,7 +75,7 @@ class PenaltyCardServiceTest {
     void Should_RetrieveAllPenaltyCardsInPagedForm_When_SearchingForAllPenaltyCards() {
 
         var pageable = PageRequest.of(0, 2);
-        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
+        var futsalMatch = matchService.saveMatch(futsalDto);
 
         var penaltyCards = List.of(
                 PenaltyCardTestUtil.createNewPenaltyCard(PenaltyCardColor.RED, playerA, futsalMatch, entityManager),
@@ -81,7 +92,8 @@ class PenaltyCardServiceTest {
     @DisplayName("Should find PenaltyCard when existing PenaltyCard ID is passed to search")
     void Should_FindPenaltyCard_When_ExistingPenaltyCardIdIsPassedToSearch() {
 
-        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
+
+        var handballMatch = matchService.saveMatch(handballDto);
         var penaltyCard = PenaltyCardTestUtil
                 .createNewPenaltyCard(PenaltyCardColor.RED, playerB, handballMatch, entityManager);
 
@@ -106,8 +118,7 @@ class PenaltyCardServiceTest {
     @DisplayName("Should create new ExposingPenaltyCardDto when PenaltyCard is passed to create ExposingPenaltyCardDto")
     void Should_CreateNewExposingPenaltyCardDto_When_PenaltyCardIsPassedToCratePenaltyCardDto() {
 
-        var sport = Sports.FUTSAL;
-        var futsalMatch = matchServiceMediator.saveMatch(match, sport);
+        var futsalMatch = matchService.saveMatch(futsalDto);
         var penaltyCard = PenaltyCardTestUtil
                 .createNewPenaltyCard(PenaltyCardColor.RED, playerA, futsalMatch, entityManager);
 
@@ -121,10 +132,9 @@ class PenaltyCardServiceTest {
     @DisplayName("Should save PenaltyCard when valid PenaltyCardDto is passed to save")
     void Should_SavePenaltyCard_When_ValidPenaltyCardDtoIsPassedToSave() {
 
-        var sport = Sports.FUTSAL;
-        var futsalMatch = matchServiceMediator.saveMatch(match, sport);
+        var futsalMatch = matchService.saveMatch(futsalDto);
         var penaltyCardDto = PenaltyCardTestUtil
-                .createNewPenaltyCardDto(sport, PenaltyCardColor.RED, playerA.getId(), futsalMatch.getId());
+                .createNewPenaltyCardDto(Sports.FUTSAL, PenaltyCardColor.RED, playerA.getId(), futsalMatch.getId());
 
         var result = penaltyCardService.savePenaltyCard(penaltyCardDto);
 
@@ -135,7 +145,7 @@ class PenaltyCardServiceTest {
     @DisplayName("Should delete PenaltyCard from database when PenaltyCard ID is passed to delete")
     void Should_DeletePenaltyCardFromDatabase_When_PenaltyCardIdIsPassedToDelete() {
 
-        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
+        var handballMatch = matchService.saveMatch(handballDto);
         var penaltyCard = PenaltyCardTestUtil
                 .createNewPenaltyCard(PenaltyCardColor.RED, playerA, handballMatch, entityManager);
 
@@ -149,7 +159,7 @@ class PenaltyCardServiceTest {
     @DisplayName("Should update PenaltyCard when PenaltyCardDto with new values is passed")
     void Should_UpdatePenaltyCard_When_PenaltyCardDtoWithNewValuesIsPassed() {
 
-        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
+        var handballMatch = matchService.saveMatch(handballDto);
         var penaltyCard = PenaltyCardTestUtil
                 .createNewPenaltyCard(PenaltyCardColor.YELLOW, playerA, handballMatch, entityManager);
 

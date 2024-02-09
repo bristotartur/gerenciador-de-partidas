@@ -37,8 +37,8 @@ class SportEventValidatorTest {
         edition.setId(1L);
 
         matches.addAll(List.of(
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.SCHEDULED),
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.SCHEDULED)));
+                MatchTestUtil.createNewMatch(any(), any(), any(), any(), Status.SCHEDULED),
+                MatchTestUtil.createNewMatch(any(), any(), any(), any(), Status.SCHEDULED)));
 
         event = SportEventTestUtil.createNewSportEvent(Sports.HANDBALL, Modality.MASCULINE, Status.SCHEDULED, 6);
         event.setEdition(edition);
@@ -154,10 +154,10 @@ class SportEventValidatorTest {
 
         matches.forEach(match -> match.setMatchStatus(Status.ENDED));
         matches.addAll(List.of(
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED),
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED),
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED),
-                MatchTestUtil.createNewMatch(any(), any(), any(), Status.ENDED)));
+                MatchTestUtil.createNewMatch(any(), any(), any(), event, Status.ENDED),
+                MatchTestUtil.createNewMatch(any(), any(), any(), event, Status.ENDED),
+                MatchTestUtil.createNewMatch(any(), any(), any(), event, Status.ENDED),
+                MatchTestUtil.createNewMatch(any(), any(), any(), event, Status.ENDED)));
 
         event.setMatches(matches);
         var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
@@ -182,7 +182,7 @@ class SportEventValidatorTest {
     @DisplayName("Should throw BadRequestException when trying to finish SportEvent with unfinished matches")
     void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithUnfinishedMatches() {
 
-        matches.add(MatchTestUtil.createNewMatch(any(), any(), any(), Status.IN_PROGRESS));
+        matches.add(MatchTestUtil.createNewMatch(any(), any(), any(), event,Status.IN_PROGRESS));
         event.setMatches(matches);
         var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
 

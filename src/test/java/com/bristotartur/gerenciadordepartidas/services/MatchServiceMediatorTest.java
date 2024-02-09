@@ -1,19 +1,24 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.matches.ChessMatch;
 import com.bristotartur.gerenciadordepartidas.domain.matches.FutsalMatch;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
+import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.SportEventTestUtil;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,21 +47,40 @@ class MatchServiceMediatorTest {
     private EntityManager entityManager;
     @Autowired
     private MatchRepository<Match> matchRepository;
+    @Autowired
+    private MatchService matchService;
 
+    private Edition edition;
     private Team teamA;
     private Team teamB;
-    private final List<Participant> players = new LinkedList<>();
+    private final List<Long> playersIds = new LinkedList<>();
+    private MatchDto futsalDto;
+    private MatchDto handballDto;
 
     @BeforeEach
     void setUp() {
 
-        var edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
+        edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
 
         teamA = Team.UNICONTTI;
         teamB = Team.ATOMICA;
 
-        players.add(ParticipantTestUtil.createNewParticipant("3-31", teamA, edition, entityManager));
-        players.add(ParticipantTestUtil.createNewParticipant("3-61", teamB, edition, entityManager));
+        var sportEventA = SportEventTestUtil.createNewSportEvent(
+                Sports.FUTSAL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
+        );
+        var sportEventB = SportEventTestUtil.createNewSportEvent(
+                Sports.HANDBALL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
+        );
+        var players = List.of(
+                ParticipantTestUtil.createNewParticipant("3-31", teamA, edition, entityManager),
+                ParticipantTestUtil.createNewParticipant("3-61", teamB, edition, entityManager)
+        );
+        playersIds.addAll(players.stream()
+                .map(Participant::getId)
+                .toList());
+
+        futsalDto = MatchTestUtil.createNewMatchDto(Sports.FUTSAL, teamA, teamB, playersIds, sportEventA.getId());
+        handballDto = MatchTestUtil.createNewMatchDto(Sports.HANDBALL, teamA, teamB, playersIds, sportEventB.getId());
     }
 
     @Test
@@ -65,12 +89,10 @@ class MatchServiceMediatorTest {
 
         var pageable = PageRequest.of(0, 3);
 
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
         var matches = List.of(
-                matchServiceMediator.saveMatch(match, Sports.FUTSAL),
-                matchServiceMediator.saveMatch(match, Sports.FUTSAL),
-                matchServiceMediator.saveMatch(match, Sports.HANDBALL));
-
+                matchService.saveMatch(futsalDto),
+                matchService.saveMatch(futsalDto),
+                matchService.saveMatch(handballDto));
 
         var matchPage = new PageImpl<>(matches, pageable, matches.size());
         var result = matchServiceMediator.findMatchesBySport(Sports.FUTSAL, pageable);
@@ -87,7 +109,12 @@ class MatchServiceMediatorTest {
     @DisplayName("Should save Match of an specific sport when new Match is passed to save")
     void Should_SaveMatchOfAnSpecifSport_When_NewMatchIsPassedToSave() {
 
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
+        var sportEvent = SportEventTestUtil.createNewSportEvent(
+                Sports.CHESS, Modality.MIXED, Status.SCHEDULED, edition, entityManager
+        );
+        var dto = MatchTestUtil.createNewMatchDto(Sports.CHESS, teamA, teamB, playersIds, sportEvent.getId());
+        var match = matchService.saveMatch(dto);
+
         var result = matchServiceMediator.saveMatch(match, Sports.CHESS);
 
         assertEquals(result, matchRepository.findById(result.getId()).get());
@@ -98,12 +125,15 @@ class MatchServiceMediatorTest {
     @DisplayName("Should find Match when existing Match ID is passed to search")
     void Should_FindMatch_When_ExistingMatchIdIsPassedToSearch() {
 
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.TABLE_TENNIS);
+        var sportEvent = SportEventTestUtil.createNewSportEvent(
+                Sports.TABLE_TENNIS, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
+        );
+        var dto = MatchTestUtil.createNewMatchDto(Sports.TABLE_TENNIS, teamA, teamB, playersIds, sportEvent.getId());
+        var match = matchService.saveMatch(dto);
 
-        var result = matchServiceMediator.findMatch(futsalMatch.getId(), Sports.TABLE_TENNIS);
+        var result = matchServiceMediator.findMatch(match.getId(), Sports.TABLE_TENNIS);
 
-        assertEquals(result, futsalMatch);
+        assertEquals(result, match);
     }
 
     @Test
@@ -121,33 +151,28 @@ class MatchServiceMediatorTest {
     @DisplayName("Should throw NotFoundException when existing Match ID with invalid sport is passed to any search")
     void Should_ThrowNotFoundException_When_ExistingIdWithInvalidSportIsPassedToSearchAnySearch() {
 
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
+        var match = matchService.saveMatch(futsalDto);
 
-        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatch(futsalMatch.getId(), Sports.CHESS));
-        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForGoal(futsalMatch.getId(), Sports.HANDBALL));
-        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForCard(futsalMatch.getId(), Sports.BASKETBALL));
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatch(match.getId(), Sports.CHESS));
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForGoal(match.getId(), Sports.HANDBALL));
+        assertThrows(NotFoundException.class, () -> matchServiceMediator.findMatchForCard(match.getId(), Sports.BASKETBALL));
     }
 
     @Test
     @DisplayName("Should find Match for Goal when valid argument is passed")
     void Should_FindMatchFotGoal_When_ValidArgumentIsPassed() {
 
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var futsalMatch = matchServiceMediator.saveMatch(match, Sports.FUTSAL);
+        var match = matchService.saveMatch(futsalDto);
+        var result = matchServiceMediator.findMatchForGoal(match.getId(), Sports.FUTSAL);
 
-        var result = matchServiceMediator.findMatchForGoal(futsalMatch.getId(), Sports.FUTSAL);
-
-        assertEquals(result, futsalMatch);
+        assertEquals(result, match);
     }
 
     @Test
     @DisplayName("Should find Match for PenaltyCard when valid argument is passed")
     void Should_FindMatchSportForPenaltyCard_When_ValidArgumentIsPassed() {
 
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, players);
-        var handballMatch = matchServiceMediator.saveMatch(match, Sports.HANDBALL);
-
+        var handballMatch = matchService.saveMatch(handballDto);
         var result = matchServiceMediator.findMatchForGoal(handballMatch.getId(), Sports.HANDBALL);
 
         assertEquals(result, handballMatch);

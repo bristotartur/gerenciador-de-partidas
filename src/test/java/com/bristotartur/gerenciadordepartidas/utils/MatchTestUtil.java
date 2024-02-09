@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.utils;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
@@ -28,12 +29,13 @@ public final class MatchTestUtil {
      * @param players Os jogadores presentes na partida.
      * @return Uma nova instância de {@link Match} com os dados fornecidos.
      */
-    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players) {
+    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, SportEvent event) {
 
         return Match.builder()
                 .teamA(teamA)
                 .teamB(teamB)
                 .players(players)
+                .event(event)
                 .teamScoreA(0)
                 .teamScoreB(0)
                 .modality(Modality.MASCULINE)
@@ -52,12 +54,13 @@ public final class MatchTestUtil {
      * @param modality A modalidade da partida, podendo ser feminina, masculina ou mista.
      * @return Uma nova instância de {@link Match} com os dados fornecidos.
      */
-    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, Modality modality) {
+    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, SportEvent event, Modality modality) {
 
         return Match.builder()
                 .teamA(teamA)
                 .teamB(teamB)
                 .players(players)
+                .event(event)
                 .teamScoreA(0)
                 .teamScoreB(0)
                 .modality(modality)
@@ -76,12 +79,13 @@ public final class MatchTestUtil {
      * @param status O status da partida, podendo ser agendada, em andamento ou encerrada.
      * @return Uma nova instância de {@link Match} com os dados fornecidos.
      */
-    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, Status status) {
+    public static Match createNewMatch(Team teamA, Team teamB, List<Participant> players, SportEvent event, Status status) {
 
         return Match.builder()
                 .teamA(teamA)
                 .teamB(teamB)
                 .players(players)
+                .event(event)
                 .teamScoreA(0)
                 .teamScoreB(0)
                 .modality(Modality.MASCULINE)
@@ -100,12 +104,13 @@ public final class MatchTestUtil {
      * @param playerIds Identificadores únicos dos jogadores presentes na partida.
      * @return Uma nova instância de {@link MatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds) {
+    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId) {
 
         return MatchDto.builder()
                 .sport(sport)
                 .teamA(teamA)
                 .teamB(teamB)
+                .eventId(eventId)
                 .playerIds(playerIds)
                 .modality(Modality.MASCULINE)
                 .matchStatus(Status.IN_PROGRESS)
@@ -124,12 +129,13 @@ public final class MatchTestUtil {
      * @param modality A modalidade da partida, podendo ser feminina, masculina ou mista.
      * @return Uma nova instância de {@link MatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Modality modality) {
+    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId, Modality modality) {
 
         return MatchDto.builder()
                 .sport(sport)
                 .teamA(teamA)
                 .teamB(teamB)
+                .eventId(eventId)
                 .playerIds(playerIds)
                 .modality(modality)
                 .matchStatus(Status.IN_PROGRESS)
@@ -148,12 +154,13 @@ public final class MatchTestUtil {
      * @param status O status da partida, podendo ser agendada, em andamento ou encerrada.
      * @return Uma nova instância de {@link MatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Status status) {
+    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId, Status status) {
 
         return MatchDto.builder()
                 .sport(sport)
                 .teamA(teamA)
                 .teamB(teamB)
+                .eventId(eventId)
                 .playerIds(playerIds)
                 .modality(Modality.MASCULINE)
                 .matchStatus(status)

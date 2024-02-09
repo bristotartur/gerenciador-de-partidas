@@ -30,7 +30,7 @@ class PenaltyCardMapperTest {
     void Should_MapEntitiesToTheirReferentFieldsInPenaltyCard_When_TheyArePassed() {
 
         var player = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
-        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player));
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player), any());
 
         var penaltyCardDto = PenaltyCardTestUtil
                 .createNewPenaltyCardDto(Sports.HANDBALL, PenaltyCardColor.RED, any(), any());
@@ -48,7 +48,7 @@ class PenaltyCardMapperTest {
 
         var playerA = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
         var playerB = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
-        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA));
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA), any());
 
         var penaltyCard = PenaltyCardTestUtil
                 .createNewPenaltyCard(PenaltyCardColor.YELLOW, playerA, match);

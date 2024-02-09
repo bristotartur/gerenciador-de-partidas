@@ -1,8 +1,11 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
+import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
+import com.bristotartur.gerenciadordepartidas.utils.SportEventTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,7 @@ class MatchMapperTest {
     @DisplayName("Should convert scores fields to zero when mapped to new Match")
     void Should_ConvertScoresToZero_When_MappedToNewMatch() {
 
-        var matchDto = MatchTestUtil.createNewMatchDto(Sports.CHESS, any(), any(), any());
+        var matchDto = MatchTestUtil.createNewMatchDto(Sports.CHESS, any(), any(), any(), any());
         var result = matchMapper.toNewMatch(matchDto, any(), any());
 
         assertEquals(result.getTeamScoreA(), 0);
@@ -40,7 +43,7 @@ class MatchMapperTest {
 
         var teamA = Team.MESTRES_DE_OBRAS;
         var teamB = Team.ATOMICA;
-        var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA, teamB, any());
+        var matchDto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA, teamB, any(), any());
 
         var result = matchMapper.toNewMatch(matchDto, any(), any());
 
@@ -55,19 +58,21 @@ class MatchMapperTest {
         var teamA = Team.PAPA_LEGUAS;
         var teamB = Team.TWISTER;
         var teamC = Team.UNICONTTI;
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, any());
+        var sportEvent = SportEventTestUtil.createNewSportEvent(Sports.FUTSAL, Modality.MASCULINE, Status.SCHEDULED, 12);
+        var match = MatchTestUtil.createNewMatch(teamA, teamB, any(), sportEvent);
 
         match.setId(getRandomLongId());
         match.setTeamScoreA(3);
         match.setTeamScoreB(2);
 
-        var dto = MatchTestUtil.createNewMatchDto(any(), teamB, teamC, any());
-        var result = matchMapper.toExistingMatch(match.getId(), dto, match, any(), any());
+        var dto = MatchTestUtil.createNewMatchDto(any(), teamB, teamC, any(), any());
+        var result = matchMapper.toExistingMatch(match.getId(), dto, match, any(), sportEvent);
 
         assertNotEquals(result.getTeamA(), match.getTeamA());
         assertNotEquals(result.getTeamB(), match.getTeamB());
         assertEquals(result.getTeamScoreA(), match.getTeamScoreA());
         assertEquals(result.getTeamScoreB(), match.getTeamScoreB());
+        assertEquals(result.getEvent(), sportEvent);
     }
 
     @Test
@@ -76,7 +81,7 @@ class MatchMapperTest {
 
         var teamA = Team.ATOMICA;
         var teamB = Team.MESTRES_DE_OBRAS;
-        var match = MatchTestUtil.createNewMatch(teamA, teamB, any());
+        var match = MatchTestUtil.createNewMatch(teamA, teamB, any(), any());
 
         var sport = Sports.FUTSAL;
         var result = matchMapper.toNewExposingMatchDto(match, sport);

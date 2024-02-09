@@ -2,7 +2,6 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
-import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -52,11 +51,11 @@ class SportEventServiceTest {
     private SportEvent sportEventA;
     private SportEvent sportEventB;
     private Edition edition;
-    private final List<Match> matches = new LinkedList<>();
     private final List<Participant> participants = new LinkedList<>();
 
     @BeforeEach
     void setUp() {
+
         edition = EditionTestUtil.createNewEdition(Status.SCHEDULED, entityManager);
         sportEventA = SportEventTestUtil.createNewSportEvent(Sports.TABLE_TENNIS, Modality.MASCULINE, Status.SCHEDULED, 6, edition);
         sportEventB = SportEventTestUtil.createNewSportEvent(Sports.TABLE_TENNIS, Modality.FEMININE, Status.SCHEDULED, 6, edition);
@@ -65,11 +64,6 @@ class SportEventServiceTest {
                 ParticipantTestUtil.createNewParticipant("2-53", Team.PAPA_LEGUAS, edition, entityManager),
                 ParticipantTestUtil.createNewParticipant("2-13", Team.TWISTER, edition, entityManager)
         ));
-        matches.addAll(List.of(
-                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, Status.SCHEDULED),
-                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, Status.SCHEDULED)
-        ));
-        matches.forEach(match -> matchServiceMediator.saveMatch(match, Sports.TABLE_TENNIS));
     }
 
     @Test
@@ -279,6 +273,10 @@ class SportEventServiceTest {
     @DisplayName("Should update SportEvent when valid DTO is passed")
     void Should_UpdateSportEvent_When_ValidDtoIsPassed() {
 
+        var matches = List.of(
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.SCHEDULED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.SCHEDULED));
+
         sportEventA.setMatches(matches);
         entityManager.merge(sportEventA);
 
@@ -295,6 +293,9 @@ class SportEventServiceTest {
     @Test
     @DisplayName("Should throw BadRequestException when trying to start SportEvent with no sufficient matches")
     void Should_ThrowBadRequestException_When_TryingToStartSportEventWithNoSufficientMatches() {
+
+        var matches = List.of(
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.SCHEDULED));
 
         sportEventA.setMatches(matches);
         entityManager.merge(sportEventA);
@@ -313,6 +314,12 @@ class SportEventServiceTest {
     @Test
     @DisplayName("Should throw BadRequestException when trying to finish SportEvent with no sufficient matches")
     void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithNoSufficientMatches() {
+
+        var matches = List.of(
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.IN_PROGRESS),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED));
 
         sportEventA.setMatches(matches);
         sportEventA.setEventStatus(Status.IN_PROGRESS);
@@ -333,11 +340,13 @@ class SportEventServiceTest {
     @DisplayName("Should throw BadRequestException when trying to finish SportEvent with unfinished matches")
     void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithUnfinishedMatches() {
 
-        matches.addAll(List.of(
-                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, Status.ENDED),
-                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, Status.IN_PROGRESS),
-                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, Status.ENDED),
-                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, Status.ENDED)));
+        var matches = List.of(
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.IN_PROGRESS),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED));
 
         sportEventA.setMatches(matches);
         sportEventA.setEventStatus(Status.IN_PROGRESS);

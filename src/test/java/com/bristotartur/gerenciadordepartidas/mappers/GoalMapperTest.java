@@ -29,7 +29,7 @@ class GoalMapperTest {
     void Should_MapEntitiesToTheirReferentFieldsInGoal_When_TheyArePassed() {
 
         var player = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
-        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player));
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(player), any());
 
         var goalDto = GoalTestUtil.createNewGoalDto(any(), any(), Sports.HANDBALL);
         var result = goalMapper.toNewGoal(goalDto, player, match);
@@ -45,7 +45,7 @@ class GoalMapperTest {
 
         var playerA = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
         var playerB = ParticipantTestUtil.createNewParticipant("2-53", any(), any());
-        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA));
+        var match = MatchTestUtil.createNewMatch(any(), any(), List.of(playerA), any());
 
         var goal = GoalTestUtil.createNewGoal(playerA, match);
         var goalDto = GoalTestUtil.createNewGoalDto(any(), any(), Sports.HANDBALL);

@@ -23,7 +23,6 @@ public interface ParticipantMapper {
      * @return Uma nova instância do tipo {@link Participant} com base nos dados fornecidos.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "name", source = "participantDto.name")
     @Mapping(target = "edition", source = "edition")
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "goal", ignore = true)
@@ -38,7 +37,7 @@ public interface ParticipantMapper {
      * @return Uma nova instância atualizada de {@link Participant} com base nos dados fornecidos.
      */
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "participantDto.name")
+    @Mapping(target = "edition", source = "edition")
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "goal", ignore = true)
     @Mapping(target = "penaltyCards", ignore = true)

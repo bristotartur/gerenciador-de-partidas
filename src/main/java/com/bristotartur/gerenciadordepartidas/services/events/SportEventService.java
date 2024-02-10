@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.services.events;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposableEventData;
 import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.TransferableEventData;
 import com.bristotartur.gerenciadordepartidas.enums.EventType;
@@ -97,7 +98,7 @@ public class SportEventService implements EventStrategy<SportEvent> {
         var event = sportEventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessages.SPORT_EVENT_NOT_FOUND.message));
 
-        log.info("SportEvent '{}' was found", id);
+        log.info("SportEvent '{}' was found.", id);
         return event;
     }
 
@@ -111,6 +112,11 @@ public class SportEventService implements EventStrategy<SportEvent> {
             throw new BadRequestException(ExceptionMessages.INVALID_MATCH_OPERATION_ON_EVENT.message);
         }
         return event;
+    }
+
+    @Override
+    public ExposableEventData<SportEvent> createExposingEventDto(SportEvent event) {
+        return sportEventMapper.toNewExposingSportEventDto(event);
     }
 
     @Override

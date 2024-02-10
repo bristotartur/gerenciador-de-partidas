@@ -18,7 +18,7 @@ public enum ExceptionMessages {
     CANNOT_UPDATE_TOTAL_MATCHES("O número de partidas registradas excede o limite do total de partidas."),
     INVALID_CLASS_NUMBER("Número de turma inválido."),
     INVALID_MATCH_OPERATION_ON_EVENT("Partidas não podem ser criadas e nem atualizadas em eventos com o status 'ENDED'"),
-    INVALID_MATCH_STATUS_TO_FINISH_EVENT("Eventos esportivos só pode ser encerrados quando todas as partidas estiverem encerradas."),
+    INVALID_MATCH_STATUS_TO_FINISH_EVENT("Eventos esportivos só podem ser encerrados quando todas as partidas estiverem encerradas."),
     INVALID_PARTICIPANT_EXCLUSION_OPERATION("Participantes atrelados a eventos não podem ser excluídos."),
     INVALID_PATTERN("Padrão inválido para '%s'."),
     INVALID_TEAMS_FOR_MATCH("Uma partida não pode ter duas equipes iguais."),

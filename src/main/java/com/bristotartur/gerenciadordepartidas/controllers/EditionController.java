@@ -41,7 +41,7 @@ public class EditionController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExposingEditionDto> findEditionById(Long id) {
+    public ResponseEntity<ExposingEditionDto> findEditionById(@PathVariable Long id) {
 
         log.info("Request to find Goal '{}' was made.", id);
 

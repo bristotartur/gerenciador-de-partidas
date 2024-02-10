@@ -30,6 +30,11 @@ public interface SportEventMapper {
     SportEvent toExistingSportEvent(Long id, SportEventDto sportEventDto, SportEvent sportEvent, Edition edition);
 
     @Mapping(target = "sportEventId", source = "sportEvent.id")
+    @Mapping(target = "firstPlace", source = "sportEvent.firstPlace")
+    @Mapping(target = "secondPlace", source = "sportEvent.secondPlace")
+    @Mapping(target = "thirdPlace", source = "sportEvent.thirdPlace")
+    @Mapping(target = "fourthPlace", source = "sportEvent.fourthPlace")
+    @Mapping(target = "fifthPlace", source = "sportEvent.fifthPlace")
     ExposingSportEventDto toNewExposingSportEventDto(SportEvent sportEvent);
 
 }

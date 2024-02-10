@@ -2,6 +2,7 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingSportEventDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,5 +28,8 @@ public interface SportEventMapper {
     @Mapping(target = "edition", source = "edition")
     @Mapping(target = "participants", source = "sportEvent.participants")
     SportEvent toExistingSportEvent(Long id, SportEventDto sportEventDto, SportEvent sportEvent, Edition edition);
+
+    @Mapping(target = "sportEventId", source = "sportEvent.id")
+    ExposingSportEventDto toNewExposingSportEventDto(SportEvent sportEvent);
 
 }

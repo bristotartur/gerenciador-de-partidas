@@ -36,7 +36,7 @@ public final class MatchValidator {
         }
     }
 
-    public static void chechMatchImportance(SportEvent sportEvent, MatchDto matchDto) {
+    public static void checKMatchImportance(SportEvent sportEvent, MatchDto matchDto) {
 
         var importance = matchDto.matchImportance();
 

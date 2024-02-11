@@ -17,15 +17,6 @@ public final class MatchValidator {
     private MatchValidator() {
     }
 
-    public static void checkSportEventForMatch(SportEvent sportEvent) {
-
-        var eventStatus = sportEvent.getEventStatus();
-
-        if (eventStatus.equals(Status.ENDED)) {
-            throw new BadRequestException(ExceptionMessages.CANNOT_CREATE_MATCH.message);
-        }
-    }
-
     public static void checkTeamsForMatch(MatchDto matchDto) {
 
         var teamA = matchDto.teamA();
@@ -108,7 +99,7 @@ public final class MatchValidator {
         var eventStatus = event.getEventStatus();
 
         if (!eventStatus.equals(Status.IN_PROGRESS)) {
-            throw new BadRequestException(ExceptionMessages.CANNOT_UPDATE_MATCH.message);
+            throw new BadRequestException(ExceptionMessages.CANNOT_UPDATE_MATCH_STATUS.message);
         }
         Optional<Status> inProgress = event.getMatches().stream()
                 .map(Match::getMatchStatus)

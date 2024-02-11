@@ -51,21 +51,6 @@ class MatchValidatorTest {
     }
 
     @Test
-    @DisplayName("Should not throw anything when trying to create a Match in a unfinished SportEvent")
-    void Should_NotThrowAnything_When_TryingToCreteMatchInUnfinishedSportEvent() {
-
-        assertDoesNotThrow(() -> MatchValidator.checkSportEventForMatch(event));
-    }
-
-    @Test
-    @DisplayName("Should throw BadRequestException when trying to create a Match in a finished SportEvent")
-    void Should_ThrowBadRequestException_When_TryingToCreteMatchInFinishedSportEvent() {
-
-        event.setEventStatus(Status.ENDED);
-        assertThrows(BadRequestException.class, () -> MatchValidator.checkSportEventForMatch(event));
-    }
-
-    @Test
     @DisplayName("Should not throw anything when trying to create a Match with two different Teams")
     void Should_NotThrowAnything_When_TryingToCreateMatchWithTwoDifferentTeams() {
 

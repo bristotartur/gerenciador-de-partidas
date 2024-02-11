@@ -1,9 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.dtos.input;
 
-import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.enums.Modality;
-import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.Team;
+import com.bristotartur.gerenciadordepartidas.enums.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -12,6 +9,7 @@ import java.util.List;
 
 @Builder
 public record MatchDto(@NotNull Sports sport,
+                       @NotNull Importance matchImportance,
                        @NotNull Team teamA,
                        @NotNull Team teamB,
                        @NotNull List<Long> playerIds,

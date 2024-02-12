@@ -15,7 +15,6 @@ public record MatchDto(@NotNull Sports sport,
                        @NotNull List<Long> playerIds,
                        @NotNull Long eventId,
                        @NotNull Modality modality,
-                       @NotNull Status matchStatus,
                        @NotNull LocalDateTime matchStart,
                        @NotNull LocalDateTime matchEnd) {
 }

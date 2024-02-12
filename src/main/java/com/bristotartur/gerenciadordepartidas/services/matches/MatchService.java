@@ -1,11 +1,13 @@
 package com.bristotartur.gerenciadordepartidas.services.matches;
 
+import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.mappers.MatchMapper;
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * <p>Classe responsável por fornecer uma camada de serviços geral para o gerenciamento de instâncias de {@link Match},
@@ -144,16 +145,9 @@ public class MatchService {
     public Match saveMatch(MatchDto matchDto) {
 
         var event = sportEventService.findEventAndCheckStatus(matchDto.eventId());
+        var players = this.findPlayersById(matchDto.playerIds());
 
-        if (matchDto.teamA().equals(matchDto.teamB())) {
-            throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
-        }
-        var players = matchDto.playerIds()
-                .stream()
-                .map(participantService::findParticipantById)
-                .toList();
-
-        this.checkPlayers(players, matchDto);
+        this.creatingAndUpdatingValidations(matchDto, event, players);
 
         var match = matchMapper.toNewMatch(matchDto, players, event);
         var savedMatch = matchServiceMediator.saveMatch(match, matchDto.sport());
@@ -170,9 +164,13 @@ public class MatchService {
      */
     public void deleteMatchById(Long id) {
 
-        this.findMatchById(id);
-        var sport =  matchRepository.findMatchTypeById(id, entityManager);
+        var match = this.findMatchById(id);
+        sportEventService.findEventAndCheckStatus(match.getEvent().getId());
 
+        if (!match.getMatchStatus().equals(Status.SCHEDULED)) {
+            throw new BadRequestException(ExceptionMessages.INVALID_MATCH_OPERATION.message);
+        }
+        var sport =  matchRepository.findMatchTypeById(id, entityManager);
         matchRepository.deleteById(id);
 
         log.info("Match '{}' of type '{}' was deleted.", id, sport);
@@ -193,17 +191,14 @@ public class MatchService {
     public Match replaceMatch(Long id, MatchDto matchDto) {
 
         var existingMatch = this.findMatchById(id);
-        var event = sportEventService.findEventAndCheckStatus(matchDto.eventId());
 
-        if (matchDto.teamA().equals(matchDto.teamB())) {
-            throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
+        if (!existingMatch.getMatchStatus().equals(Status.SCHEDULED)) {
+            throw new BadRequestException(ExceptionMessages.INVALID_MATCH_OPERATION.message);
         }
-        var players = matchDto.playerIds()
-                .stream()
-                .map(participantService::findParticipantById)
-                .toList();
+        var event = sportEventService.findEventAndCheckStatus(matchDto.eventId());
+        var players = this.findPlayersById(matchDto.playerIds());
 
-        this.checkPlayers(players, matchDto);
+        this.creatingAndUpdatingValidations(matchDto, event, players);
 
         var match = matchMapper.toExistingMatch(id, matchDto, existingMatch, players, event);
         var updatedMatch = matchServiceMediator.saveMatch(match, matchDto.sport());
@@ -212,26 +207,30 @@ public class MatchService {
         return updatedMatch;
     }
 
-    /**
-     * Verifica se os jogadores passados pelo DTO estão aptos a participar da partida, ou seja, se
-     * pertencem a alguma das equipes presentes nela.
-     *
-     * @param players Lista do tipo {@link Participant} contendo os jogadores da partida.
-     * @param matchDto DTO do tipo {@link MatchDto} contendo os IDs das equipes presentes na partida.
-     * @throws BadRequestException Caso algum jogador não pertença a alguma das equipes.
-     */
-    private void checkPlayers(List<Participant> players, MatchDto matchDto) {
+    public Match updateMatchStatus(Long id, Status newMatchStatus) {
 
-        Optional<Participant> invalidPlayer = players.stream()
-                .filter(player -> !player.getTeam().equals(matchDto.teamA())
-                               && !player.getTeam().equals(matchDto.teamB()))
-                .findFirst();
+        var match = this.findMatchById(id);
+        Status.checkStatus(match.getMatchStatus(), newMatchStatus);
 
-        invalidPlayer.ifPresent(player -> {
-            throw new BadRequestException(
-                    ExceptionMessages.PARTICIPANT_INVALID_FOR_MATCH.message.formatted(player.getId())
-            );
-        });
+        var event = match.getEvent();
+        MatchValidator.checkMatchStatus(event, newMatchStatus);
+
+        match.setMatchStatus(newMatchStatus);
+        return matchRepository.save(match);
+    }
+
+    private List<Participant> findPlayersById(List<Long> playersIds) {
+
+        return playersIds.stream()
+                .map(participantService::findParticipantById)
+                .toList();
+    }
+
+    private void creatingAndUpdatingValidations(MatchDto dto, SportEvent event, List<Participant> players) {
+        MatchValidator.checkTeamsForMatch(dto);
+        MatchValidator.checkMatchForSportEvent(event, dto);
+        MatchValidator.checKMatchImportance(event, dto);
+        MatchValidator.checkPlayersForMatch(players, dto);
     }
 
 }

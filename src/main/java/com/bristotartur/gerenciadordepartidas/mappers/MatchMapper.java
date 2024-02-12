@@ -33,6 +33,7 @@ public interface MatchMapper {
     @Mapping(target = "teamScoreA", constant = "0")
     @Mapping(target = "teamScoreB", constant = "0")
     @Mapping(target = "modality", source = "matchDto.modality")
+    @Mapping(target = "matchStatus", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Status.SCHEDULED)")
     Match toNewMatch(MatchDto matchDto, List<Participant> players, SportEvent event);
 
     /**
@@ -50,7 +51,7 @@ public interface MatchMapper {
     @Mapping(target = "teamA", source = "matchDto.teamA")
     @Mapping(target = "teamB", source = "matchDto.teamB")
     @Mapping(target = "modality", source = "matchDto.modality")
-    @Mapping(target = "matchStatus", source = "matchDto.matchStatus")
+    @Mapping(target = "matchStatus", source = "match.matchStatus")
     @Mapping(target = "matchStart", source = "matchDto.matchStart")
     @Mapping(target = "matchEnd", source = "matchDto.matchEnd")
     Match toExistingMatch(Long id, MatchDto matchDto, Match match, List<Participant> players, SportEvent event);

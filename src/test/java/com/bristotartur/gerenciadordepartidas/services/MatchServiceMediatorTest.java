@@ -53,6 +53,7 @@ class MatchServiceMediatorTest {
     private Edition edition;
     private Team teamA;
     private Team teamB;
+    private final List<Participant> players = new LinkedList<>();
     private final List<Long> playersIds = new LinkedList<>();
     private MatchDto futsalDto;
     private MatchDto handballDto;
@@ -71,16 +72,21 @@ class MatchServiceMediatorTest {
         var sportEventB = SportEventTestUtil.createNewSportEvent(
                 Sports.HANDBALL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
         );
-        var players = List.of(
+        players.addAll(List.of(
                 ParticipantTestUtil.createNewParticipant("3-31", teamA, edition, entityManager),
                 ParticipantTestUtil.createNewParticipant("3-61", teamB, edition, entityManager)
-        );
+        ));
         playersIds.addAll(players.stream()
                 .map(Participant::getId)
                 .toList());
 
         futsalDto = MatchTestUtil.createNewMatchDto(Sports.FUTSAL, teamA, teamB, playersIds, sportEventA.getId());
         handballDto = MatchTestUtil.createNewMatchDto(Sports.HANDBALL, teamA, teamB, playersIds, sportEventB.getId());
+
+        sportEventA.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEventA)));
+        sportEventB.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEventB)));
+        entityManager.merge(sportEventA);
+        entityManager.merge(sportEventB);
     }
 
     @Test
@@ -112,7 +118,12 @@ class MatchServiceMediatorTest {
         var sportEvent = SportEventTestUtil.createNewSportEvent(
                 Sports.CHESS, Modality.MIXED, Status.SCHEDULED, edition, entityManager
         );
-        var dto = MatchTestUtil.createNewMatchDto(Sports.CHESS, teamA, teamB, playersIds, sportEvent.getId());
+        sportEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEvent)));
+        entityManager.merge(sportEvent);
+
+        var dto = MatchTestUtil.createNewMatchDto(
+                Sports.CHESS, teamA, teamB, playersIds, sportEvent.getId(), sportEvent.getModality()
+        );
         var match = matchService.saveMatch(dto);
 
         var result = matchServiceMediator.saveMatch(match, Sports.CHESS);
@@ -128,6 +139,9 @@ class MatchServiceMediatorTest {
         var sportEvent = SportEventTestUtil.createNewSportEvent(
                 Sports.TABLE_TENNIS, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
         );
+        sportEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEvent)));
+        entityManager.merge(sportEvent);
+
         var dto = MatchTestUtil.createNewMatchDto(Sports.TABLE_TENNIS, teamA, teamB, playersIds, sportEvent.getId());
         var match = matchService.saveMatch(dto);
 

@@ -71,6 +71,10 @@ class GoalServiceTest {
         handballDto = MatchTestUtil.createNewMatchDto(
                 Sports.HANDBALL, teamA, teamB, List.of(playerA.getId(), playerB.getId()), sportEventB.getId()
         );
+        sportEventA.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, List.of(playerA, playerB), sportEventA)));
+        sportEventB.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, List.of(playerA, playerB), sportEventB)));
+        entityManager.merge(sportEventA);
+        entityManager.merge(sportEventB);
     }
 
     @Test

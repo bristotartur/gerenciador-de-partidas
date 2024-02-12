@@ -53,6 +53,7 @@ class MatchServiceTest {
     private Team teamC;
     private SportEvent futsalEvent;
     private SportEvent handballEvent;
+    private final List<Participant> players = new LinkedList<>();
     private final List<Long> playersIds = new LinkedList<>();
 
     @BeforeEach
@@ -64,10 +65,10 @@ class MatchServiceTest {
         teamB = Team.TWISTER;
         teamC = Team.UNICONTTI;
 
-        var players = List.of(
+        players.addAll(List.of(
                 ParticipantTestUtil.createNewParticipant("3-53", teamA, edition, entityManager),
-                ParticipantTestUtil.createNewParticipant("3-13", teamB, edition, entityManager));
-
+                ParticipantTestUtil.createNewParticipant("3-13", teamB, edition, entityManager)
+        ));
         playersIds.addAll(players.stream().map(Participant::getId).toList());
 
         futsalEvent = SportEventTestUtil.createNewSportEvent(
@@ -76,6 +77,10 @@ class MatchServiceTest {
         handballEvent = SportEventTestUtil.createNewSportEvent(
                 Sports.HANDBALL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
         );
+        futsalEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, futsalEvent)));
+        handballEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, handballEvent)));
+        entityManager.merge(futsalEvent);
+        entityManager.merge(handballEvent);
     }
 
     @Test
@@ -88,12 +93,14 @@ class MatchServiceTest {
         var handballDto = MatchTestUtil.createNewMatchDto(Sports.HANDBALL, teamA, teamB, playersIds, handballEvent.getId());
 
         var matches = List.of(
-                matchService.saveMatch(futsalDto),
-                matchService.saveMatch(handballDto));
+                futsalEvent.getMatches().get(0),
+                handballEvent.getMatches().get(0));
 
         var matchPage = new PageImpl<>(matches, pageable, matches.size());
         var result = matchService.findAllMatches(pageable);
 
+        System.out.println(matchPage.getContent());
+        System.out.println(result.getContent());
         assertEquals(result.getContent(), matchPage.getContent());
         assertEquals(result.getTotalPages(), matchPage.getTotalPages());
     }
@@ -104,9 +111,12 @@ class MatchServiceTest {
 
         var pageable = PageRequest.of(0, 3);
 
-        var futsalDto = MatchTestUtil.createNewMatchDto(Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId());
-        var handballDto = MatchTestUtil.createNewMatchDto(Sports.HANDBALL, teamA, teamB, playersIds, handballEvent.getId());
-
+        var futsalDto = MatchTestUtil.createNewMatchDto(
+                Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId(), futsalEvent.getModality()
+        );
+        var handballDto = MatchTestUtil.createNewMatchDto(
+                Sports.HANDBALL, teamA, teamB, playersIds, handballEvent.getId(), handballEvent.getModality()
+        );
         var futsalMatches = List.of(
                 matchService.saveMatch(futsalDto),
                 matchService.saveMatch(futsalDto));
@@ -129,7 +139,12 @@ class MatchServiceTest {
         var sportEvent = SportEventTestUtil.createNewSportEvent(
                 Sports.VOLLEYBALL, Modality.MIXED, Status.SCHEDULED, edition, entityManager
         );
-        var dto = MatchTestUtil.createNewMatchDto(Sports.VOLLEYBALL, teamA, teamB, playersIds, sportEvent.getId());
+        sportEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEvent)));
+        entityManager.merge(sportEvent);
+
+        var dto = MatchTestUtil.createNewMatchDto(
+                Sports.VOLLEYBALL, teamA, teamB, playersIds, sportEvent.getId(), sportEvent.getModality()
+        );
         var volleyballMatch = matchService.saveMatch(dto);
 
         var result = matchService.findMatchById(volleyballMatch.getId());
@@ -187,6 +202,9 @@ class MatchServiceTest {
         var sportEvent = SportEventTestUtil.createNewSportEvent(
                 Sports.TABLE_TENNIS, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
         );
+        sportEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEvent)));
+        entityManager.merge(sportEvent);
+
         var matchDto = MatchTestUtil.createNewMatchDto(Sports.TABLE_TENNIS, teamA, teamB, playersIds, sportEvent.getId());
         var result = matchService.saveMatch(matchDto);
 
@@ -197,7 +215,9 @@ class MatchServiceTest {
     @DisplayName("Should throw BadRequestException when MatchDto with two equal teams is passed")
     void Should_ThrowBadRequestException_When_MatchDtoWithTwoEqualTeamsIsPassed() {
 
-        var futsalDto = MatchTestUtil.createNewMatchDto(Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId());
+        var futsalDto = MatchTestUtil.createNewMatchDto(
+                Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId(), futsalEvent.getModality()
+        );
         var futsalMatch = matchService.saveMatch(futsalDto);
 
         var dto = MatchTestUtil.createNewMatchDto(Sports.FUTSAL, teamA, teamA, playersIds, futsalEvent.getId());
@@ -213,6 +233,9 @@ class MatchServiceTest {
         var sportEvent = SportEventTestUtil.createNewSportEvent(
                 Sports.TABLE_TENNIS, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
         );
+        sportEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEvent)));
+        entityManager.merge(sportEvent);
+
         var dto = MatchTestUtil.createNewMatchDto(Sports.TABLE_TENNIS, teamA, teamB, playersIds, sportEvent.getId());
         var match = matchService.saveMatch(dto);
 
@@ -230,7 +253,12 @@ class MatchServiceTest {
         var sportEvent = SportEventTestUtil.createNewSportEvent(
                 Sports.CHESS, Modality.MIXED, Status.SCHEDULED, edition, entityManager
         );
-        var chessDto = MatchTestUtil.createNewMatchDto(Sports.CHESS, teamA, teamB, playersIds, sportEvent.getId());
+        sportEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEvent)));
+        entityManager.merge(sportEvent);
+
+        var chessDto = MatchTestUtil.createNewMatchDto(
+                Sports.CHESS, teamA, teamB, playersIds, sportEvent.getId(), sportEvent.getModality()
+        );
         var chessMatch = matchService.saveMatch(chessDto);
 
         matchService.deleteMatchById(chessMatch.getId());
@@ -250,13 +278,13 @@ class MatchServiceTest {
         );
         var handballMatch = matchService.saveMatch(dtoA);
 
-        var newModality = Modality.FEMININE;
         var dtoB = MatchTestUtil.createNewMatchDto(
-                sport, teamA, teamB, playersIds, handballEvent.getId(), newModality
+                futsalEvent.getType(), teamA, teamB, playersIds, futsalEvent.getId(), futsalEvent.getModality()
         );
         var result = matchService.replaceMatch(handballMatch.getId(), dtoB);
 
         assertNotNull(result);
+        assertNotEquals(result.getEvent(), handballMatch.getEvent());
         assertNotEquals(result.getModality(), originalModality);
     }
 

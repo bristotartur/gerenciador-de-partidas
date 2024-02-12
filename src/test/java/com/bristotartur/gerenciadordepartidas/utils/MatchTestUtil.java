@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.utils;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
-import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
+import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.*;
 
@@ -140,7 +140,6 @@ public final class MatchTestUtil {
                 .eventId(eventId)
                 .playerIds(playerIds)
                 .modality(Modality.MASCULINE)
-                .matchStatus(Status.IN_PROGRESS)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();
@@ -166,33 +165,6 @@ public final class MatchTestUtil {
                 .eventId(eventId)
                 .playerIds(playerIds)
                 .modality(modality)
-                .matchStatus(Status.IN_PROGRESS)
-                .matchStart(LocalDateTime.now())
-                .matchEnd(LocalDateTime.now())
-                .build();
-    }
-
-    /**
-     * Cria uma nova instância de {@link MatchDto}.
-     *
-     * @param sport O tipo de esporte da partida.
-     * @param teamA Constante de {@link Team} que representa a equipe A da partida.
-     * @param teamB Constante de {@link Team} que representa a equipe B da partida.
-     * @param playerIds Identificadores únicos dos jogadores presentes na partida.
-     * @param status O status da partida, podendo ser agendada, em andamento ou encerrada.
-     * @return Uma nova instância de {@link MatchDto} com os dados passados.
-     */
-    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId, Status status) {
-
-        return MatchDto.builder()
-                .matchImportance(Importance.NONE)
-                .sport(sport)
-                .teamA(teamA)
-                .teamB(teamB)
-                .eventId(eventId)
-                .playerIds(playerIds)
-                .modality(Modality.MASCULINE)
-                .matchStatus(status)
                 .matchStart(LocalDateTime.now())
                 .matchEnd(LocalDateTime.now())
                 .build();

@@ -63,14 +63,16 @@ class MatchRepositoryTest {
                 .map(Participant::getId)
                 .toList());
 
-        chessDto = MatchTestUtil.createNewMatchDto(Sports.CHESS, teamA, teamB, playersIds, sportEvent.getId());
+        chessDto = MatchTestUtil.createNewMatchDto(Sports.FUTSAL, teamA, teamB, playersIds, sportEvent.getId(), sportEvent.getModality());
+        sportEvent.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, players, sportEvent)));
+        entityManager.merge(sportEvent);
     }
 
     @Test
     @DisplayName("Should find Match type when Searching for Match type")
     void Should_FindMatchType_When_SearchingForMatchType() {
 
-        var sport = Sports.CHESS;
+        var sport = Sports.FUTSAL;
         var chessMatch = matchService.saveMatch(chessDto);
 
         var result = matchRepository.findMatchTypeById(chessMatch.getId(), entityManager);

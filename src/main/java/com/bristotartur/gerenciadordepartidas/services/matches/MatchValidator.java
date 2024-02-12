@@ -27,6 +27,16 @@ public final class MatchValidator {
         }
     }
 
+    public static void checkMatchForSportEvent(SportEvent event, MatchDto matchDto) {
+
+        var eventType = event.getType();
+        var eventModality = event.getModality();
+
+        if (!matchDto.sport().equals(eventType) || !matchDto.modality().equals(eventModality)) {
+            throw new BadRequestException(ExceptionMessages.INVALID_MATCH_FOR_EVENT.message);
+        }
+    }
+
     public static void checKMatchImportance(SportEvent sportEvent, MatchDto matchDto) {
 
         var importance = matchDto.matchImportance();

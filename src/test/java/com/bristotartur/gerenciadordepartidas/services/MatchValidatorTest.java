@@ -67,6 +67,22 @@ class MatchValidatorTest {
     }
 
     @Test
+    @DisplayName("Should not throw anything when Match Sport and Modality are the same as those of its Event")
+    void Should_NotThrowAnything_When_MatchSportAndModalityAreTheSameAsThoseOfItsEvent() {
+
+        var dto = MatchTestUtil.createNewMatchDto(event.getType(), teamA, teamA, any(), any(), event.getModality());
+        assertDoesNotThrow(() -> MatchValidator.checkMatchForSportEvent(event, dto));
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when Match Sport and Modality are the same as those of its Event")
+    void Should_ThrowBadRequestException_When_MatchSportAndModalityAreNotTheSameAsThoseOfItsEvent() {
+
+        var dto = MatchTestUtil.createNewMatchDto(Sports.BASKETBALL, teamA, teamA, any(), any(), Modality.MIXED);
+        assertThrows(BadRequestException.class, () -> MatchValidator.checkMatchForSportEvent(event, dto));
+    }
+
+    @Test
     @DisplayName("Should not throw anything when Matches with other importances are finished")
     void Should_NotThrowAnything_When_MatchesWithOtherImportancesAreFinished() {
 

@@ -37,11 +37,13 @@ public class SportEvent extends Event {
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "edition_id", nullable = false)
+    @ToString.Exclude
     private Edition edition;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Match> matches;
 
     @ManyToMany
@@ -50,6 +52,7 @@ public class SportEvent extends Event {
             joinColumns = @JoinColumn(name = "sport_event_id"),
             inverseJoinColumns = @JoinColumn(name = "participant_id")
     )
+    @ToString.Exclude
     private List<Participant> participants;
 
     public SportEvent(Long id, Team firstPlace, Team secondPlace, Team thirdPlace, Team fourthPlace, Team fifthPlace, Status eventStatus, Sports type, Modality modality, Integer totalMatches, Edition edition, List<Match> matches, List<Participant> participants) {

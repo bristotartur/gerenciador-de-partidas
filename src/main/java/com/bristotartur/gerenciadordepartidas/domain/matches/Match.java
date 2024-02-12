@@ -12,6 +12,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>Entidade reposnsável por fornecer uma representação geral de partidas no sistema, provendo
@@ -37,7 +38,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Builder
 public class Match {
 
@@ -63,6 +63,7 @@ public class Match {
             joinColumns = @JoinColumn(name = "match_id"),
             inverseJoinColumns = @JoinColumn(name = "participant_id")
     )
+    @ToString.Exclude
     private List<Participant> players;
 
     @JsonBackReference
@@ -89,5 +90,18 @@ public class Match {
 
     @Column(nullable = false)
     private LocalDateTime matchEnd;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || this.getClass() != obj.getClass()) return false;
+        Match match = (Match) obj;
+        return Objects.equals(id, match.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, matchImportance, teamA, teamB, players, event, teamScoreA, teamScoreB, modality, matchStatus, matchStart, matchEnd);
+    }
 
 }

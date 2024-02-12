@@ -55,16 +55,19 @@ public class Participant {
     @JsonBackReference
     @ManyToMany(mappedBy = "players", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Match> matches;
 
     @JsonBackReference
     @ManyToMany(mappedBy = "participants", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<SportEvent> sportEvents;
 
     @JsonBackReference
     @ManyToMany(mappedBy = "participants", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<TaskEvent> taskEvents;
 
     @JsonManagedReference

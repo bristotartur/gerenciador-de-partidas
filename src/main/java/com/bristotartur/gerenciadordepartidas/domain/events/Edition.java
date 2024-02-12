@@ -51,16 +51,19 @@ public class Edition {
     @JsonManagedReference
     @OneToMany(mappedBy = "edition", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<SportEvent> sportEvents;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "edition", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<TaskEvent> taskEvents;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "edition", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     private List<Participant> participants;
 
 }

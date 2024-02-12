@@ -50,6 +50,7 @@ public interface MatchMapper {
     @Mapping(target = "matchImportance", source = "matchDto.matchImportance")
     @Mapping(target = "teamA", source = "matchDto.teamA")
     @Mapping(target = "teamB", source = "matchDto.teamB")
+    @Mapping(target = "event", source = "event")
     @Mapping(target = "modality", source = "matchDto.modality")
     @Mapping(target = "matchStatus", source = "match.matchStatus")
     @Mapping(target = "matchStart", source = "matchDto.matchStart")

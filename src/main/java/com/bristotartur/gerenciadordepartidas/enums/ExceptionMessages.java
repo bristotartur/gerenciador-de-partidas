@@ -1,7 +1,13 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
+import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Enumeração contendo mensagens de erro para utilizar em exceções como {@link NotFoundException} e
+ * {@link BadRequestException}.
+ */
 @RequiredArgsConstructor
 public enum ExceptionMessages {
 
@@ -18,6 +24,8 @@ public enum ExceptionMessages {
     CANNOT_HAVE_TWO_MATCHES_IN_PROGRESS("Apenas uma partida de cada vez pode estar sob o status 'IN_PROGRESS'."),
     CANNOT_REGISTER_MATCH("Ainda há partidas agendadas ou em andamento que devem ser encerradas antes de partidas de importância '%s' serem registradas."),
     INVALID_MATCH_IMPORTANCE("O evento não possui partidas necessárias ou não pode mais registrar partidas com importância '%s'."),
+    INVALID_MATCH_FOR_EVENT("A partida deve ser de um esporte e modalidade iguais aos de seu evento."),
+    INVALID_MATCH_OPERATION("Partidas só podem ser atualizadas ou excluídas enquanto estiverem agendadas."),
     INVALID_TEAMS_FOR_MATCH("Uma partida não pode ter duas equipes iguais."),
     PLAYERS_FROM_SINGLE_TEAM_IN_MATCH("Há apenas jogadores da equipe '%s' na partida."),
 
@@ -25,7 +33,7 @@ public enum ExceptionMessages {
     SPORT_EVENT_NOT_FOUND("Evento esportivo não encontrado."),
     CANNOT_UPDATE_TOTAL_MATCHES("O número de partidas registradas excede o limite do total de partidas."),
     INVALID_MATCH_STATUS_TO_FINISH_EVENT("Eventos esportivos só podem ser encerrados quando todas as partidas estiverem encerradas."),
-    INVALID_MATCH_OPERATION_ON_EVENT("Partidas não podem ser criadas e nem atualizadas em eventos com o status 'ENDED'"),
+    INVALID_MATCH_OPERATION_ON_EVENT("Operações relacionadas a partidas não podem ser realizadas em eventos já encerrados."),
     INVALID_SPORT_EVENT_FOR_EDITION("Evento esportivo do tipo '%s' e modalidade '%s' já existe na edição '%d'."),
     INVALID_STATUS_FOR_CREATION("Eventos só podem ser criados com o status 'SCHEDULED'."),
     INVALID_STATUS_TO_DELETE("Eventos só podem ser excluídos se estiverem com o status 'SCHEDULED'."),

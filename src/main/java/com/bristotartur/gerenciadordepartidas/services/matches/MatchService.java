@@ -170,7 +170,7 @@ public class MatchService {
         if (!match.getMatchStatus().equals(Status.SCHEDULED)) {
             throw new BadRequestException(ExceptionMessages.INVALID_MATCH_OPERATION.message);
         }
-        var sport =  matchRepository.findMatchTypeById(id, entityManager);
+        var sport = matchRepository.findMatchTypeById(id, entityManager);
         matchRepository.deleteById(id);
 
         log.info("Match '{}' of type '{}' was deleted.", id, sport);
@@ -207,18 +207,41 @@ public class MatchService {
         return updatedMatch;
     }
 
+    /**
+     * Atualiza o {@link Status} de uma instância de {@link Match} existente no sistema com base no seu ID
+     * e em um novo status passado como parâmetro.
+     *
+     * @param id Identificador único da partida.
+     * @param newMatchStatus Novo status da partida.
+     * @return A partida com o status atuaizado.
+     * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada.
+     * @throws BadRequestException Caso o status informado seja inválido ou a partida não possa ser atuaizada.
+     */
     public Match updateMatchStatus(Long id, Status newMatchStatus) {
 
         var match = this.findMatchById(id);
         Status.checkStatus(match.getMatchStatus(), newMatchStatus);
 
-        var event = match.getEvent();
-        MatchValidator.checkMatchStatus(event, newMatchStatus);
-
+        if (!match.getMatchStatus().equals(newMatchStatus)) {
+            var event = match.getEvent();
+            MatchValidator.checkMatchStatus(event, newMatchStatus);
+        }
         match.setMatchStatus(newMatchStatus);
-        return matchRepository.save(match);
+
+        var sport = Sports.findSportByValue(matchRepository.findMatchTypeById(id, entityManager));
+        var updatedMatch = matchServiceMediator.saveMatch(match, sport);
+
+        log.info("Match '{}' had the status updated to '{}'.", id, newMatchStatus);
+        return updatedMatch;
     }
 
+    /**
+     * Procura os jogadores correspondentes aos IDs da listagem passada para o método.
+     *
+     * @param playersIds Listagem dos IDs dos jogadores.
+     * @return Uma lista contendo os jogadores corespondentes aos IDs.
+     * @throws NotFoundException Caso o jogador corresponde a algum ID não seja encontrado.
+     */
     private List<Participant> findPlayersById(List<Long> playersIds) {
 
         return playersIds.stream()
@@ -226,7 +249,16 @@ public class MatchService {
                 .toList();
     }
 
+    /**
+     * Realiza as validações necessárias para criar e atualizar partidas. A função deste método é tornar o código
+     * dos métodos relacionados a criação e atualização de partidas mais conciso, melhorando sua legibilidade.
+     *
+     * @param dto DTO do tipo {@link MatchDto} contendo os dados da partida a ser criada ou atualizada.
+     * @param event Evento relacionado a partida.
+     * @param players Listagem dos jogadores relacionados a partida.
+     */
     private void creatingAndUpdatingValidations(MatchDto dto, SportEvent event, List<Participant> players) {
+
         MatchValidator.checkTeamsForMatch(dto);
         MatchValidator.checkMatchForSportEvent(event, dto);
         MatchValidator.checKMatchImportance(event, dto);

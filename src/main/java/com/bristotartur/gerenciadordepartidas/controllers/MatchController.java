@@ -6,6 +6,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.validation.Valid;
@@ -111,6 +112,19 @@ public class MatchController {
         log.info("Request to update Match '{}' of type '{}' was made.", id, matchDto.sport());
 
         var match = matchService.replaceMatch(id, matchDto);
+        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
+
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping(path = "/{id}/update")
+    public ResponseEntity<ExposingMatchDto> updateMatchStatus(@PathVariable Long id,
+                                                              @RequestParam("status") String matchStatus) {
+
+        var status = Status.findStatusLike(matchStatus);
+        log.info("Request to update Match '{}' to status '{}' was made.", id, status);
+
+        var match = matchService.updateMatchStatus(id, status);
         var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
 
         return ResponseEntity.ok().body(dto);

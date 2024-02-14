@@ -228,7 +228,7 @@ public class MatchService {
         }
         match.setMatchStatus(newMatchStatus);
 
-        var sport = Sports.findSportByValue(matchRepository.findMatchTypeById(id, entityManager));
+        var sport = Sports.findSportLike(matchRepository.findMatchTypeById(id, entityManager));
         var updatedMatch = matchServiceMediator.saveMatch(match, sport);
 
         log.info("Match '{}' had the status updated to '{}'.", id, newMatchStatus);

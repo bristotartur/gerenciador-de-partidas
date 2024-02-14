@@ -17,17 +17,24 @@ class SportsTest {
     @DisplayName("Should find sport when valid value is passed")
     void Should_FindSport_When_ValidValueIsPassed() {
 
-        var sportType = "futsal";
-        var result = Sports.findSportByValue(sportType);
+        var chess = "CHESS";
+        var basketball = "basketball";
+        var tableTennis = "TABLE-TENNIS";
 
-        assertEquals(result.value, sportType);
+        assertEquals(Sports.CHESS, Sports.findSportLike(chess));
+        assertEquals(Sports.BASKETBALL, Sports.findSportLike(basketball));
+        assertEquals(Sports.TABLE_TENNIS, Sports.findSportLike(tableTennis));
     }
 
     @Test
     @DisplayName("Should throw BadRequestException when invalid value is passed")
     void Should_Throw_BadRequestException_When_InvalidValueIsPassed() {
-        var sportType = "football";
-        assertThrows(BadRequestException.class, () -> Sports.findSportByValue(sportType));
+
+        var football = "FOOTBALL";
+        var tableTennis = "table tennis";
+
+        assertThrows(BadRequestException.class, () -> Sports.findSportLike(football));
+        assertThrows(BadRequestException.class, () -> Sports.findSportLike(tableTennis));
     }
 
 }

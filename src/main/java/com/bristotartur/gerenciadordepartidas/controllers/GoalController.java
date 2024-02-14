@@ -49,7 +49,7 @@ public class GoalController {
         var size = pageable.getPageSize();
         log.info("Request to get Goal page of number '{}' and size '{}' from Match '{}' was made.", number, size, matchId);
 
-        var sport = Sports.findSportByValue(sportType);
+        var sport = Sports.findSportLike(sportType);
         var dtoPage = this.createExposingDtoPage(goalService.findGoalsFromMatch(matchId, sport, pageable));
 
         return ResponseEntity.ok().body(dtoPage);

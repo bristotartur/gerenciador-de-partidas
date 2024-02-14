@@ -38,7 +38,7 @@ public interface MatchServiceFactory {
             case TABLE_TENNIS -> service = context.getBean(TableTennisMatchService.class);
             case CHESS -> service = context.getBean(ChessMatchService.class);
 
-            default -> throw new BadRequestException(ExceptionMessages.UNSUPPORTED_SPORT.message);
+            default -> throw new BadRequestException(ExceptionMessages.INVALID_SPORT.message);
         }
         return service;
     }

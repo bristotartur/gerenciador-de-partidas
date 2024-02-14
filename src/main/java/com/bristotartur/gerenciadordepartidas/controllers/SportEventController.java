@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Locale;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -60,7 +58,7 @@ public class SportEventController {
                                                                              Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-        var sport = Sports.findSportByValue(sportType.toLowerCase(Locale.ROOT));
+        var sport = Sports.findSportLike(sportType);
 
         log.info("Request to get SportEvent page of number '{}' and size '{}' of type '{}' was made.", number, size, sport);
 

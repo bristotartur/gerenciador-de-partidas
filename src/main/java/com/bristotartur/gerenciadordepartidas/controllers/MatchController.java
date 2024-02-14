@@ -50,7 +50,7 @@ public class MatchController {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-        var sport = Sports.findSportByValue(sportType);
+        var sport = Sports.findSportLike(sportType);
 
         log.info("Request to get Match page of number '{}' and size '{}' with type '{}' was made.", number, size, sport);
 
@@ -148,7 +148,8 @@ public class MatchController {
         var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id,pageable)).withRel("match_players"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id,pageable)).withRel("matchPlayers"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(dto.getSport().name(), pageable)).withRel("matchesOfSameTpe"));
         this.addExtraLinks(dto, match.getId(), pageable);
 
         return dto;
@@ -162,8 +163,8 @@ public class MatchController {
         var sport = dto.getSport().value;
 
         dto.add(linkTo(methodOn(this.getClass()).listAllMatches(pageable)).withRel("matches"));
-        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, pageable)).withRel("match_players"));
-        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(sport, pageable)).withRel("matches_of_same_type"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, pageable)).withRel("matchPlayers"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(sport, pageable)).withRel("matchesOfSameTpe"));
         this.addExtraLinks(dto, match.getId(), pageable);
 
         return dto;
@@ -182,10 +183,10 @@ public class MatchController {
 
     private void addExtraLinks(ExposingMatchDto dto, Long matchId, Pageable pageable) {
 
-        var sport = dto.getSport().value;
+        var sport = dto.getSport();
 
-        if (sport.equals(Sports.FUTSAL.value) || sport.equals(Sports.HANDBALL.value)) {
-            dto.add(linkTo(methodOn(GoalController.class).listGoalsFromMatch(matchId, sport, pageable)).withRel("goals"));
+        if (sport.equals(Sports.FUTSAL) || sport.equals(Sports.HANDBALL)) {
+            dto.add(linkTo(methodOn(GoalController.class).listGoalsFromMatch(matchId, sport.name(), pageable)).withRel("goals"));
             // TODO link para cartões de penalidade
         }
     }

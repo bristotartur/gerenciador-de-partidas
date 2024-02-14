@@ -55,6 +55,7 @@ public enum ExceptionMessages {
     UNSUPPORTED_FOR_PENALTY_CARDS("Esporte não suportado para cartões."),
 
     // EXTRAS
+    CANNOT_UPDATE_STATUS("Status '%s' só pode ser alterado para '%s'."),
     INVALID_PATTERN("Padrão inválido para '%s'."),
     INVALID_SPORT("Modalidade esportiva não identificada ou não suportada."),
     INVALID_STATUS("Status não identificado ou não suportado.");

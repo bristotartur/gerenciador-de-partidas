@@ -13,8 +13,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class StatusTest {
 
     @Test
-    @DisplayName("Should not throw anything when the same arguments are passed")
-    void Should_NotThrowAnything_When_SameArgumentsArePassed() {
+    @DisplayName("Should find status when valid value is passed")
+    void Should_FindStatus_When_ValidValueIsPassed() {
+
+        var scheduled = "SCHEDULED";
+        var inProgress = "in-progress";
+        var openForEdits = "oPEN-FoR-EdItS";
+
+        assertEquals(Status.SCHEDULED, Status.findStatusLike(scheduled));
+        assertEquals(Status.IN_PROGRESS, Status.findStatusLike(inProgress));
+        assertEquals(Status.OPEN_FOR_EDITS, Status.findStatusLike(openForEdits));
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when invalid status is passed")
+    void Should_ThrowbadRequestException_When_InvalidStatusIsPassed() {
+
+        var inProgress = "IN PROGRESS";
+        var finished = "FINISHED";
+
+        assertThrows(BadRequestException.class, () -> Status.findStatusLike(inProgress));
+        assertThrows(BadRequestException.class, () -> Status.findStatusLike(finished));
+    }
+
+    @Test
+    @DisplayName("Should not throw anything when the same Status are passed")
+    void Should_NotThrowAnything_When_SameStatusArePassed() {
 
         assertDoesNotThrow(() -> Status.checkStatus(Status.SCHEDULED, Status.SCHEDULED));
         assertDoesNotThrow(() -> Status.checkStatus(Status.IN_PROGRESS, Status.IN_PROGRESS));
@@ -23,8 +47,8 @@ class StatusTest {
     }
 
     @Test
-    @DisplayName("Should not throw anything when valid arguments are passed")
-    void Should_NotThrowAnything_When_ValidArgumentsArePassed() {
+    @DisplayName("Should not throw anything when valid Status are passed")
+    void Should_NotThrowAnything_When_ValidStatusArePassed() {
 
         assertDoesNotThrow(() -> Status.checkStatus(Status.SCHEDULED, Status.IN_PROGRESS));
         assertDoesNotThrow(() -> Status.checkStatus(Status.IN_PROGRESS, Status.ENDED));
@@ -35,8 +59,8 @@ class StatusTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when invalid arguments are passed")
-    void Should_TheowBadRequestException_When_InvalidArgumentsArePassed() {
+    @DisplayName("Should throw BadRequestException when invalid Status are passed")
+    void Should_TheowBadRequestException_When_InvalidStatusArePassed() {
 
         assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.SCHEDULED, Status.ENDED));
         assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.SCHEDULED, Status.OPEN_FOR_EDITS));

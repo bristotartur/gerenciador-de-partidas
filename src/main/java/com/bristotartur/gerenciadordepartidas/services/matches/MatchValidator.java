@@ -111,6 +111,8 @@ public final class MatchValidator {
         if (!eventStatus.equals(Status.IN_PROGRESS)) {
             throw new BadRequestException(ExceptionMessages.CANNOT_UPDATE_MATCH_STATUS.message);
         }
+        if (!newStatus.equals(Status.IN_PROGRESS)) return;
+
         Optional<Status> inProgress = event.getMatches().stream()
                 .map(Match::getMatchStatus)
                 .filter(status -> status.equals(Status.IN_PROGRESS))

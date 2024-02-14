@@ -319,4 +319,54 @@ class MatchServiceTest {
         assertEquals(result.getTeamB(), teamB);
     }
 
+    @Test
+    @DisplayName("Should update MatchStatus when valid Status is passed")
+    void Should_UpdateMatchStatus_When_ValidStatusIsPassed() {
+
+        var dto = MatchTestUtil.createNewMatchDto(
+                Sports.HANDBALL, teamA, teamB, playersIds, handballEvent.getId()
+        );
+        var handballMatch = matchService.saveMatch(dto);
+
+        handballMatch.setMatchStatus(Status.ENDED);
+        handballEvent.setEventStatus(Status.IN_PROGRESS);
+        entityManager.merge(handballEvent);
+
+        var originalStatus = handballMatch.getMatchStatus();
+        var result = matchService.updateMatchStatus(handballMatch.getId(), Status.OPEN_FOR_EDITS);
+
+        assertNotEquals(result.getMatchStatus(), originalStatus);
+        assertEquals(result.getMatchStatus(), Status.OPEN_FOR_EDITS);
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when invalid Match Status is passed")
+    void Should_ThrowBadRequestException_When_InvalidMatchStatusIsPassed() {
+
+        var dto = MatchTestUtil.createNewMatchDto(
+                Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId(), futsalEvent.getModality()
+        );
+        var futsalMatch = matchService.saveMatch(dto);
+        var id = futsalMatch.getId();
+
+        assertThrows(BadRequestException.class, () -> matchService.updateMatchStatus(id, Status.ENDED));
+        assertThrows(BadRequestException.class, () -> matchService.updateMatchStatus(id, Status.OPEN_FOR_EDITS));
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when trying to update Match Status on not in progress SportEvent")
+    void Should_ThrowBadRequestException_When_TryingToUpdateMatchStatusOnNotInProgressSportEvent() {
+
+        futsalEvent.setEventStatus(Status.SCHEDULED);
+        entityManager.merge(futsalEvent);
+
+        var dto = MatchTestUtil.createNewMatchDto(
+                Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId(), futsalEvent.getModality()
+        );
+        var futsalMatch = matchService.saveMatch(dto);
+        var id = futsalMatch.getId();
+
+        assertThrows(BadRequestException.class, () -> matchService.updateMatchStatus(id, Status.IN_PROGRESS));
+    }
+
 }

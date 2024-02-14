@@ -56,8 +56,8 @@ public enum ExceptionMessages {
 
     // EXTRAS
     INVALID_PATTERN("Padrão inválido para '%s'."),
-    INVALID_STATUS("Status não identificado ou não suportado."),
-    UNSUPPORTED_SPORT("Modalidade esportiva não suportada.");
+    INVALID_SPORT("Modalidade esportiva não identificada ou não suportada."),
+    INVALID_STATUS("Status não identificado ou não suportado.");
 
     /**
      * Valor interno das constantes de {@link ExceptionMessages} contendo suas

@@ -6,9 +6,6 @@ import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceFacto
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchStrategy;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 /**
  * Enumeração para as modalidades esportivas suportadas no sistema. Este enum pode ser usado em
  * diversas ocasiões, como buscar partidas por um tipo específico, definir a modalidade esportiva
@@ -34,31 +31,33 @@ public enum Sports implements EventType<SportEvent> {
     public final String value;
 
     /**
-     * <p>Busca por uma das opções deste enum com base em seu valor interno. Os valores internos possíveis
-     * são: 'chess', 'basketball', 'futsal', 'handball', 'table-tennis' e 'volleyball'.</p> <br>
+     * <p>Busca por uma das constantes deste enum com base em seu valor, sendo que, no contexto deste
+     * método, o valor da constante equivale ao seu nome, e não seu valor interno. Caso o valor passado
+     * esteja em letras minúsculas ou tenha um espaçamento feito com "-", o método ajustará este valor
+     * para o formato correto, passando todos os caracteres para caixa alta e substituindo os espaçamentos
+     * feitos com '-' para "_".</p> <br>
      *
      * Exemplo de uso:
      * <pre>
      *    {@code
-     *        Sports chess = Sports.findSportByValue("chess");
-     *        Sports basketball = Sports.findSportByValue("basketball");
+     *        Sports chess = Sports.findSportLike("CHESS");
+     *        Sports basketball = Sports.findSportLike("basketball");
+     *        Sports tableTennis = Sports.findSportLike("table-tennis");
      *    }
      * </pre>
-     * @param value Valor interno das opçoões deste enum.
-     * @return A opção correspondente ao valor fornecido.
-     * @throws BadRequestException Caso o valor fornecido não corresponda a nenhuma das opções do enum.
+     * @param sport Valor correspondente as constantes deste enum.
+     * @return A constante correspondente ao valor fornecido.
+     * @throws BadRequestException Caso o valor fornecido não corresponda a nenhuma das constantes do enum.
      */
-    public static Sports findSportByValue(String value) {
+    public static Sports findSportLike(String sport) {
 
-        Optional<Sports> sportsOptional = Arrays.stream(values())
-                .sequential()
-                .filter(sport -> sport.value.equals(value))
-                .findFirst();
+        var formatedSport = sport.replace("-", "_").toUpperCase();
 
-        if (sportsOptional.isEmpty())
-            throw new BadRequestException(ExceptionMessages.UNSUPPORTED_SPORT.message);
-
-        return sportsOptional.get();
+        try {
+            return valueOf(formatedSport);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(ExceptionMessages.INVALID_SPORT.message, e);
+        }
     }
 
 }

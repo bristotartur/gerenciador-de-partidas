@@ -9,6 +9,7 @@ import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
+import com.bristotartur.gerenciadordepartidas.services.actions.ActionValidator;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.utils.*;
@@ -62,6 +63,7 @@ class GoalServiceTest {
         var sportEventB = SportEventTestUtil.createNewSportEvent(
                 Sports.HANDBALL, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
         );
+
         playerA = ParticipantTestUtil.createNewParticipant("1-42", teamA, edition, entityManager);
         playerB = ParticipantTestUtil.createNewParticipant("1-51", teamB, edition, entityManager);
 
@@ -71,6 +73,7 @@ class GoalServiceTest {
         handballDto = MatchTestUtil.createNewMatchDto(
                 Sports.HANDBALL, teamA, teamB, List.of(playerA.getId(), playerB.getId()), sportEventB.getId()
         );
+
         sportEventA.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, List.of(playerA, playerB), sportEventA)));
         sportEventB.setMatches(List.of(MatchTestUtil.createNewMatch(teamA, teamB, List.of(playerA, playerB), sportEventB)));
         entityManager.merge(sportEventA);
@@ -155,6 +158,7 @@ class GoalServiceTest {
     void Should_SaveGoal_When_ValidGoalDtoIsPassedToSave() {
 
         var handballMatch = matchService.saveMatch(handballDto);
+        handballMatch.setMatchStatus(Status.IN_PROGRESS);
         var goalDto = GoalTestUtil.createNewGoalDto(playerB.getId(), handballMatch.getId(), Sports.HANDBALL);
 
         var result = goalService.saveGoal(goalDto);
@@ -167,11 +171,13 @@ class GoalServiceTest {
     void Should_DeleteGoalFromDatabase_When_GoalIdIsPassedToDelete() {
 
         var futsalMatch = matchService.saveMatch(futsalDto);
+        futsalMatch.setMatchStatus(Status.IN_PROGRESS);
         var goal = GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager);
 
         goalService.deleteGoalById(goal.getId());
 
         assertTrue(goalRepository.findById(goal.getId()).isEmpty());
+        ActionValidator.checkMatchForAction(goal.getMatch());
     }
 
     @Test
@@ -179,6 +185,7 @@ class GoalServiceTest {
     void Should_DecreaseTeamScoreInMatch_When_GoalIsDeleted() {
 
         var futsalMatch = matchService.saveMatch(futsalDto);
+        futsalMatch.setMatchStatus(Status.IN_PROGRESS);
         futsalMatch.setTeamScoreB(1);
 
         var goal = GoalTestUtil.createNewGoal(playerB, futsalMatch, entityManager);
@@ -192,6 +199,7 @@ class GoalServiceTest {
     void Should_UpdateGoal_When_GoalDtoWithNewValuesIsPassed() {
 
         var futsalMatch = matchService.saveMatch(futsalDto);
+        futsalMatch.setMatchStatus(Status.IN_PROGRESS);
         var goal = GoalTestUtil.createNewGoal(playerA, futsalMatch, entityManager);
 
         var goalDto = GoalTestUtil.createNewGoalDto(playerB.getId(), futsalMatch.getId(), Sports.FUTSAL);
@@ -206,6 +214,7 @@ class GoalServiceTest {
 
         var sport = Sports.HANDBALL;
         var handballMatch = matchService.saveMatch(handballDto);
+        handballMatch.setMatchStatus(Status.IN_PROGRESS);
 
         var originalGoalDto = GoalTestUtil.createNewGoalDto(playerA.getId(), handballMatch.getId(), sport);
         var goal = goalService.saveGoal(originalGoalDto);
@@ -228,6 +237,7 @@ class GoalServiceTest {
 
         var sport = Sports.FUTSAL;
         var futsalMatch = matchService.saveMatch(futsalDto);
+        futsalMatch.setMatchStatus(Status.IN_PROGRESS);
 
         var team = futsalMatch.getTeamB();
         var playerC = ParticipantTestUtil.createNewParticipant("1-52", team, edition, entityManager);
@@ -252,6 +262,7 @@ class GoalServiceTest {
 
         var originalSport = Sports.HANDBALL;
         var handballMatch = matchService.saveMatch(handballDto);
+        handballMatch.setMatchStatus(Status.IN_PROGRESS);
         var originalGoalDto = GoalTestUtil.createNewGoalDto(playerA.getId(), handballMatch.getId(), originalSport);
 
         var goal = goalService.saveGoal(originalGoalDto);
@@ -259,6 +270,7 @@ class GoalServiceTest {
 
         var newSport = Sports.FUTSAL;
         var futsalMatch = matchService.saveMatch(futsalDto);
+        futsalMatch.setMatchStatus(Status.IN_PROGRESS);
         var newGoalDto = GoalTestUtil.createNewGoalDto(playerB.getId(), futsalMatch.getId(), newSport);
 
         goalService.replaceGoal(goal.getId(), newGoalDto);

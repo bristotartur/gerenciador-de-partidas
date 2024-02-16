@@ -137,6 +137,7 @@ class PenaltyCardServiceTest {
     void Should_SavePenaltyCard_When_ValidPenaltyCardDtoIsPassedToSave() {
 
         var futsalMatch = matchService.saveMatch(futsalDto);
+        futsalMatch.setMatchStatus(Status.IN_PROGRESS);
         var penaltyCardDto = PenaltyCardTestUtil
                 .createNewPenaltyCardDto(Sports.FUTSAL, PenaltyCardColor.RED, playerA.getId(), futsalMatch.getId());
 
@@ -150,6 +151,7 @@ class PenaltyCardServiceTest {
     void Should_DeletePenaltyCardFromDatabase_When_PenaltyCardIdIsPassedToDelete() {
 
         var handballMatch = matchService.saveMatch(handballDto);
+        handballMatch.setMatchStatus(Status.IN_PROGRESS);
         var penaltyCard = PenaltyCardTestUtil
                 .createNewPenaltyCard(PenaltyCardColor.RED, playerA, handballMatch, entityManager);
 
@@ -164,6 +166,7 @@ class PenaltyCardServiceTest {
     void Should_UpdatePenaltyCard_When_PenaltyCardDtoWithNewValuesIsPassed() {
 
         var handballMatch = matchService.saveMatch(handballDto);
+        handballMatch.setMatchStatus(Status.IN_PROGRESS);
         var penaltyCard = PenaltyCardTestUtil
                 .createNewPenaltyCard(PenaltyCardColor.YELLOW, playerA, handballMatch, entityManager);
 

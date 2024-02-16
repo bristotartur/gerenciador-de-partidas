@@ -89,6 +89,8 @@ public class PenaltyCardService {
 
         var match = matchServiceMediator.findMatch(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
+        ActionValidator.checkMatchForAction(match);
+        ActionValidator.checkPlayerForAction(player, match);
 
         var savedPenaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
         savedPenaltyCard =  penaltyCardRepository.save(savedPenaltyCard);
@@ -107,6 +109,7 @@ public class PenaltyCardService {
         var penaltyCard = this.findPenaltyCardById(id);
         var match = penaltyCard.getMatch();
 
+        ActionValidator.checkMatchForAction(match);
         penaltyCardRepository.deleteById(id);
 
         log.info("Penalty Card '{}' from Match '{}' was deleted.", id, match.getId());
@@ -129,6 +132,8 @@ public class PenaltyCardService {
 
         var match = matchServiceMediator.findMatchForCard(penaltyCardDto.matchId(), penaltyCardDto.sport());
         var player = participantService.findParticipantById(penaltyCardDto.playerId());
+        ActionValidator.checkMatchForAction(match);
+        ActionValidator.checkPlayerForAction(player, match);
 
         var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, match);
         updatedPenaltyCard = penaltyCardRepository.save(updatedPenaltyCard);

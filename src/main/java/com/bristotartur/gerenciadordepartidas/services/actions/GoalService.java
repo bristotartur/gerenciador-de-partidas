@@ -115,6 +115,9 @@ public class GoalService {
         var match = matchServiceMediator.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var player = participantService.findParticipantById(goalDto.playerId());
 
+        ActionValidator.checkMatchForAction(match);
+        ActionValidator.checkPlayerForAction(player, match);
+
         this.increaseScore(player.getTeam(), match);
         var savedGoal = goalRepository.save(goalMapper.toNewGoal(goalDto, player, match));
 
@@ -132,12 +135,13 @@ public class GoalService {
     public void deleteGoalById(Long id) {
 
         var goal = this.findGoalById(id);
-        var team = goal.getPlayer().getTeam();
         var match = goal.getMatch();
+        var team = goal.getPlayer().getTeam();
 
+        ActionValidator.checkMatchForAction(match);
         goalRepository.deleteById(id);
-        this.decreaseScore(team, match);
 
+        this.decreaseScore(team, match);
         log.info("Goal '{}' from Match '{}' was deleted.", id, match.getId());
     }
 
@@ -160,10 +164,14 @@ public class GoalService {
 
         var originalGol = this.findGoalById(id);
         var originaMatch = originalGol.getMatch();
-        var originalPlayerTeam = originalGol.getPlayer().getTeam();
+        ActionValidator.checkMatchForAction(originaMatch);
 
         var newMatch = matchServiceMediator.findMatchForGoal(goalDto.matchId(), goalDto.sport());
         var newPlayer = participantService.findParticipantById(goalDto.playerId());
+        ActionValidator.checkMatchForAction(newMatch);
+        ActionValidator.checkPlayerForAction(newPlayer, newMatch);
+
+        var originalPlayerTeam = originalGol.getPlayer().getTeam();
 
         if (!originaMatch.equals(newMatch) || !originalPlayerTeam.equals(newPlayer.getTeam())) {
             this.increaseScore(newPlayer.getTeam(), newMatch);

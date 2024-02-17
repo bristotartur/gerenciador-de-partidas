@@ -115,13 +115,13 @@ public class SportEventController {
     private ExposingSportEventDto addSingleSportEventLink(SportEvent sportEvent) {
 
         var id = sportEvent.getId();
-        var editionId = sportEvent.getId();
+        var editionId = sportEvent.getEdition().getId();
         var dto = (ExposingSportEventDto) sportEventService.createExposingEventDto(sportEvent);
 
         var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findSportEventById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(EditionController.class).findEditionById(id)).withRel("edition"));
+        dto.add(linkTo(methodOn(EditionController.class).findEditionById(editionId)).withRel("edition"));
         return dto;
     }
 
@@ -134,7 +134,7 @@ public class SportEventController {
         var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).listAllSportEvents(pageable)).withRel("sportEventList"));
-        dto.add(linkTo(methodOn(EditionController.class).findEditionById(id)).withRel("edition"));
+        dto.add(linkTo(methodOn(EditionController.class).findEditionById(editionId)).withRel("edition"));
         return dto;
     }
 

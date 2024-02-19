@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface EditionMapper {
 
+
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "editionStatus", expression = "java(Status.SCHEDULED)")
     @Mapping(target = "atomicaPontuation", constant = "0")
     @Mapping(target = "mestresPontuation", constant = "0")
     @Mapping(target = "papaPontuation", constant = "0")
@@ -19,8 +21,7 @@ public interface EditionMapper {
     @Mapping(target = "taskEvents", ignore = true)
     @Mapping(target = "sportEvents", ignore = true)
     Edition toNewEdition(EditionDto editionDto);
-    
-    @Mapping(target = "editionStatus", source = "editionDto.editionStatus")
+
     @Mapping(target = "opening", source = "editionDto.opening")
     @Mapping(target = "closure", source = "editionDto.closure")
     Edition toExistingEdition(Long id, EditionDto editionDto, Edition originalEdition);

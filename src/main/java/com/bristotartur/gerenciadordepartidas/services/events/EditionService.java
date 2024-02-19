@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
-import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -51,9 +51,6 @@ public class EditionService {
 
     public Edition saveEdition(EditionDto editionDto) {
 
-        if (!editionDto.editionStatus().equals(Status.SCHEDULED)) {
-            throw new BadRequestException("Novas partidas só podem ser criadas com o status 'SCHEDULED'.");
-        }
         var edition = editionRepository.save(editionMapper.toNewEdition(editionDto));
 
         log.info("Edition '{}' was created.", edition.getId());
@@ -74,17 +71,26 @@ public class EditionService {
     public Edition replaceEdition(Long id, EditionDto editionDto) {
 
         var originalEdition = this.findEditionById(id);
-        var newStatus = editionDto.editionStatus();
-        Status.checkStatus(originalEdition.getEditionStatus(), newStatus);
+        var updatedEdition = editionRepository.save(editionMapper.toExistingEdition(id, editionDto, originalEdition));
+
+        log.info("Edition '{}' was updated", id);
+        return updatedEdition;
+    }
+
+    public Edition updateEditionStatus(Long id, Status newStatus) {
+
+        var edition = this.findEditionById(id);
+        Status.checkStatus(edition.getEditionStatus(), newStatus);
 
         Optional<Edition> alreadyInProgressEdition = editionRepository.findByEditionStatus(newStatus);
 
         if (newStatus.equals(Status.IN_PROGRESS) && alreadyInProgressEdition.isPresent()) {
             throw new BadRequestException("Apenas uma edição de cada pode ter o status 'IN_PROGRESS'.");
         }
-        var updatedEdition = editionRepository.save(editionMapper.toExistingEdition(id, editionDto, originalEdition));
+        edition.setEditionStatus(newStatus);
+        var updatedEdition = editionRepository.save(edition);
 
-        log.info("Edition '{}' was updated", id);
+        log.info("Edition '{}' had the status updated to '{}'.", id, newStatus);
         return updatedEdition;
     }
 

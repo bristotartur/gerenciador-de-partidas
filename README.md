@@ -4,7 +4,7 @@ Aplicação em Spring Boot para o gerenciamento de partidas para a gincana do co
 
 O objetivo deste projeto é fornecer um sistema de gerenciamento que facilite o controle de atividades esportivas relativas a gincana, bem como a disseminação de informações sobre a mesma,
 como placares de jogos, datas e horários, pontuações das equipes e outros dados.
----
+
 ## Como rodar esta aplicação?
 
 No momento a única forma de adquirir esta aplicação é clonando o repositório deste projeto, o que pode ser feito
@@ -13,7 +13,7 @@ executando o seguinte comando:
 ```shell
 git clone https://github.com/bristotartur/gerenciador-de-partidas.git
 ```
-Além do código do projeto, será também necessário possuir o banco de dados PostgreSQL em sua máquina.
+Além do código do projeto, será também necessário possuir o banco de dados *PostgreSQL* em sua máquina.
 Caso você não o tenha, você pode instalá-lo pelo [site oficial do PostgreSQL](https://www.postgresql.org/download/) 
 ou, se preferir, baixar a [imagem oficial do PostgreSQL](https://hub.docker.com/_/postgres) disponível no Docker Hub com o seguinte comando:
 
@@ -38,6 +38,9 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
 ```
 
+Repare que o `docker-compose.yml` já define um banco chamado `gerenciador_de_partidas`, processo que deve ser feito manualmente 
+caso opte por rodar diretamente a imagem ou utilizar o PostgreSQL instalado localmente. 
+
 Certifique-se de substituir `senha-do-banco` pelo valor que você desejar, e também garanta que haja uma pasta chamada `postgres-data` 
 no mesmo diretório onde o arquivo `docker-compose.yml` for salvo para persistir os dados do container. 
 Além disso, ajuste o arquivo `application.yml` dentro do diretório `src/main/resources/` para as suas configurações do banco.
@@ -56,7 +59,8 @@ Por fim, você pode executar o `docker-compose.yml`:
 docker-compose up -d
 ```
 
-Após todas configurações do banco, você pode finalmente rodar a o programa!
+Após todas as configurações do banco, você pode finalmente rodar o programa!
+
 Caso deseje rodar a aplicação pela linha de comando, basta abrir o terminal de sua preferência no diretório do projeto e rodar o comando:
 
 ```shell
@@ -69,11 +73,10 @@ ou
 ./mvnw.cmd spring-boot:run
 ```
 
-Você também pode rodar direto de sua IDE, mas caso o faça, precisará antes configurá-la para suportar o [Lombok](https://projectlombok.org/), 
-que é uma das dependências utilizadas no projeto. 
-Em algumas IDEs, basta instalar o plugin do Lombok, que está disponível nos principais editores de texto, como Intellij e Vscode. 
-Para alguns editores, será necessário realizar uma configuração mais específica para o suporte da dependência, o que pode ser conferido 
-no [site oficial do Lombok](https://projectlombok.org/).
+Você também pode rodar direto de sua IDE, mas caso o faça, precisará antes configurá-la para suportar o *Lombok*, que é 
+uma das dependências utilizadas no projeto. Em algumas IDEs, basta instalar o plugin do Lombok, que está disponível 
+nos principais editores de texto, como Intellij e Vscode. Para alguns editores, será necessário realizar uma configuração 
+mais específica para o suporte da dependência, o que pode ser conferido no [site oficial do Lombok](https://projectlombok.org/).
 
 Caso a execução do programa ocorra corretamente, você verá os seguintes *logs* no terminal:
 

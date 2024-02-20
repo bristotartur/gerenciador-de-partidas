@@ -111,4 +111,13 @@ public interface EventStrategy<T extends Event> {
      */
     T replaceEvent(Long id, TransferableEventData<T> eventDto);
 
+    /**
+     * Atualiza o status de um evento no sistema com base no seu ID.
+     *
+     * @param id Identificador único do evento.
+     * @param newStatus Novo status do evento.
+     * @return O evento com o status atualizado.
+     */
+    T updateEventStatus(Long id, Status newStatus);
+
 }

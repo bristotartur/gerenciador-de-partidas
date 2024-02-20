@@ -32,6 +32,7 @@ public enum ExceptionMessages {
     // EVENT MESSAGES
     SPORT_EVENT_NOT_FOUND("Evento esportivo não encontrado."),
     CANNOT_UPDATE_TOTAL_MATCHES("O número de partidas registradas excede o limite do total de partidas."),
+    CANNOT_UPDATE_EVENT_STATUS("Eventos só podem ter seu status atualizado caso sua edição estaja com o status 'IN_PROGRESS'."),
     INVALID_MATCH_STATUS_TO_FINISH_EVENT("Eventos esportivos só podem ser encerrados quando todas as partidas estiverem encerradas."),
     INVALID_MATCH_OPERATION_ON_EVENT("Operações relacionadas a partidas não podem ser realizadas em eventos já encerrados."),
     INVALID_SPORT_EVENT_FOR_EDITION("Evento esportivo do tipo '%s' e modalidade '%s' já existe na edição '%d'."),

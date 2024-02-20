@@ -11,6 +11,5 @@ import lombok.Builder;
 public record SportEventDto(@NotNull Sports type,
                             @NotNull Modality modality,
                             @NotNull Integer totalMatches,
-                            @NotNull Status eventStatus,
                             @NotNull Long editionId) implements TransferableEventData<SportEvent> {
 }

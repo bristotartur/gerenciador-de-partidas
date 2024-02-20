@@ -11,11 +11,12 @@ import org.mapstruct.Mapping;
 public interface SportEventMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "firstPlace", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Team.NONE)")
-    @Mapping(target = "secondPlace", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Team.NONE)")
-    @Mapping(target = "thirdPlace", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Team.NONE)")
-    @Mapping(target = "fourthPlace", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Team.NONE)")
-    @Mapping(target = "fifthPlace", expression = "java(com.bristotartur.gerenciadordepartidas.enums.Team.NONE)")
+    @Mapping(target = "firstPlace", expression = "java(Team.NONE)")
+    @Mapping(target = "secondPlace", expression = "java(Team.NONE)")
+    @Mapping(target = "thirdPlace", expression = "java(Team.NONE)")
+    @Mapping(target = "fourthPlace", expression = "java(Team.NONE)")
+    @Mapping(target = "fifthPlace", expression = "java(Team.NONE)")
+    @Mapping(target = "eventStatus", expression = "java(Status.SCHEDULED)")
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "participants", ignore = true)
     SportEvent toNewSportEvent(SportEventDto sportEventDto, Edition edition);
@@ -23,7 +24,6 @@ public interface SportEventMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "type", source = "sportEventDto.type")
     @Mapping(target = "modality", source = "sportEventDto.modality")
-    @Mapping(target = "eventStatus", source = "sportEventDto.eventStatus")
     @Mapping(target = "totalMatches", source = "sportEventDto.totalMatches")
     @Mapping(target = "edition", source = "edition")
     @Mapping(target = "participants", source = "sportEvent.participants")

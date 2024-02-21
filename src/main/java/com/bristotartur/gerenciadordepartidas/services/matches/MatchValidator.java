@@ -81,17 +81,13 @@ public final class MatchValidator {
      *     <li>NORMAL - Apenas o mínimo total das partidas do evento podem ter um peso normal. O mínimo total
      *     de partidas é a quantidade mínima de partidas necessárias para começar um evento, que é calculado
      *     pegando o total de partidas e subtraindo por 4.</li>
-     *     <li>SEMIFINAL - Apenas duas partidas podem ser semifinais, e as partidas deste tipo devem ser
+     *     <li>SEMIFINAL - Apenas duas partidas podem ser semifinais, e as partidas deste tipo só poden ser
      *     definidas após as partidas normais serem encerradas.</li>
      *     <li>THIRD_PLACE_PLAYOFF - Apenas uma partida dever ser de disputa pelo terceiro lugar, e
      *     partidas deste tipo podem ser definidas apenas após as semifinais encerrarem.</li>
      *     <li>FINAL - Apenas uma partida deve ser uma final, que deve ser a última partida a ser definida
      *     no evento.</li>
      * </ul>
-     *
-     * <p>Caso haja uma quantidade de partidas de uma determinada importância maior do que o permitido, ou
-     * caso tente-se adicionar uma partida de uma importância específica, como uma SEMIFINAL, por exemplo, antes
-     * que partidas de importância NORMAL sejam encerradas, uma exceção será lançada.</p>
      *
      * @param event Instância de {@link SportEvent} associada a partida.
      * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida.

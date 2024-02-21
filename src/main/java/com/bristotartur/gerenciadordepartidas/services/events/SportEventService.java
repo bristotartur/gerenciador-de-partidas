@@ -123,10 +123,6 @@ public class SportEventService implements EventStrategy<SportEvent> {
     public SportEvent saveEvent(TransferableEventData<SportEvent> eventDto) {
 
         var dto = (SportEventDto) eventDto;
-
-        if (!dto.eventStatus().equals(Status.SCHEDULED)) {
-            throw new BadRequestException(ExceptionMessages.INVALID_STATUS_FOR_CREATION.message);
-        }
         var edition = editionService.findEditionById(dto.editionId());
         editionService.checkEditionStatusById(edition.getId());
 
@@ -159,21 +155,43 @@ public class SportEventService implements EventStrategy<SportEvent> {
         var dto = (SportEventDto) eventDto;
         var originalEvent = this.findEventById(id);
 
-        SportEventValidator.checkDtoForUpdate(originalEvent, dto);
+        SportEventValidator.checkSportEventForUpdate(originalEvent);
 
-        var status = dto.eventStatus();
         var edition = editionService.findEditionById(dto.editionId());
         editionService.checkEditionStatusById(edition.getId());
 
-        if (status.equals(Status.SCHEDULED)) {
-            var events = sportEventRepository.findSportEventsByEditionId(edition.getId());
-            SportEventValidator.checkSportEventForEdition(events, dto);
-        }
-        SportEventValidator.checkMatchesToUpdateEvent(originalEvent, dto);
+        var events = sportEventRepository.findSportEventsByEditionId(edition.getId());
+        SportEventValidator.checkSportEventForEdition(events, dto);
+        SportEventValidator.checkNewTotalMatchesForSportEvent(originalEvent, dto.totalMatches());
+
         var updatedEvent = sportEventRepository.save(sportEventMapper.toExistingSportEvent(id, dto, originalEvent, edition));
 
         log.info("SportEvent '{}' from Edition '{}' was updated.", originalEvent.getId(), edition.getId());
         return updatedEvent;
+    }
+
+    /**
+     *
+     * @throws BadRequestException Caso o ID ou status passados sejam inválido ou não seja possível
+     * atualizar o status do evento.
+     */
+    @Override
+    public SportEvent updateEventStatus(Long id, Status newStatus) {
+
+        var event = this.findEventById(id);
+        var originalStatus = event.getEventStatus();
+        Status.checkStatus(originalStatus, newStatus);
+
+        if (!originalStatus.equals(newStatus)) {
+            var editionStatus = event.getEdition().getEditionStatus();
+            SportEventValidator.checkSportEventToUpdateStatus(event, newStatus, editionStatus);
+        }
+        event.setEventStatus(newStatus);
+        var updatedEvent = sportEventRepository.save(event);
+
+        var editionId = event.getEdition().getId();
+        log.info("SportEvent '{}' from Edition '{}' had the status updated to '{}'.", id, editionId, newStatus);
+        return event;
     }
 
 }

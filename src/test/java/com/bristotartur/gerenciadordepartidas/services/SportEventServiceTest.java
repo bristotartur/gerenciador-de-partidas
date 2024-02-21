@@ -3,12 +3,9 @@ package com.bristotartur.gerenciadordepartidas.services;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.enums.Modality;
-import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.enums.Team;
-import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.enums.*;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.SportEventRepository;
 import com.bristotartur.gerenciadordepartidas.services.events.SportEventService;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
@@ -31,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.bristotartur.gerenciadordepartidas.utils.RandomIdUtil.getRandomLongId;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -110,7 +108,7 @@ class SportEventServiceTest {
 
         var pageable = PageRequest.of(0, 3);
         var id = getRandomLongId();
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), any(), any(), any());
+        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), any(), any());
 
         assertThrows(NotFoundException.class, () -> sportEventService.findAllEventsFromEdition(id, pageable));
         assertThrows(NotFoundException.class, () -> sportEventService.findEventById(id));
@@ -189,22 +187,11 @@ class SportEventServiceTest {
 
         var total = 12;
         var editionId = edition.getId();
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, Status.SCHEDULED, total, editionId);
+        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, total, editionId);
 
         var result = sportEventService.saveEvent(dto);
 
         assertTrue(sportEventRepository.findById(result.getId()).isPresent());
-    }
-
-    @Test
-    @DisplayName("Should throw BadRequestException when trying to create SpotEvent with Status differnt than SCHEDULED")
-    void Should_ThrowBadRequestException_When_TryingToCreateSportEventWithStatusDifferentThanScheduled() {
-
-        var total = 12;
-        var editionId = edition.getId();
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, Status.IN_PROGRESS, total, editionId);
-
-        assertThrows(BadRequestException.class, () -> sportEventService.saveEvent(dto));
     }
 
     @Test
@@ -216,7 +203,7 @@ class SportEventServiceTest {
 
         var total = 12;
         var editionId = finishedEdition.getId();
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, Status.IN_PROGRESS, total, editionId);
+        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, total, editionId);
 
         assertThrows(BadRequestException.class, () -> sportEventService.saveEvent(dto));
         assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(sportEventA.getId(), dto));
@@ -234,7 +221,7 @@ class SportEventServiceTest {
         var type = sportEventA.getType();
         var modality = sportEventA.getModality();
 
-        var dto = SportEventTestUtil.createNewSportEventDto(type, modality, Status.SCHEDULED, total, editionId);
+        var dto = SportEventTestUtil.createNewSportEventDto(type, modality, total, editionId);
 
         assertThrows(BadRequestException.class, () -> sportEventService.saveEvent(dto));
         assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(sportEventB.getId(), dto));
@@ -263,7 +250,7 @@ class SportEventServiceTest {
         var total = 12;
         var editionId = edition.getId();
 
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, Status.IN_PROGRESS, total, editionId);
+        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, total, editionId);
 
         assertThrows(BadRequestException.class, () -> sportEventService.deleteEventById(id));
         assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(id, dto));
@@ -284,10 +271,51 @@ class SportEventServiceTest {
         var total = 12;
         var editionId = edition.getId();
 
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, Status.SCHEDULED, total, editionId);
+        var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, total, editionId);
         var result = sportEventService.replaceEvent(id, dto);
 
         assertNotEquals(result, sportEventA);
+    }
+
+    @Test
+    @DisplayName("Should not throw anything when valid Status is passed")
+    void Should_NotThrowAnything_When_ValidStatusIsPassed() {
+
+        var editionMock = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
+        var sportEventC = SportEventTestUtil.createNewSportEvent(
+                Sports.HANDBALL, Modality.FEMININE, Status.SCHEDULED, editionMock, entityManager
+        );
+        var matches = List.of(
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventC, Status.SCHEDULED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventC, Status.SCHEDULED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventC, Status.SCHEDULED),
+                MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventC, Status.SCHEDULED));
+
+        matches.forEach(entityManager::merge);
+        sportEventC.setMatches(matches);
+        sportEventC.setTotalMatches(6);
+        entityManager.merge(sportEventC);
+
+        assertDoesNotThrow(() -> sportEventService.updateEventStatus(sportEventC.getId(), Status.IN_PROGRESS));
+    }
+
+    @Test
+    @DisplayName("Should update SportEvent status when valid Status is passed")
+    void Should_ThrowBadRequestException_When_InvaalidStatusIsPassed() {
+
+        var editionMock = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
+        var sportEventC = SportEventTestUtil.createNewSportEvent(
+                Sports.HANDBALL, Modality.MASCULINE, Status.SCHEDULED, editionMock, entityManager
+        );
+        var message = ExceptionMessages.CANNOT_UPDATE_STATUS.message;
+
+        assertThatThrownBy(() -> sportEventService.updateEventStatus(sportEventC.getId(), Status.ENDED))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(message.formatted(Status.SCHEDULED, Status.IN_PROGRESS));
+
+        assertThatThrownBy(() -> sportEventService.updateEventStatus(sportEventC.getId(), Status.OPEN_FOR_EDITS))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(message.formatted(Status.SCHEDULED, Status.IN_PROGRESS));
     }
 
     @Test
@@ -301,14 +329,8 @@ class SportEventServiceTest {
         entityManager.merge(sportEventA);
 
         var id = sportEventA.getId();
-        var total = 12;
-        var editionId = edition.getId();
-        var type = sportEventA.getType();
-        var modality = sportEventA.getModality();
 
-        var dto = SportEventTestUtil.createNewSportEventDto(type, modality, Status.IN_PROGRESS, total, editionId);
-
-        assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(id, dto));
+        assertThrows(BadRequestException.class, () -> sportEventService.updateEventStatus(id, Status.IN_PROGRESS));
     }
 
     @Test
@@ -326,14 +348,7 @@ class SportEventServiceTest {
         entityManager.merge(sportEventA);
 
         var id = sportEventA.getId();
-        var total = sportEventA.getTotalMatches();
-        var editionId = edition.getId();
-        var type = sportEventA.getType();
-        var modality = sportEventA.getModality();
-
-        var dto = SportEventTestUtil.createNewSportEventDto(type, modality, Status.ENDED, total, editionId);
-
-        assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(id, dto));
+        assertThrows(BadRequestException.class, () -> sportEventService.updateEventStatus(id, Status.ENDED));
     }
 
     @Test
@@ -353,14 +368,7 @@ class SportEventServiceTest {
         entityManager.merge(sportEventA);
 
         var id = sportEventA.getId();
-        var total = sportEventA.getTotalMatches();
-        var editionId = edition.getId();
-        var type = sportEventA.getType();
-        var modality = sportEventA.getModality();
-
-        var dto = SportEventTestUtil.createNewSportEventDto(type, modality, Status.ENDED, total, editionId);
-
-        assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(id, dto));
+        assertThrows(BadRequestException.class, () -> sportEventService.updateEventStatus(id, Status.ENDED));
     }
 
 }

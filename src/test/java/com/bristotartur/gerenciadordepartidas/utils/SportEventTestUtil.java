@@ -78,12 +78,11 @@ public final class SportEventTestUtil {
         return event;
     }
 
-    public static SportEventDto createNewSportEventDto(Sports type, Modality modality, Status status, Integer totalMatches, Long editionId) {
+    public static SportEventDto createNewSportEventDto(Sports type, Modality modality, Integer totalMatches, Long editionId) {
 
         return SportEventDto.builder()
                 .type(type)
                 .modality(modality)
-                .eventStatus(status)
                 .totalMatches(totalMatches)
                 .editionId(editionId)
                 .build();

@@ -20,7 +20,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
@@ -53,7 +54,7 @@ class SportEventValidatorTest {
                 SportEventTestUtil.createNewSportEvent(Sports.CHESS, Modality.MIXED, edition),
                 SportEventTestUtil.createNewSportEvent(Sports.VOLLEYBALL, Modality.MIXED, edition));
 
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.TABLE_TENNIS, Modality.MASCULINE, Status.SCHEDULED, 12, 1L);
+        var dto = SportEventTestUtil.createNewSportEventDto(Sports.TABLE_TENNIS, Modality.MASCULINE, 12, 1L);
 
         assertDoesNotThrow(() -> SportEventValidator.checkSportEventForEdition(events, dto));
     }
@@ -66,76 +67,40 @@ class SportEventValidatorTest {
                 SportEventTestUtil.createNewSportEvent(Sports.FUTSAL, Modality.MASCULINE, edition),
                 SportEventTestUtil.createNewSportEvent(Sports.FUTSAL, Modality.FEMININE, edition));
 
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.FUTSAL, Modality.MASCULINE, Status.SCHEDULED, 12, 1L);
+        var dto = SportEventTestUtil.createNewSportEventDto(Sports.FUTSAL, Modality.MASCULINE, 12, 1L);
 
         assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventForEdition(events, dto));
     }
 
     @Test
-    @DisplayName("Should not throw anything when DTO with no changes in SportEvent is passed")
-    void Should_NotThrowAnything_When_DtoWithNoChangesInSportEventIsPassed() {
-
-        var type = event.getType();
-        var modality = event.getModality();
-        var status = event.getEventStatus();
-        var totalMatches = event.getTotalMatches();
-        var editionId = event.getEdition().getId();
-
-        var dtoSameStatus = SportEventTestUtil.createNewSportEventDto(type, modality, status, totalMatches, editionId);
-        var dtoNewStatus = SportEventTestUtil.createNewSportEventDto(type, modality, Status.IN_PROGRESS, totalMatches, editionId);
-
-        assertDoesNotThrow(() -> SportEventValidator.checkDtoForUpdate(event, dtoSameStatus));
-        assertDoesNotThrow(() -> SportEventValidator.checkDtoForUpdate(event, dtoNewStatus));
+    @DisplayName("Should not throw anything when scheduled SportEvent is passed")
+    void Should_NotThrowAnything_When_ScheduledSportEventIsPassed() {
+        assertDoesNotThrow(() -> SportEventValidator.checkSportEventForUpdate(event));
     }
 
     @Test
-    @DisplayName("Should not throw anything when DTO with changes in scheduled SportEvent is passed")
-    void Should_NotThrowAnything_When_DtoWithChangesInScheduledSportEventIsPassed() {
-
-        var type = event.getType();
-        var modality = event.getModality();
-        var editionId = event.getEdition().getId();
-
-        var dto = SportEventTestUtil.createNewSportEventDto(type, modality, Status.IN_PROGRESS, 13, editionId);
-
-        assertDoesNotThrow(() -> SportEventValidator.checkDtoForUpdate(event, dto));
-    }
-
-    @Test
-    @DisplayName("Should throw BadRequestException when trying to update unscheduled SportEvent fields")
-    void Should_ThrowBadRequestException_When_TryingToUpdateUnscheduledSportEventFields() {
-
+    @DisplayName("Should throw BadRequestException when unscheduled SportEvent is passed")
+    void Should_ThrowBadRequestException_When_UnscheduledSportEventIsPassed() {
         event.setEventStatus(Status.IN_PROGRESS);
-        var dto = SportEventTestUtil.createNewSportEventDto(Sports.FUTSAL, Modality.MASCULINE, Status.IN_PROGRESS, 12, 1L);
-
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkDtoForUpdate(event, dto));
+        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventForUpdate(event));
     }
 
     @Test
     @DisplayName("Should not throw anything when registerd Matches does not exceeds the limit of new total matches value")
     void Should_NotThrowAnything_When_RegisteredMatchesDoesNotExceedsTheLimitOfNewTotalMatchesValue() {
-
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.SCHEDULED, 7, any());
-
-        assertDoesNotThrow(() -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+        assertDoesNotThrow(() -> SportEventValidator.checkNewTotalMatchesForSportEvent(event, 7));
     }
 
     @Test
     @DisplayName("Should throw BadRequestException when registerd Matches exceeds the limit of new total matches value")
     void Should_ThrowBadRequestException_When_RegisteredMatchesExceedsTheLimitOfNewTotalMatchesValue() {
-
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.SCHEDULED, 5, any());
-
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+        assertThrows(BadRequestException.class, () -> SportEventValidator.checkNewTotalMatchesForSportEvent(event, 5));
     }
 
     @Test
     @DisplayName("Should not throw anything when trying to start SportEvent with sufficient matches")
     void Should_NotThrowAnything_When_TryingToStartSportEventWithSufficientMatches() {
-
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.IN_PROGRESS, 6, any());
-
-        assertDoesNotThrow(() -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+        assertDoesNotThrow(() -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.IN_PROGRESS, Status.IN_PROGRESS));
     }
 
 
@@ -143,9 +108,10 @@ class SportEventValidatorTest {
     @DisplayName("Should throw BadRequestException when trying to start SportEvent with no sufficient matches")
     void Should_ThrowBadRequestException_When_TryingToStartSportEventWithNoSufficientMatches() {
 
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.IN_PROGRESS, 7, any());
+        event.setTotalMatches(7);
+        event.setEventStatus(Status.IN_PROGRESS);
 
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
     }
 
     @Test
@@ -160,9 +126,10 @@ class SportEventValidatorTest {
                 MatchTestUtil.createNewMatch(any(), any(), any(), event, Status.ENDED)));
 
         event.setMatches(matches);
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
+        event.setTotalMatches(6);
+        event.setEventStatus(Status.IN_PROGRESS);
 
-        assertDoesNotThrow(() -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+        assertDoesNotThrow(() -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
     }
 
     @Test
@@ -170,12 +137,9 @@ class SportEventValidatorTest {
     void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithNoSufficientMatches() {
 
         matches.remove(0);
-        matches.forEach(match -> match.setMatchStatus(Status.IN_PROGRESS));
         event.setMatches(matches);
 
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
-
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
+        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
     }
 
     @Test
@@ -183,11 +147,10 @@ class SportEventValidatorTest {
     void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithUnfinishedMatches() {
 
         matches.add(MatchTestUtil.createNewMatch(any(), any(), any(), event,Status.IN_PROGRESS));
+        matches.forEach(match -> match.setMatchStatus(Status.IN_PROGRESS));
         event.setMatches(matches);
-        var dto = SportEventTestUtil.createNewSportEventDto(any(), any(), Status.ENDED, 6, any());
 
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkMatchesToUpdateEvent(event, dto));
-
+        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
     }
 
 }

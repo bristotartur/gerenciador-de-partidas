@@ -136,7 +136,7 @@ class EditionServiceTest {
     }
 
     @Test
-    @DisplayName("Should not throw BadRequestException when invalid Status is passed to update Edition Status")
+    @DisplayName("Should throw BadRequestException when invalid Status is passed to update Edition Status")
     void Should_ThrowBadRequestException_When_InvalidStatusIsPassedToUpdateEditionStatus() {
 
         var edition = EditionTestUtil.createNewEdition(Status.SCHEDULED, entityManager);

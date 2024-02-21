@@ -30,17 +30,17 @@ public final class SportEventValidator {
     }
 
     /**
-     * <p>Verifica se há algum evento do tipo {@link SportEvent} associado a uma instância de {@link Edition} com o
+     * Verifica se há algum evento do tipo {@link SportEvent} associado a uma instância de {@link Edition} com o
      * mesmo tipo esportivo e mesma modalidade passados pelo DTO. Cada evento eportivo deve ser único em sua edição,
      * os eventos de mesmo tipo devem ser de modalidades diferentes e vice-versa. Caso já exista um evento esportivo
-     * de mesmo tipo e modalidade que os passados pelo DTO na edição, uma exceção será lançada.</p>
-     *
-     * <p>O método não realiza nenhuma validação prévia da relação entre os eventos esportivos presentes na listagem
-     * passada como argumento, assumindo que todos sejam da mesma edição.</p>
+     * de mesmo tipo e modalidade que os passados pelo DTO na edição, uma exceção será lançada.
      *
      * @param sportEvents Lista contendo todas as instâncias de {@link SportEvent} associadas a uma mesma edição.
      * @param dto DTO do do tipo {@link SportEventDto} contendo os dados do novo evento.
      * @throws BadRequestException Caso já exista um evento com o mesmo tipo e modalidade passados pelo DTO.
+     *
+     * @apiNote O método não realiza nenhuma validação prévia da relação entre os eventos esportivos presentes
+     * na listagem passada como argumento, assumindo que todos sejam da mesma edição.
      */
     public static void checkSportEventForEdition(List<SportEvent> sportEvents, SportEventDto dto) {
 
@@ -63,54 +63,18 @@ public final class SportEventValidator {
     }
 
     /**
-     * Verifica se o DTO passado está apto para atualizar uma instância de {@link SportEvent}. De modo geral,
-     * todos os atributos de um evento esportivo podem ser alterados enquanto ele ainda estiver sob o status
-     * 'SCHEDULED'. Porém, caso ele possua um status de qualquer outro valor, nenhum de seus atributos poderá
-     * mais ser atualizado, com exceção do próprio atributo de status.
+     * Verifica se a instância de {@link SportEvent} passada está apta para ter seus atributos atualizados,
+     * sendo que eventos esportivos só podem ter os atributos alterados quando estão agendados.
      *
      * @param originalEvent Instância de {@link SportEvent} que será atualizada.
-     * @param dto DTO do tipo {@link SportEventDto} contendo os novo dados do evento.
+     * @throws BadRequestException Caso o evento esportivo não esteja apto para ser atualizado.
      */
-    public static void checkDtoForUpdate(SportEvent originalEvent, SportEventDto dto) {
+    public static void checkSportEventForUpdate(SportEvent originalEvent) {
 
-        Status.checkStatus(originalEvent.getEventStatus(), dto.eventStatus());
-
-        var isTypeDifferent = !originalEvent.getType().equals(dto.type());
-        var isModalityDifferent = !originalEvent.getModality().equals(dto.modality());
-        var isTotalMatchesDifferent = !originalEvent.getTotalMatches().equals(dto.totalMatches());
-        var isEditionDifferent = !originalEvent.getEdition().getId().equals(dto.editionId());
-
-        var areAttributesDifferent = isTypeDifferent || isModalityDifferent || isTotalMatchesDifferent;
         var status = originalEvent.getEventStatus();
 
-        if (!status.equals(Status.SCHEDULED) && (areAttributesDifferent || isEditionDifferent)) {
+        if (!status.equals(Status.SCHEDULED)) {
             throw new BadRequestException(ExceptionMessages.INVALID_UPDATE_TO_SPORT_EVENT.message);
-        }
-    }
-
-    /**
-     * Verifica as partidas associadas a uma instância de {@link SportEvent} para determinar se o evento está
-     * apto para ser atualizado. Alguns dados referentes às partidas podem impedir a mudança do {@link Status}
-     * de um evento, como a quantidade de partidas registradas, seus próprios status e o total permitido de
-     * partidas no evento.
-     *
-     * @param originalEvent Instância de {@link SportEvent} contendo as partidas utilizadas no método.
-     * @param dto DTO do tipo {@link SportEventDto} contendo os novos dados do evento.
-     * @throws BadRequestException Caso o evento não esteja apto para ser atualizado.
-     */
-    public static void checkMatchesToUpdateEvent(SportEvent originalEvent, SportEventDto dto) {
-
-        var newStatus = dto.eventStatus();
-        var newTotal = dto.totalMatches();
-
-        if (originalEvent.getTotalMatches() != newTotal) {
-            checkTotalMatches(originalEvent, newTotal);
-        }
-        if (newStatus.equals(Status.IN_PROGRESS)) {
-            checkMatchesToStartEvent(originalEvent, newTotal);
-        }
-        if (newStatus.equals(Status.ENDED)) {
-            checkMatchesToFinishEvent(originalEvent);
         }
     }
 
@@ -123,12 +87,48 @@ public final class SportEventValidator {
      * @param newTotal O novo total de partidas, no qual será calculado o mínimo total.
      * @throws BadRequestException Caso a quantidade de partidas registradas exceda o novo mínimo total de partidas.
      */
-    private static void checkTotalMatches(SportEvent originalEvent, Integer newTotal) {
+    public static void checkNewTotalMatchesForSportEvent(SportEvent originalEvent, Integer newTotal) {
 
         var matchQuantity = originalEvent.getMatches().size();
 
         if (matchQuantity > newTotal - 4) {
             throw new BadRequestException(ExceptionMessages.CANNOT_UPDATE_TOTAL_MATCHES.message);
+        }
+    }
+
+    /**
+     * Verifica se uma instância de {@link SportEvent} está apta para ter seu status atualizado. Para atualizar
+     * o status de um evento esportivo, certas circunstâncias precisam ser atendidas:
+     *
+     * <ul>
+     *     <li>A instância de {@link Edition} associada ao evento precisa estar em andamento.</li>
+     *     <li>Caso o novo status seja 'IN_PROGRESS', o evento necessitará ter o mínimo total de
+     *     partidas marcadas.</li>
+     *     <li>Caso o novo status seja 'ENDED', a quantidade de partidas registradas deve ser igual ao total
+     *     permitido pelo evento e todas devem estar encerradas.</li>
+     * </ul>
+     *
+     * @param originalEvent O evento que terá o stus atualizado.
+     * @param newStatus O novo status do evento.
+     * @param editionStatus O status da edição associada ao evento.
+     * @throws BadRequestException Caso alguma das circunstâncias não seja atendida corretamente.
+     *
+     * @apiNote O método não realiza nenhuma validação prévia entre a relação do 'editionStatus' passado como
+     * argumento e uma instância real de {@link Edition}, assumindo que estejam relacionados e que esta edição
+     * está vinculada ao evento passado.
+     */
+    public static void checkSportEventToUpdateStatus(SportEvent originalEvent, Status newStatus, Status editionStatus) {
+
+        if (!editionStatus.equals(Status.IN_PROGRESS)) {
+            throw new BadRequestException(ExceptionMessages.CANNOT_UPDATE_EVENT_STATUS.message);
+        }
+        var totalMatches = originalEvent.getTotalMatches();
+
+        if (newStatus.equals(Status.IN_PROGRESS)) {
+            checkMatchesToStartEvent(originalEvent, totalMatches);
+        }
+        if (newStatus.equals(Status.ENDED)) {
+            checkMatchesToFinishEvent(originalEvent);
         }
     }
 

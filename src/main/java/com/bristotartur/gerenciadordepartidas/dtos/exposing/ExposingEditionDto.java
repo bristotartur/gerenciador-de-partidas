@@ -17,7 +17,7 @@ public class ExposingEditionDto extends RepresentationModel<ExposingEditionDto> 
     private final Integer papaLeguas;
     private final Integer twister;
     private final Integer unicontti;
-    private final Status status;
+    private final Status editionStatus;
     private final LocalDate opening;
     private final LocalDate closure;
 

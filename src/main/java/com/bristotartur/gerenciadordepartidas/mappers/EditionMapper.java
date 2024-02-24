@@ -32,7 +32,6 @@ public interface EditionMapper {
     @Mapping(target = "papaLeguas", source = "edition.papaPontuation")
     @Mapping(target = "twister", source = "edition.twisterPontuation")
     @Mapping(target = "unicontti", source = "edition.uniconttiPontuation")
-    @Mapping(target = "status", source = "edition.editionStatus")
     ExposingEditionDto toNewExposingEditionDto(Edition edition);
 
 }

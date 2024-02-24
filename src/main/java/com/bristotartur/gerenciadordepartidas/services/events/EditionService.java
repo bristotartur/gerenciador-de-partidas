@@ -1,7 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
@@ -43,10 +42,6 @@ public class EditionService {
 
         log.info("Edition '{}' was found.", id);
         return edition;
-    }
-
-    public ExposingEditionDto createExposingEditionDto(Edition edition) {
-        return editionMapper.toNewExposingEditionDto(edition);
     }
 
     public Edition saveEdition(EditionDto editionDto) {

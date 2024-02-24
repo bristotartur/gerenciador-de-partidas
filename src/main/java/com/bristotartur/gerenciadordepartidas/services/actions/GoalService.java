@@ -2,7 +2,6 @@ package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -89,16 +88,6 @@ public class GoalService {
 
         log.info("Goal '{}' from Match '{}' was found.", id, goal.getMatch().getId());
         return goal;
-    }
-
-    /**
-     * Gera um DTO do tipo {@link ExposingGoalDto} com base no gol fornecido.
-     *
-     * @param goal Gol que terá seus dados mapeados para o DTO.
-     * @return Uma nova instância de {@link ExposingGoalDto} contendo os dados fornecidos.
-     */
-    public ExposingGoalDto createExposingGoalDto(Goal goal) {
-        return goalMapper.toNewExposingGoalDto(goal);
     }
 
     /**

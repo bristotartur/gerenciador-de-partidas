@@ -1,7 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -66,16 +65,6 @@ public class PenaltyCardService {
 
         log.info("Penalty Card '{}' from Match '{}' was found.", id, penaltyCard.getMatch().getId());
         return penaltyCard;
-    }
-
-    /**
-     * Gera um DTO do tipo {@link ExposingPenaltyCardDto} com base no cartão forecido.
-     *
-     * @param penaltyCard Cartão de penalidade que terá seus dados mapeados para o DTO.
-     * @return Uma nova instância de {@link ExposingPenaltyCardDto} contendo os dados fornecidos.
-     */
-    public ExposingPenaltyCardDto createExposingPenaltyCardDto(PenaltyCard penaltyCard) {
-        return penaltyCardMapper.toNewExposinfPenaltyCardDto(penaltyCard);
     }
 
     /**

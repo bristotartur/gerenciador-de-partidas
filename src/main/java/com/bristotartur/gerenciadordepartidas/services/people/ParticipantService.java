@@ -1,7 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
@@ -99,16 +98,6 @@ public class ParticipantService {
 
         log.info("Participant '{}' with name '{}' was found.", participant.getId(), participant.getName());
         return participant;
-    }
-
-    /**
-     * Gera um DTO do tipo {@link ExposingParticipantDto} com base no participante fornecido.
-     *
-     * @param participant Participante terá seus dados mapeados para o DTO.
-     * @return Uma nova instância de {@link ExposingParticipantDto} contendo os dados fornecidos.
-     */
-    public ExposingParticipantDto createExposingParticipantDto(Participant participant) {
-        return participantMapper.toNewExposingParticipantDto(participant);
     }
 
     /**

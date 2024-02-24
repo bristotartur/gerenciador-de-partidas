@@ -1,11 +1,10 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
+import com.bristotartur.gerenciadordepartidas.domain.events.Event;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.events.TaskEvent;
-import com.bristotartur.gerenciadordepartidas.domain.events.Event;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposableEventData;
 import com.bristotartur.gerenciadordepartidas.dtos.input.TransferableEventData;
 import com.bristotartur.gerenciadordepartidas.enums.EventType;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -77,15 +76,6 @@ public interface EventStrategy<T extends Event> {
      * @return A instância de {@link Event} correspondente ao ID.
      */
     T findEventAndCheckStatus(Long id);
-
-    /**
-     * Gera um nova instância de uma implementação de {@link ExposableEventData} a partir dos dados de
-     * um evento.
-     *
-     * @param event Evento utilizado para gerar o DTO.
-     * @return Um DTO que implementaa interface {@link ExposableEventData}.
-     */
-    ExposableEventData<T> createExposingEventDto(T event);
 
     /**
      * Salva um evento no sistema com base nos dados fornecidos no DTO.

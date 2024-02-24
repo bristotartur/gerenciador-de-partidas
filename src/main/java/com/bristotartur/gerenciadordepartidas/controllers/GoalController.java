@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.GoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class GoalController {
 
     private final GoalService goalService;
+    private final GoalMapper goalMapper;
 
     @GetMapping
     public ResponseEntity<Page<ExposingGoalDto>> listAllGoals(Pageable pageable) {
@@ -60,9 +62,7 @@ public class GoalController {
 
         log.info("Request to find Goal '{}' was made.", id);
 
-        var goal = goalService.findGoalById(id);
-        var dto = this.addGoalListLink(goal, PageRequest.of(0, 12));
-
+        var dto = this.createSingleExposingDto(goalService.findGoalById(id));
         return ResponseEntity.ok().body(dto);
     }
 
@@ -71,9 +71,7 @@ public class GoalController {
 
         log.info("Request to create a new Goal was made.");
 
-        var goal = goalService.saveGoal(goalDto);
-        var dto = this.addGoalListLink(goal, PageRequest.of(0, 12));
-
+        var dto = this.createSingleExposingDto(goalService.saveGoal(goalDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -92,10 +90,22 @@ public class GoalController {
 
         log.info("Request to update Goal '{}' was made.", id);
 
-        var goal = goalService.replaceGoal(id, goalDto);
-        var dto = this.addGoalListLink(goal, PageRequest.of(0, 12));
-
+        var dto = this.createSingleExposingDto(goalService.replaceGoal(id, goalDto));
         return ResponseEntity.ok().body(dto);
+    }
+
+    private ExposingGoalDto createSingleExposingDto(Goal goal) {
+
+        var playerId = goal.getPlayer().getId();
+        var matchId = goal.getMatch().getId();
+        var dto = goalMapper.toNewExposingGoalDto(goal);
+        var pageable = PageRequest.of(0, 12);
+
+        dto.add(linkTo(methodOn(this.getClass()).listAllGoals(pageable)).withRel("goals"));
+        dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
+        dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
+
+        return dto;
     }
 
     private Page<ExposingGoalDto> createExposingDtoPage(Page<Goal> goalPage) {
@@ -113,22 +123,9 @@ public class GoalController {
         var id = goal.getId();
         var playerId = goal.getPlayer().getId();
         var matchId = goal.getMatch().getId();
-        var dto = goalService.createExposingGoalDto(goal);
+        var dto = goalMapper.toNewExposingGoalDto(goal);
 
         dto.add(linkTo(methodOn(this.getClass()).findGoalById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
-        dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
-
-        return dto;
-    }
-
-    private ExposingGoalDto addGoalListLink(Goal goal, Pageable pageable) {
-
-        var playerId = goal.getPlayer().getId();
-        var matchId = goal.getMatch().getId();
-        var dto = goalService.createExposingGoalDto(goal);
-
-        dto.add(linkTo(methodOn(this.getClass()).listAllGoals(pageable)).withRel("goals"));
         dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
         dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
 

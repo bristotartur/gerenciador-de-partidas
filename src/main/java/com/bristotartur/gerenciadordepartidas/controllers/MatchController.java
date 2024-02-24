@@ -7,8 +7,8 @@ import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantD
 import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
+import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
-import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class MatchController {
 
     private final MatchService matchService;
-    private final ParticipantService participantService;
+    private final ParticipantMapper participantMapper;
 
     @GetMapping
     public ResponseEntity<Page<ExposingMatchDto>> listAllMatches(Pageable pageable) {
@@ -79,9 +79,7 @@ public class MatchController {
 
         log.info("Request to find Match '{}' was made.", id);
 
-        var match = matchService.findMatchById(id);
-        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
-
+        var dto = this.createSingleExposingDto(matchService.findMatchById(id));
         return ResponseEntity.ok().body(dto);
     }
 
@@ -90,9 +88,7 @@ public class MatchController {
 
         log.info("Request to create a new Match of type '{}' was made.", matchDto.sport());
 
-        var match = matchService.saveMatch(matchDto);
-        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
-
+        var dto = this.createSingleExposingDto(matchService.saveMatch(matchDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -111,9 +107,7 @@ public class MatchController {
 
         log.info("Request to update Match '{}' of type '{}' was made.", id, matchDto.sport());
 
-        var match = matchService.replaceMatch(id, matchDto);
-        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
-
+        var dto = this.createSingleExposingDto(matchService.replaceMatch(id, matchDto));
         return ResponseEntity.ok().body(dto);
     }
 
@@ -124,10 +118,24 @@ public class MatchController {
         var status = Status.findStatusLike(matchStatus);
         log.info("Request to update Match '{}' to status '{}' was made.", id, status);
 
-        var match = matchService.updateMatchStatus(id, status);
-        var dto = this.addMatchListLink(match, PageRequest.of(0, 12));
-
+        var dto = this.createSingleExposingDto(matchService.updateMatchStatus(id, status));
         return ResponseEntity.ok().body(dto);
+    }
+
+    private ExposingMatchDto createSingleExposingDto(Match match) {
+
+        var id = match.getId();
+
+        var dto = matchService.createExposingMatchDto(match);
+        var sport = dto.getSport().value;
+        var pageable = PageRequest.of(0, 12);
+
+        dto.add(linkTo(methodOn(this.getClass()).listAllMatches(pageable)).withRel("matches"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, pageable)).withRel("matchPlayers"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(sport, pageable)).withRel("matchesOfSameTpe"));
+        this.addExtraLinks(dto, match.getId(), pageable);
+
+        return dto;
     }
 
     private Page<ExposingMatchDto> createExposingDtoPage(Page<? extends Match> matchPage) {
@@ -155,25 +163,10 @@ public class MatchController {
         return dto;
     }
 
-    private ExposingMatchDto addMatchListLink(Match match, Pageable pageable) {
-
-        var id = match.getId();
-
-        var dto = matchService.createExposingMatchDto(match);
-        var sport = dto.getSport().value;
-
-        dto.add(linkTo(methodOn(this.getClass()).listAllMatches(pageable)).withRel("matches"));
-        dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id, pageable)).withRel("matchPlayers"));
-        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(sport, pageable)).withRel("matchesOfSameTpe"));
-        this.addExtraLinks(dto, match.getId(), pageable);
-
-        return dto;
-    }
-
     private ExposingParticipantDto addPlayerLink(Participant player, Long matchId) {
 
         var id = player.getId();
-        var dto = participantService.createExposingParticipantDto(player);
+        var dto = participantMapper.toNewExposingParticipantDto(player);
 
         dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(id)).withSelfRel());
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(matchId)).withRel("match"));

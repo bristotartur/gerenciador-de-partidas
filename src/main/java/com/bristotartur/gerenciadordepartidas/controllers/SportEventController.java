@@ -5,6 +5,7 @@ import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingSportEventDt
 import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
+import com.bristotartur.gerenciadordepartidas.mappers.SportEventMapper;
 import com.bristotartur.gerenciadordepartidas.services.events.SportEventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class SportEventController {
 
     private final SportEventService sportEventService;
+    private final SportEventMapper sportEventMapper;
 
     @GetMapping
     public ResponseEntity<Page<ExposingSportEventDto>> listAllSportEvents(Pageable pageable) {
@@ -117,7 +119,7 @@ public class SportEventController {
 
         var id = sportEvent.getId();
         var editionId = sportEvent.getId();
-        var dto = (ExposingSportEventDto) sportEventService.createExposingEventDto(sportEvent);
+        var dto = sportEventMapper.toNewExposingSportEventDto(sportEvent);
 
         var pageable = PageRequest.of(0, 12);
 
@@ -140,7 +142,7 @@ public class SportEventController {
 
         var id = sportEvent.getId();
         var editionId = sportEvent.getEdition().getId();
-        var dto = (ExposingSportEventDto) sportEventService.createExposingEventDto(sportEvent);
+        var dto = sportEventMapper.toNewExposingSportEventDto(sportEvent);
 
         var pageable = PageRequest.of(0, 12);
 

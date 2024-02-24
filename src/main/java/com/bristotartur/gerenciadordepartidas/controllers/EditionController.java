@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
+import com.bristotartur.gerenciadordepartidas.mappers.EditionMapper;
 import com.bristotartur.gerenciadordepartidas.services.events.EditionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class EditionController {
 
     private final EditionService editionService;
+    private final EditionMapper editionMapper;
 
     @GetMapping
     public ResponseEntity<Page<ExposingEditionDto>> listAllEditions(Pageable pageable) {
@@ -89,7 +91,7 @@ public class EditionController {
 
     private ExposingEditionDto createSingleExposingDto(Edition edition) {
 
-        var dto = editionService.createExposingEditionDto(edition);
+        var dto = editionMapper.toNewExposingEditionDto(edition);
         var pageRequest = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).listAllEditions(pageRequest)).withRel("editions"));
@@ -110,7 +112,7 @@ public class EditionController {
     private ExposingEditionDto addSingleEditionLink(Edition edition) {
 
         var id = edition.getId();
-        var dto = editionService.createExposingEditionDto(edition);
+        var dto = editionMapper.toNewExposingEditionDto(edition);
 
         dto.add(linkTo(methodOn(this.getClass()).findEditionById(id)).withSelfRel());
         return dto;

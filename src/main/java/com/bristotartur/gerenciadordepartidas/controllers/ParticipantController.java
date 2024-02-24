@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
+import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ParticipantController {
 
     private final ParticipantService participantService;
+    private final ParticipantMapper participantMapper;
 
     @GetMapping
     public ResponseEntity<Page<ExposingParticipantDto>> listAllParticipants(Pageable pageable) {
@@ -67,9 +69,7 @@ public class ParticipantController {
 
         log.info("Request to find Participant '{}' was made.", id);
 
-        var participant = participantService.findParticipantById(id);
-        var dto = this.addParticipantListLink(participant, PageRequest.of(0, 20));
-
+        var dto = this.createSingleExposingDto(participantService.findParticipantById(id));
         return ResponseEntity.ok().body(dto);
     }
 
@@ -78,9 +78,7 @@ public class ParticipantController {
 
         log.info("Request to create a new Participant was made.");
 
-        var participant = participantService.saveParticipant(participantDto);
-        var dto = this.addParticipantListLink(participant, PageRequest.of(0, 20));
-
+        var dto = this.createSingleExposingDto(participantService.saveParticipant(participantDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -99,10 +97,17 @@ public class ParticipantController {
 
         log.info("Request to update Participant '{}' was made.", id);
 
-        var participant = participantService.replaceParticipant(id, participantDto);
-        var dto = this.addParticipantListLink(participant, PageRequest.of(0, 20));
-
+        var dto = this.createSingleExposingDto(participantService.replaceParticipant(id, participantDto));
         return ResponseEntity.ok().body(dto);
+    }
+
+    private ExposingParticipantDto createSingleExposingDto(Participant participant) {
+
+        var dto = participantMapper.toNewExposingParticipantDto(participant);
+        var pageable = PageRequest.of(0, 20);
+
+        dto.add(linkTo(methodOn(this.getClass()).listAllParticipants(pageable)).withRel("participants"));
+        return dto;
     }
 
     private Page<ExposingParticipantDto> createExposingDtoPage(Page<Participant> participantPage) {
@@ -118,18 +123,9 @@ public class ParticipantController {
     private ExposingParticipantDto addSingleParticipantLink(Participant participant) {
 
         var id = participant.getId();
-        var dto = participantService.createExposingParticipantDto(participant);
+        var dto = participantMapper.toNewExposingParticipantDto(participant);
 
         dto.add(linkTo(methodOn(this.getClass()).findParticipantById(id)).withSelfRel());
-
-        return dto;
-    }
-
-    private ExposingParticipantDto addParticipantListLink(Participant participant, Pageable pageable) {
-
-        var dto = participantService.createExposingParticipantDto(participant);
-
-        dto.add(linkTo(methodOn(this.getClass()).listAllParticipants(pageable)).withRel("participants"));
         return dto;
     }
 

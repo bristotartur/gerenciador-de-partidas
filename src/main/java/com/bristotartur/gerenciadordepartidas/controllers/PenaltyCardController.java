@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.mappers.PenaltyCardMapper;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class PenaltyCardController {
 
     private final PenaltyCardService penaltyCardService;
+    private final PenaltyCardMapper penaltyCardMapper;
 
     @GetMapping
     public ResponseEntity<Page<ExposingPenaltyCardDto>> listAllPenaltyCards(Pageable pageable) {
@@ -44,9 +46,7 @@ public class PenaltyCardController {
 
         log.info("Request to find Penalty Card '{}' was made.", id);
 
-        var penaltyCard = penaltyCardService.findPenaltyCardById(id);
-        var dto = this.addPenaltyCardListLink(penaltyCard, PageRequest.of(0, 20));
-
+        var dto = this.createSingleExposingDto(penaltyCardService.findPenaltyCardById(id));
         return ResponseEntity.ok().body(dto);
     }
 
@@ -55,9 +55,7 @@ public class PenaltyCardController {
 
         log.info("Request to create a new Penalty Card was made.");
 
-        var penaltyCard = penaltyCardService.savePenaltyCard(penaltyCardDto);
-        var dto = this.addPenaltyCardListLink(penaltyCard, PageRequest.of(0, 20));
-
+        var dto = this.createSingleExposingDto(penaltyCardService.savePenaltyCard(penaltyCardDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -76,10 +74,22 @@ public class PenaltyCardController {
 
         log.info("Request to update Penalty Card '{}' was made.", id);
 
-        var penaltyCard = penaltyCardService.replacePenaltyCard(id, penaltyCardDto);
-        var dto = this.addPenaltyCardListLink(penaltyCard, PageRequest.of(0, 20));
-
+        var dto = this.createSingleExposingDto(penaltyCardService.replacePenaltyCard(id, penaltyCardDto));
         return ResponseEntity.ok().body(dto);
+    }
+
+    private ExposingPenaltyCardDto createSingleExposingDto(PenaltyCard penaltyCard) {
+
+        var playerId = penaltyCard.getPlayer().getId();
+        var matchId = penaltyCard.getMatch().getId();
+        var pageable = PageRequest.of(0, 20);
+        var dto = penaltyCardMapper.toNewExposinfPenaltyCardDto(penaltyCard);
+
+        dto.add(linkTo(methodOn(this.getClass()).listAllPenaltyCards(pageable)).withRel("penalty_cards"));
+        dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
+        dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
+
+        return dto;
     }
 
     private Page<ExposingPenaltyCardDto> createExposingDtoPage(Page<PenaltyCard> penaltyCardPage) {
@@ -97,22 +107,9 @@ public class PenaltyCardController {
         var id = penaltyCard.getId();
         var playerId = penaltyCard.getPlayer().getId();
         var matchId = penaltyCard.getMatch().getId();
-        var dto = penaltyCardService.createExposingPenaltyCardDto(penaltyCard);
+        var dto = penaltyCardMapper.toNewExposinfPenaltyCardDto(penaltyCard);
 
         dto.add(linkTo(methodOn(this.getClass()).findPenaltyCardById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
-        dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
-
-        return dto;
-    }
-
-    private ExposingPenaltyCardDto addPenaltyCardListLink(PenaltyCard penaltyCard, Pageable pageable) {
-
-        var playerId = penaltyCard.getPlayer().getId();
-        var matchId = penaltyCard.getMatch().getId();
-        var dto = penaltyCardService.createExposingPenaltyCardDto(penaltyCard);
-
-        dto.add(linkTo(methodOn(this.getClass()).listAllPenaltyCards(pageable)).withRel("penalty_cards"));
         dto.add(linkTo(methodOn(ParticipantController.class).findParticipantById(playerId)).withRel("player"));
         dto.add(linkTo(methodOn(MatchController.class).findMatchById(matchId)).withRel("match"));
 

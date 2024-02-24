@@ -19,7 +19,7 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(ExceptionDetails.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
-                .tittle("NotFoundException.")
+                .title("NotFoundException.")
                 .details(notFoundException.getMessage())
                 .developerMessage(notFoundException.getClass().getName())
                 .build(), HttpStatus.NOT_FOUND);
@@ -31,7 +31,7 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(ExceptionDetails.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
-                .tittle("BadRequestException.")
+                .title("BadRequestException.")
                 .details(badRequestException.getMessage())
                 .developerMessage(badRequestException.getClass().getName())
                 .build(), HttpStatus.BAD_REQUEST);

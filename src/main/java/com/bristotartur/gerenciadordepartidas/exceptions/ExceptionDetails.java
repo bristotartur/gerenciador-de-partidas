@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ExceptionDetails {
 
-    private String tittle;
+    private String title;
     private Integer status;
     private String details;
     private String developerMessage;

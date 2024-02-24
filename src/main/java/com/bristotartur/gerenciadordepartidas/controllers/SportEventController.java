@@ -4,6 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingSportEventDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.services.events.SportEventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +72,7 @@ public class SportEventController {
 
         log.info("Request to find SportEvent '{}' was made.", id);
 
-        var dto = this.addSportEventListLink(sportEventService.findEventById(id));
+        var dto = this.createSingleExposingDto(sportEventService.findEventById(id));
         return ResponseEntity.ok().body(dto);
     }
 
@@ -80,7 +81,7 @@ public class SportEventController {
 
         log.info("Request to create SportEvent was made.");
 
-        var dto = this.addSportEventListLink(sportEventService.saveEvent(sportEventDto));
+        var dto = this.createSingleExposingDto(sportEventService.saveEvent(sportEventDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -98,8 +99,31 @@ public class SportEventController {
                                                                    @RequestBody @Valid SportEventDto sportEventDto) {
         log.info("Request to update SportEvent '{}' was made.", id);
 
-        var dto = this.addSportEventListLink(sportEventService.replaceEvent(id, sportEventDto));
+        var dto = this.createSingleExposingDto(sportEventService.replaceEvent(id, sportEventDto));
         return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping(path = "/{id}/update")
+    public ResponseEntity<ExposingSportEventDto> updateSportEventStatus(@PathVariable Long id,
+                                                                        @RequestParam("status") String eventStatus) {
+        var status = Status.findStatusLike(eventStatus);
+        log.info("Request to update SportEvent '{}' to status '{}' was made.", id, status);
+
+        var dto = this.createSingleExposingDto(sportEventService.updateEventStatus(id, status));
+        return ResponseEntity.ok().body(dto);
+    }
+
+    private ExposingSportEventDto createSingleExposingDto(SportEvent sportEvent) {
+
+        var id = sportEvent.getId();
+        var editionId = sportEvent.getId();
+        var dto = (ExposingSportEventDto) sportEventService.createExposingEventDto(sportEvent);
+
+        var pageable = PageRequest.of(0, 12);
+
+        dto.add(linkTo(methodOn(this.getClass()).listAllSportEvents(pageable)).withRel("sportEventList"));
+        dto.add(linkTo(methodOn(EditionController.class).findEditionById(editionId)).withRel("edition"));
+        return dto;
     }
 
     private Page<ExposingSportEventDto> createExposingDtoPage(Page<SportEvent> sportEventPage) {
@@ -121,19 +145,6 @@ public class SportEventController {
         var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findSportEventById(id)).withSelfRel());
-        dto.add(linkTo(methodOn(EditionController.class).findEditionById(editionId)).withRel("edition"));
-        return dto;
-    }
-
-    private ExposingSportEventDto addSportEventListLink(SportEvent sportEvent) {
-
-        var id = sportEvent.getId();
-        var editionId = sportEvent.getId();
-        var dto = (ExposingSportEventDto) sportEventService.createExposingEventDto(sportEvent);
-
-        var pageable = PageRequest.of(0, 12);
-
-        dto.add(linkTo(methodOn(this.getClass()).listAllSportEvents(pageable)).withRel("sportEventList"));
         dto.add(linkTo(methodOn(EditionController.class).findEditionById(editionId)).withRel("edition"));
         return dto;
     }

@@ -3,6 +3,7 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
+import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.services.events.EditionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +46,7 @@ public class EditionController {
 
         log.info("Request to find Edition '{}' was made.", id);
 
-        var edition = editionService.findEditionById(id);
-        var dto = this.addEditionListLink(edition);
-
+        var dto = this.createSingleExposingDto(editionService.findEditionById(id));
         return ResponseEntity.ok().body(dto);
     }
 
@@ -56,9 +55,7 @@ public class EditionController {
 
         log.info("Request to create Edition was made.");
 
-        var edition = editionService.saveEdition(editionDto);
-        var dto = this.addEditionListLink(edition);
-
+        var dto = this.createSingleExposingDto(editionService.saveEdition(editionDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -76,15 +73,33 @@ public class EditionController {
                                                              @RequestBody @Valid EditionDto editionDto) {
         log.info("Request to update Edition was made.");
 
-        var edition = editionService.replaceEdition(id, editionDto);
-        var dto = this.addEditionListLink(edition);
-
+        var dto = this.createSingleExposingDto(editionService.replaceEdition(id, editionDto));
         return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping(path = "/{id}/update")
+    public ResponseEntity<ExposingEditionDto> updateEditionStatus(@PathVariable Long id,
+                                                                  @RequestParam("status") String editionStatus) {
+        var status = Status.findStatusLike(editionStatus);
+        log.info("Request to update Edition '{}' with to status '{}' was made.", id, status);
+
+        var dto = this.createSingleExposingDto(editionService.updateEditionStatus(id, status));
+        return ResponseEntity.ok().body(dto);
+    }
+
+    private ExposingEditionDto createSingleExposingDto(Edition edition) {
+
+        var dto = editionService.createExposingEditionDto(edition);
+        var pageRequest = PageRequest.of(0, 12);
+
+        dto.add(linkTo(methodOn(this.getClass()).listAllEditions(pageRequest)).withRel("editions"));
+        return dto;
     }
 
     private Page<ExposingEditionDto> createExposingDtoPage(Page<Edition> editionsPage) {
 
         var editions = editionsPage.getContent();
+
         var dtos = editions.stream()
                 .map(this::addSingleEditionLink)
                 .toList();
@@ -100,15 +115,5 @@ public class EditionController {
         dto.add(linkTo(methodOn(this.getClass()).findEditionById(id)).withSelfRel());
         return dto;
     }
-
-    private ExposingEditionDto addEditionListLink(Edition edition) {
-
-        var dto = editionService.createExposingEditionDto(edition);
-        var pageRequest = PageRequest.of(0, 12);
-
-        dto.add(linkTo(methodOn(this.getClass()).listAllEditions(pageRequest)).withRel("editions"));
-        return dto;
-    }
-
 
 }

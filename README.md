@@ -102,7 +102,7 @@ A primeira coisa que deve ser feita no sistema é a criação de uma *edição*.
 gincanas, sendo assim a entidade principal de todo o sistema, pois todas as demais entidades estão relacionadas de forma direta ou
 indireta a elas. A URL geral para interações com *edições* é a seguinte:
 
-```url
+```plaintext
 http://localhost:8080/gerenciador-de-partidas/api/editions
 ```
 Para criar uma nova *edição*, basta utilizar a URL acima com o método POST e inserir um corpo de requisição definido a data
@@ -155,7 +155,7 @@ modificando apenas os campos necessários:
 ```
 A URL também é a mesma, adicionando apenas o ID da entidade ao final e trocando o método `POST` por `PUT`:
 
-```url
+```plaintext
 http://localhost:8080/gerenciador-de-partidas/api/editions/1
 ```
 Repare que desta forma conseguimos alterar `opening` e `closure`, mas não `editionsStatus`. Ao utilizar esta API é necessário 
@@ -166,7 +166,7 @@ a entidade por meio de um corpo de requisição, como mostrado acima. Já a segu
 caso de `editionStatus`. Para atualizá-lo usaremos método `PUT` novamente e a URL será a mesma, porém informando ao final qual o novo
 status da *edição*:
 
-```url
+```plaintext
 http://localhost:8080/gerenciador-de-partidas/api/editions/1/update?status=in-progress
 ```
 
@@ -266,7 +266,7 @@ esportivos da gincana possuem por volta de 14 partidas, mas neste exemplo seram 
 temos o campo `eventStatus`, que funciona da mesma forma que o *status* das edições, e para atualizá-lo, basta usar a seguinte 
 URL com o método `PUT`:
 
-```url
+```plaintext
 http://localhost:8080/gerenciador-de-partidas/api/sport-events/1/update?status=in-progress
 ```
 Um detalhe importante sobre os eventos é que eles só podem ser alterados enquanto sua *edição* estiver sob o status `scheduled`

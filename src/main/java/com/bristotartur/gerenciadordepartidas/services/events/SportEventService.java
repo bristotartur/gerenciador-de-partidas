@@ -155,9 +155,10 @@ public class SportEventService implements EventStrategy<SportEvent> {
         editionService.checkEditionStatusById(edition.getId());
 
         var events = sportEventRepository.findSportEventsByEditionId(edition.getId());
-        SportEventValidator.checkSportEventForEdition(events, dto);
+        if (!originalEvent.getType().equals(dto.type()) || !originalEvent.getModality().equals(dto.modality())) {
+            SportEventValidator.checkSportEventForEdition(events, dto);
+        }
         SportEventValidator.checkNewTotalMatchesForSportEvent(originalEvent, dto.totalMatches());
-
         var updatedEvent = sportEventRepository.save(sportEventMapper.toExistingSportEvent(id, dto, originalEvent, edition));
 
         log.info("SportEvent '{}' from Edition '{}' was updated.", originalEvent.getId(), edition.getId());

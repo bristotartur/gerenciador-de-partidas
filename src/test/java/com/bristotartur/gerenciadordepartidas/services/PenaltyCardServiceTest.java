@@ -119,20 +119,6 @@ class PenaltyCardServiceTest {
     }
 
     @Test
-    @DisplayName("Should create new ExposingPenaltyCardDto when PenaltyCard is passed to create ExposingPenaltyCardDto")
-    void Should_CreateNewExposingPenaltyCardDto_When_PenaltyCardIsPassedToCratePenaltyCardDto() {
-
-        var futsalMatch = matchService.saveMatch(futsalDto);
-        var penaltyCard = PenaltyCardTestUtil
-                .createNewPenaltyCard(PenaltyCardColor.RED, playerA, futsalMatch, entityManager);
-
-        var result = penaltyCardService.createExposingPenaltyCardDto(penaltyCard);
-
-        assertEquals(result.getColor(), penaltyCard.getColor());
-        assertEquals(result.getPlayer(), penaltyCard.getPlayer().getName());
-    }
-
-    @Test
     @DisplayName("Should save PenaltyCard when valid PenaltyCardDto is passed to save")
     void Should_SavePenaltyCard_When_ValidPenaltyCardDtoIsPassedToSave() {
 

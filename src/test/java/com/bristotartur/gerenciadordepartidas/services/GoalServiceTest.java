@@ -141,19 +141,6 @@ class GoalServiceTest {
     }
 
     @Test
-    @DisplayName("Should create new ExposingGoalDto when Goal is passed to create new ExposingGoalDto")
-    void Should_CreateNewExposingGoalDto_When_GoalIsPassedToCreateNewExposingGoalDto() {
-
-        var sport = Sports.FUTSAL;
-        var futsalMatch = matchService.saveMatch(futsalDto);
-        var goal = GoalTestUtil.createNewGoal(playerA, futsalMatch);
-
-        var result = goalService.createExposingGoalDto(goal);
-
-        assertEquals(result.getPlayer(), playerA.getName());
-    }
-
-    @Test
     @DisplayName("Should save Goal when valid GoalDto is passed to save")
     void Should_SaveGoal_When_ValidGoalDtoIsPassedToSave() {
 

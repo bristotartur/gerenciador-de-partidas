@@ -5,6 +5,12 @@ Aplicação em Spring Boot para o gerenciamento de partidas para a gincana do co
 O objetivo deste projeto é fornecer um sistema de gerenciamento que facilite o controle de atividades esportivas relativas a gincana, bem como a disseminação de informações sobre a mesma,
 como placares de jogos, datas e horários, pontuações das equipes e outros dados.
 
+## Considerações sobre o sistema
+
+O projeto se encontra em fase de desenvolvimento e muitas das funcionalidades previstas a ele ainda não foram implementadas.
+Portanto, é necessário estar ciente de que o uso prévio desta aplicação apresenta poucos recursos e de que este não é o produto
+final.
+
 ## Como rodar esta aplicação?
 
 No momento a única forma de adquirir esta aplicação é clonando o repositório deste projeto, o que pode ser feito
@@ -37,7 +43,6 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
 ```
-
 Repare que o `docker-compose.yml` já define um banco chamado `gerenciador_de_partidas`, processo que deve ser feito manualmente 
 caso opte por rodar diretamente a imagem ou utilizar o PostgreSQL instalado localmente. 
 
@@ -52,13 +57,11 @@ Além disso, ajuste o arquivo `application.yml` dentro do diretório `src/main/r
     username: postgres
     password: senha-do-banco
 ```
-
 Por fim, você pode executar o `docker-compose.yml`:
 
 ```shell
 docker-compose up -d
 ```
-
 Após todas as configurações do banco, você pode finalmente rodar o programa!
 
 Caso deseje rodar a aplicação pela linha de comando, basta abrir o terminal de sua preferência no diretório do projeto e rodar o comando:
@@ -66,7 +69,6 @@ Caso deseje rodar a aplicação pela linha de comando, basta abrir o terminal de
 ```shell
 ./mvnw spring-boot:run
 ```
-
 ou
 
 ```shell
@@ -87,3 +89,215 @@ Caso a execução do programa ocorra corretamente, você verá os seguintes *log
 ```
 
 Com a aplicação rodando, você pode agora começar a utilizar o programa!
+
+## Utilizando a API
+
+Para utilizar a API do *Gerenciador de Partidas* é recomendado o uso de softwares especializados em testes de APIs, como
+o [Postman](https://www.postman.com/) ou o [Insomnia](https://insomnia.rest/). Você pode também utilizar o comando *curl*,
+que é uma ferramenta de linha de comando focada no consumo de APIs, mas esta alternativa não será abordada neste tutorial.
+
+### Iniciando a gincana
+
+A primeira coisa que deve ser feita no sistema é a criação de uma *edição*. As *edições* são entidades que representam as
+gincanas, sendo assim a entidade principal de todo o sistema, pois todas as demais entidades estão relacionadas de forma direta ou
+indireta a elas. A URL geral para interações com *edições* é a seguinte:
+
+```url
+http://localhost:8080/gerenciador-de-partidas/api/editions
+```
+Para criar uma nova *edição*, basta utilizar a URL acima com o método POST e inserir um corpo de requisição definido a data
+de início (*opening*) e encerramento (*closure*) da gincana:
+
+```json
+{
+  "opening": "2024-04-21",
+  "closure": "2024-05-04"
+}
+```
+Você terá o seguinte corpo de resposta:
+
+```json
+{
+  "editionId": 1,
+  "atomica": 0,
+  "mestres": 0,
+  "papaLeguas": 0,
+  "twister": 0,
+  "unicontti": 0,
+  "editionStatus": "SCHEDULED",
+  "opening": "2024-04-21",
+  "closure": "2024-05-04",
+  "_links": {
+    "editions": {
+      "href": "http://localhost:8080/gerenciador-de-partidas/api/editions"
+    },
+    "sportEvents": {
+      "href": "http://localhost:8080/gerenciador-de-partidas/api/sport-events/from?edition=1"
+    }
+  }
+}
+```
+Repare que muitos dados presentes no corpo de resposta não estão presentes no corpo de requisição. Os campos referentes
+as equipes da gincana informam sua pontuação, que por padrão é 0, e não podem ser alteradas diretamente. No momento, não
+há nenhuma forma de atualizar estes campos, mas futuramente a pontuação das equipes será calculada automaticamente após o 
+término de *eventos esportivos* e *tarefas*.
+
+Os únicos campos que podem ser alterados manualmente em um ***evento*** são `editionStatus`, `opening` e `closure`. Por via de 
+regra, o corpo de requisição utilizado na criação de novas entidades será sempre o mesmo utilizado para atualizá-las. Portanto
+caso deseje alterar a data de início ou encerramento de uma edição, basta inserir o mesmo corpo apresentado anteriormente, 
+modificando apenas os campos necessários:
+
+```json
+{
+  "opening": "2024-04-11", 
+  "closure": "2024-05-04"
+}
+```
+A URL também é a mesma, adicionando apenas o ID da entidade ao final e trocando o método `POST` por `PUT`:
+
+```url
+http://localhost:8080/gerenciador-de-partidas/api/editions/1
+```
+Repare que desta forma conseguimos alterar `opening` e `closure`, mas não `editionsStatus`. Ao utilizar esta API é necessário 
+entender que certos dados podem ser alterados de forma direta e indireta. A alteração indireta é aquela realizada ao modificar
+outras entidades que, ao serem manipuladas, causam impactos em entidades relacionadas. Já a alteração direta é aquela em que
+a modificação é feita diretamente na entidade, e existem duas formas de realizá-la. A primeira é a manual, onde você altera 
+a entidade por meio de um corpo de requisição, como mostrado acima. Já a segunda é realizada por meio de uma URL, que é o 
+caso de `editionStatus`. Para atualizá-lo usaremos método `PUT` novamente e a URL será a mesma, porém informando ao final qual o novo
+status da *edição*:
+
+```url
+http://localhost:8080/gerenciador-de-partidas/api/editions/1/update?status=in-progress
+```
+
+Além das *edições*, as entidades relacionadas a *eventos esportivos*, *tarefas* e *partidas* também possuem um campo de *status*.
+Os valores possíveis deste campo são `scheduled` (agendado), `in-progress` (em andamento), `ended` (encerrado) e `open-for-edits` 
+(aberto a edições). O *status* padrão de todas essas entidades é "*agendado*" e, com exceção das edições, só é possível 
+alterá-las diretamente neste status. Caso tente alterar diretamente uma entidade que não está mais agendada, você receberá 
+uma exceção deste tipo:
+
+```json
+{
+    "title": "BadRequestException.",
+    "status": 400,
+    "details": "Atributos de eventos esportivos só podem ser atualizados com o status 'SCHEDULED'.",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "timestamp": "2024-02-24T16:36:10.84352"
+}
+```
+O status `in-progress` permite que algumas alterações indiretas, como gols em uma partida, possam ser realizadas e, em algumas
+circunstâncias, apenas uma entidade de determinado tipo pode estar em andamento. Um exemplo disso são as entidades relacionadas 
+a *partidas*, pois na maioria dos eventos apenas uma partida por vez pode estar em andamento. O status `ended` faz com que as entidades
+não possam mais ser alteradas tanto de forma direta ou indireta. Por fim, o status `open-for-edits` tem como objetivo 
+permitir a alteração de *edições*, *partidas* e *eventos* que já foram encerrados, mas no momento esta funcionalidade não está
+disponível.
+
+### Criando eventos
+
+Com nossa *edição* já definida, podemos começar a adicionar *eventos* a ela. Os *eventos* são as entidades responsáveis por
+movimentar a gincana e eles podem ser dividos em dois grupos: os eventos *esportivos*, que são compostos por entidades relacionadas
+a *partidas*, e as tarefas, que são divididas em tarefas *normais*, *culturais* e tarefas *cumpridas*. No momento apenas
+os eventos esportivos estão disponíveis no sistema, então apenas eles serão abordados.
+
+Para criar um novo *evento esportivo*, utilizaremos o seguinte corpo de requisição:
+
+```json
+{
+    "type": "FUTSAL",
+    "modality": "MASCULINE",
+    "totalMatches": 6,
+    "editionId": 1
+}
+```
+A URL geral para interações com eventos esportivos é semelhante a de edições, substituindo apenas `/editions` por `/sport-events`.
+Para inserir o corpo de requisição, utilize a URL com o método `POST`:
+
+```url
+http://localhost:8080/gerenciador-de-partidas/api/sport-events
+```
+O corpo de resposta será algo semelhante a isso:
+
+```json
+{
+    "sportEventId": 1,
+    "type": "FUTSAL",
+    "modality": "MASCULINE",
+    "firstPlace": "NONE",
+    "secondPlace": "NONE",
+    "thirdPlace": "NONE",
+    "fourthPlace": "NONE",
+    "fifthPlace": "NONE",
+    "totalMatches": 6,
+    "eventStatus": "SCHEDULED",
+    "_links": {
+        "sportEventList": {
+            "href": "http://localhost:8080/gerenciador-de-partidas/api/sport-events"
+        },
+        "edition": {
+            "href": "http://localhost:8080/gerenciador-de-partidas/api/editions/1"
+        }
+    }
+}
+```
+Antes de prosseguirmos, vamos analizar a estrutura do evento. O campo `type` faz referência ao tipo de esporte do evento. 
+As modalidades esportivas disponíveis no sistema são `futsal`, `handball`, `basketball`, `volleyball`, `table-tennis` e 
+`chess`. Após o tipo, temos `modality`, que diz respeito a modalidade/categoria do evento esportivo, ou seja, se ele é masculino,
+feminino ou misto, sendo que estas opções são representadas como `masculine`, `feminine` e `mixed`. Estes dois campos são 
+cruciais, pois em uma edição só pode haver um evento esportivo para cada combinação destes dois atributos, isto é, só pode
+haver um evento de futsal feminino, um evento de handebol masculino, um evento de vôlei misto, e assim por diante. Caso
+haja a tentativa de criar dois eventos com o mesmo tipo e modalidade, a seguinte exceção será lançada:
+
+```json
+{
+    "title": "BadRequestException.",
+    "status": 400,
+    "details": "Evento esportivo de tipo 'FUTSAL' e modalidade 'MASCULINE' já existe na edição '1'.",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "timestamp": "2024-02-24T18:38:25.8560947"
+}
+```
+É importante ressaltar que apenas os eventos de futsal e handebol possuem suporte no momento. As demais modalidades receberão 
+funcionalidades em breve.
+
+Os próximos campos dizem respeito a colocação das equipes no evento, que por padrão possuem o valor `none`. Ainda não há um 
+mecanismo para o cálculo da posição das equipes no evento, mas isto será adicionado em breve e o cálculo será realizado de forma
+automática. Prosseguindo, temos o campo `totalMatches`, que diz respeito ao total de partidas permitidas em um evento. Geralmente os eventos
+esportivos da gincana possuem por volta de 14 partidas, mas neste exemplo seram utilizada apenas 6 para facilitar. Por fim,
+temos o campo `eventStatus`, que funciona da mesma forma que o *status* das edições, e para atualizá-lo, basta usar a seguinte 
+URL com o método `PUT`:
+
+```url
+http://localhost:8080/gerenciador-de-partidas/api/sport-events/1/update?status=in-progress
+```
+Um detalhe importante sobre os eventos é que eles só podem ser alterados enquanto sua *edição* estiver sob o status `scheduled`
+ou `in-progress`, sendo que o status dos eventos podem ser alterados ***apenas*** enquanto sua *edição* estiver em andamento. Caso
+tente-se operar sobre um evento que não pode ter seus campos alterados, você receberá uma exceção como essa:
+
+```json
+{
+    "title": "BadRequestException.",
+    "status": 400,
+    "details": "Operações não podem ser realizadas em edições já encerradas.",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "timestamp": "2024-02-24T19:44:26.9374694"
+}
+```
+ou, caso tente atualizar o status de um *evento* cuja edição não está em andamento:
+
+```json
+{
+    "title": "BadRequestException.",
+    "status": 400,
+    "details": "Eventos só podem ter seu status atualizado caso sua edição estaja com o status 'IN_PROGRESS'.",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "timestamp": "2024-02-24T19:40:33.1745262"
+}
+```
+Você deve ter reparado que tanto o corpo de resposta da *edição* quanto do evento possuem um campo chamado `_links` e que,
+embora no corpo de requisição dos eventos seja especificado o ID de uma determinada *edição*, não existe um campo no corpo
+de resposta contendo ela. Isso ocorre porque a API do sistema é feita sob as especificações da arquitetura REST. Uma das 
+restrições desta arquitetura se chama HATEOAS, que é uma abreviatura para *Hypermedia as the Engine of Application State*, 
+cujo objetivo é ajudar os clientes a consumirem o serviço sem a necessidade de conhecimento prévio profundo da API. Repare que, 
+mesmo o corpo de resposta do evento não possuindo um campo para sua edição, ele possui um link para ela e vice-versa, o
+que facilita a navegação pelos recursos da API. Isto é especialmente útil para entidades que possuem muitos relacionamentos,
+como é o caso das *partidas*, que serão abordadas mais adiante.

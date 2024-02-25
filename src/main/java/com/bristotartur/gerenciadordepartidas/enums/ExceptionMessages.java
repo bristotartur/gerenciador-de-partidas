@@ -35,7 +35,7 @@ public enum ExceptionMessages {
     CANNOT_UPDATE_EVENT_STATUS("Eventos só podem ter seu status atualizado caso sua edição estaja com o status 'IN_PROGRESS'."),
     INVALID_MATCH_STATUS_TO_FINISH_EVENT("Eventos esportivos só podem ser encerrados quando todas as partidas estiverem encerradas."),
     INVALID_MATCH_OPERATION_ON_EVENT("Operações relacionadas a partidas não podem ser realizadas em eventos já encerrados."),
-    INVALID_SPORT_EVENT_FOR_EDITION("Evento esportivo do tipo '%s' e modalidade '%s' já existe na edição '%d'."),
+    INVALID_SPORT_EVENT_FOR_EDITION("Evento esportivo de tipo '%s' e modalidade '%s' já existe na edição '%d'."),
     INVALID_STATUS_FOR_CREATION("Eventos só podem ser criados com o status 'SCHEDULED'."),
     INVALID_STATUS_TO_DELETE("Eventos só podem ser excluídos se estiverem com o status 'SCHEDULED'."),
     INVALID_STATUS_TO_UPDATE("Apenas eventos com status 'SCHEDULED' e 'OPEN_FOR_EDITIS' podem ser atualizados."),

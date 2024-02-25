@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
-import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.mappers.EditionMapper;
 import com.bristotartur.gerenciadordepartidas.services.events.EditionService;
@@ -92,9 +92,11 @@ public class EditionController {
     private ExposingEditionDto createSingleExposingDto(Edition edition) {
 
         var dto = editionMapper.toNewExposingEditionDto(edition);
-        var pageRequest = PageRequest.of(0, 12);
+        var id = edition.getId();
+        var pageable = PageRequest.of(0, 12);
 
-        dto.add(linkTo(methodOn(this.getClass()).listAllEditions(pageRequest)).withRel("editions"));
+        dto.add(linkTo(methodOn(this.getClass()).listAllEditions(pageable)).withRel("editions"));
+        dto.add(linkTo(methodOn(SportEventController.class).listSportEventsFromEdition(edition.getId(), pageable)).withRel("sportEvents"));
         return dto;
     }
 
@@ -113,8 +115,10 @@ public class EditionController {
 
         var id = edition.getId();
         var dto = editionMapper.toNewExposingEditionDto(edition);
+        var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findEditionById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(SportEventController.class).listSportEventsFromEdition(edition.getId(), pageable)).withRel("sportEvents"));
         return dto;
     }
 

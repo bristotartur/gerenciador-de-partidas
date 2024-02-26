@@ -131,12 +131,12 @@ public final class MatchValidator {
      */
     public static void checkMatchesForImportance(List<Match> matches, Importance importance) {
 
-        Optional<Match> notFinishedMatch = matches.stream()
+        Optional<Match> unfinishedMatch = matches.stream()
                 .filter(match -> !match.getMatchImportance().equals(importance))
                 .filter(match -> !match.getMatchStatus().equals(Status.ENDED))
                 .findFirst();
 
-        notFinishedMatch.ifPresent(status -> {
+        unfinishedMatch.ifPresent(status -> {
             throw new BadRequestException(
                     ExceptionMessages.CANNOT_REGISTER_MATCH.message.formatted(importance.name())
             );

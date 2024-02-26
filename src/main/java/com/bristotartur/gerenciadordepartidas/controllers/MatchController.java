@@ -138,7 +138,7 @@ public class MatchController {
         return dto;
     }
 
-    private Page<ExposingMatchDto> createExposingDtoPage(Page<? extends Match> matchPage) {
+    public Page<ExposingMatchDto> createExposingDtoPage(Page<? extends Match> matchPage) {
 
         var matches = matchPage.getContent();
         var dtos = matches.stream()
@@ -179,7 +179,7 @@ public class MatchController {
         var sport = dto.getSport();
 
         if (sport.equals(Sports.FUTSAL) || sport.equals(Sports.HANDBALL)) {
-            dto.add(linkTo(methodOn(GoalController.class).listGoalsFromMatch(matchId, sport.name(), pageable)).withRel("goals"));
+            dto.add(linkTo(methodOn(GoalController.class).listGoalsFromMatch(matchId, sport.value, pageable)).withRel("goals"));
             // TODO link para cartões de penalidade
         }
     }

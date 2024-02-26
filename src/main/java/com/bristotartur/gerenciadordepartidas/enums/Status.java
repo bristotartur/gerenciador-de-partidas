@@ -31,7 +31,7 @@ public enum Status {
     OPEN_FOR_EDITS("Aberto para edições");
 
     /**
-     * Valor interno das opções deste enum.
+     * Valor interno das constantes deste enum.
      */
     public final String value;
 
@@ -71,10 +71,10 @@ public enum Status {
      *
      * Atualizações possíveis para cada Status:
      * <ul>
-     *     <li>SCHEDULED: Pode ser alterado apenas para IN_PROGRESS.</li>
-     *     <li>IN_PROGRESS: Pode ser alterado apenas para ENDED.</li>
-     *     <li>ENDED: Pode ser alterado apenas para OPEN_FOR_EDITS.</li>
-     *     <li>OPEN_FOR_EDITS: Pode ser alterado apenas para IN_PROGRESS.</li>
+     *     <li>SCHEDULED: Pode ser alterado apenas para 'IN_PROGRESS'.</li>
+     *     <li>IN_PROGRESS: Pode ser alterado apenas para 'ENDED'.</li>
+     *     <li>ENDED: Pode ser alterado apenas para 'OPEN_FOR_EDITS'.</li>
+     *     <li>OPEN_FOR_EDITS: Pode ser alterado apenas para 'IN_PROGRESS'.</li>
      * </ul>
      *
      * <p>Caso o Status original e o novo Status forem o mesmo, nada acontecerá.</p>

@@ -26,7 +26,7 @@ public enum Sports implements EventType<SportEvent> {
     VOLLEYBALL("volleyball");
 
     /**
-     * Valor interno das opções deste enum.
+     * Valor interno das constantes deste enum.
      */
     public final String value;
 

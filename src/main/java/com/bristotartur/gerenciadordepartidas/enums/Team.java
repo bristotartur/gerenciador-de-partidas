@@ -12,15 +12,15 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 public enum Team {
-    ATOMICA("Atômica"),
-    MESTRES_DE_OBRAS("Mestres de Obras"),
-    PAPA_LEGUAS("Papa-Léguas"),
-    TWISTER("Twister"),
-    UNICONTTI("Unicontti"),
-    NONE("Nenhum");
+    ATOMICA("atomica"),
+    MESTRES_DE_OBRAS("mestres-de-obras"),
+    PAPA_LEGUAS("papa-leguas"),
+    TWISTER("twister"),
+    UNICONTTI("unicontti"),
+    NONE("none");
 
     /**
-     * Valor interno das opções deste enum.
+     * Valor interno das constantes deste enum.
      */
     public final String value;
 
@@ -67,6 +67,43 @@ public enum Team {
             throw new BadRequestException(ExceptionMessages.INVALID_CLASS_NUMBER.message);
 
         return courseTeamMap.get(courseNumber);
+    }
+
+    /**
+     * <p>Busca por uma das constantes deste enum com base em seu valor, sendo que, no contexto deste
+     * método, o valor da constante equivale ao seu nome, e não seu valor interno. Caso o valor passado
+     * esteja em letras minúsculas ou tenha um espaçamento feito com "-", o método ajustará este valor
+     * para o formato correto, passando todos os caracteres para caixa alta e substituindo os espaçamentos
+     * feitos com '-' para "_". Abreviações como 'mestres' e 'papa' também são suportadas.</p> <br>
+     *
+     * Exemplo de uso:
+     * <pre>
+     *    {@code
+     *        Team atomica = Team.findTeamLike("ATOMICA");
+     *        Team papaLeguas = Team.findTeamLike("papa-leguas");
+     *        Team mestresDeObras = Team.findTeamLike("MESTRES_DE_OBRAS");
+     *        Team mestres = Team.findTeamLike("mestres");
+     *    }
+     * </pre>
+     * @param team Valor correspondente as constantes deste enum.
+     * @return A constante correspondente ao valor fornecido.
+     * @throws BadRequestException Caso o valor fornecido não corresponda a nenhuma das constantes do enum.
+     */
+    public static Team findTeamLike(String team) {
+
+        if (team.compareToIgnoreCase("mestres") == 0) {
+            return MESTRES_DE_OBRAS;
+        }
+        if (team.compareToIgnoreCase("papa") == 0) {
+            return PAPA_LEGUAS;
+        }
+        var formatedTeam = team.replace("-", "_").toUpperCase();
+
+        try {
+            return valueOf(formatedTeam);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(ExceptionMessages.INVALID_TEAM.message, e);
+        }
     }
 
 }

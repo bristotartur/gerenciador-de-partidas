@@ -19,6 +19,13 @@ executando o seguinte comando:
 ```shell
 git clone https://github.com/bristotartur/gerenciador-de-partidas.git
 ```
+O código é completamente escrito em *Java*, então certifique-se de possuir a JDK mais recente ou da versão 17 para frente.
+Você pode adquirir a JDK através do [site oficial da Oracle](https://www.oracle.com/br/java/technologies/downloads/). 
+Caso você tenha o Java instalado mas não sabe a versão, você pode consultá-la executando o seguinte comando em seu termianl:
+
+```shell
+java --version
+```
 Além do código do projeto, será também necessário possuir o banco de dados *PostgreSQL* em sua máquina.
 Caso você não o tenha, você pode instalá-lo pelo [site oficial do PostgreSQL](https://www.postgresql.org/download/) 
 ou, se preferir, baixar a [imagem oficial do PostgreSQL](https://hub.docker.com/_/postgres) disponível no Docker Hub com o seguinte comando:
@@ -96,7 +103,7 @@ Para utilizar a API do *Gerenciador de Partidas* é recomendado o uso de softwar
 o [Postman](https://www.postman.com/) ou o [Insomnia](https://insomnia.rest/). Você pode também utilizar o comando *curl*,
 que é uma ferramenta de linha de comando focada no consumo de APIs, mas esta alternativa não será abordada neste tutorial.
 
-### Iniciando a gincana
+### Iniciando a gincana:
 
 A primeira coisa que deve ser feita no sistema é a criação de uma *edição*. As *edições* são entidades que representam as
 gincanas, sendo assim a entidade principal de todo o sistema, pois todas as demais entidades estão relacionadas de forma direta ou
@@ -142,7 +149,7 @@ as equipes da gincana informam sua pontuação, que por padrão é 0, e não pod
 há nenhuma forma de atualizar estes campos, mas futuramente a pontuação das equipes será calculada automaticamente após o 
 término de *eventos esportivos* e *tarefas*.
 
-Os únicos campos que podem ser alterados manualmente em um ***evento*** são `editionStatus`, `opening` e `closure`. Por via de 
+Os únicos campos que podem ser alterados manualmente em um *evento* são `editionStatus`, `opening` e `closure`. Por via de 
 regra, o corpo de requisição utilizado na criação de novas entidades será sempre o mesmo utilizado para atualizá-las. Portanto
 caso deseje alterar a data de início ou encerramento de uma edição, basta inserir o mesmo corpo apresentado anteriormente, 
 modificando apenas os campos necessários:
@@ -192,7 +199,7 @@ não possam mais ser alteradas tanto de forma direta ou indireta. Por fim, o sta
 permitir a alteração de *edições*, *partidas* e *eventos* que já foram encerrados, mas no momento esta funcionalidade não está
 disponível.
 
-### Criando eventos
+### Criando eventos:
 
 Com nossa *edição* já definida, podemos começar a adicionar *eventos* a ela. Os *eventos* são as entidades responsáveis por
 movimentar a gincana e eles podem ser dividos em dois grupos: os eventos *esportivos*, que são compostos por entidades relacionadas
@@ -270,7 +277,7 @@ URL com o método `PUT`:
 http://localhost:8080/gerenciador-de-partidas/api/sport-events/1/update?status=in-progress
 ```
 Um detalhe importante sobre os eventos é que eles só podem ser alterados enquanto sua *edição* estiver sob o status `scheduled`
-ou `in-progress`, sendo que o status dos eventos podem ser alterados ***apenas*** enquanto sua *edição* estiver em andamento. Caso
+ou `in-progress`, sendo que o status dos eventos podem ser alterados **apenas** enquanto sua *edição* estiver em andamento. Caso
 tente-se operar sobre um evento que não pode ter seus campos alterados, você receberá uma exceção como essa:
 
 ```json

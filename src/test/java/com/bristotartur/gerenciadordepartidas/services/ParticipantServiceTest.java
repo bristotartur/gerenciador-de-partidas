@@ -101,6 +101,33 @@ class ParticipantServiceTest {
     }
 
     @Test
+    @DisplayName("Should find Participant Matches when Participant ID is passed")
+    void Should_FindParticipantMatches_When_ParticipantIdIsPassed() {
+
+        var pageable = PageRequest.of(0, 2);
+        var teamA = Team.PAPA_LEGUAS;
+        var teamB = Team.TWISTER;
+        var participantA = ParticipantTestUtil.createNewParticipant("3-53", Team.PAPA_LEGUAS, edition, entityManager);
+        var participantB = ParticipantTestUtil.createNewParticipant("3-13", Team.TWISTER, edition, entityManager);
+
+        var sportEvent = SportEventTestUtil.createNewSportEvent(
+                Sports.TABLE_TENNIS, Modality.MASCULINE, Status.SCHEDULED, edition, entityManager
+        );
+        var matches = List.of(
+                MatchTestUtil.createNewMatch(teamA, teamB, List.of(participantA, participantB), sportEvent),
+                MatchTestUtil.createNewMatch(teamA, teamB, List.of(participantA, participantB), sportEvent)
+        );
+        sportEvent.setMatches(matches);
+        entityManager.merge(sportEvent);
+
+        var matchPage = new PageImpl<>(matches, pageable, matches.size());
+        var result = participantService.findParticipantMatches(participantA.getId(), pageable);
+
+        assertEquals(result.getContent(), matchPage.getContent());
+        assertEquals(result.getPageable(), matchPage.getPageable());
+    }
+
+    @Test
     @DisplayName("Should throw NotFoundException when non existing Participant ID is passed to any method")
     void Should_ThrowNotFoundException_When_NonExistingParticipantIdIsPassedToAnyMethod() {
 
@@ -108,6 +135,7 @@ class ParticipantServiceTest {
         var participantDto = ParticipantTestUtil.createNewParticipantDto("2-14", any(), any());
 
         assertThrows(NotFoundException.class, () -> participantService.findParticipantById(id));
+        assertThrows(NotFoundException.class, () -> participantService.findParticipantMatches(id, any()));
         assertThrows(NotFoundException.class, () -> participantService.deleteParticipantById(id));
         assertThrows(NotFoundException.class, () -> participantService.replaceParticipant(id, participantDto));
     }

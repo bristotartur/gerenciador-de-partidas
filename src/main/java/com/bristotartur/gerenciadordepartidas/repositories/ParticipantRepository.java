@@ -16,8 +16,8 @@ import java.util.List;
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
     /**
-     * Realiza uma query para retornar uma lista paginada contendo entidades do tipo {@link Participant} que tenham
-     * o nome semelhante ao fornecido na base de dados.
+     * Realiza uma query para retornar uma lista paginada contendo entidades do tipo {@link Participant}
+     * que tenham o nome semelhante ao fornecido na base de dados.
      *
      * @param name Nome utilizado na pesquisa.
      * @return Uma {@link Page} contendo os participantes com o nome parecido ao informado.
@@ -43,5 +43,16 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
      */
     @Query("SELECT p FROM Participant p WHERE p.team = :team")
     Page<Participant> findTeamMembers(@Param("team") Team team, Pageable pageable);
+
+    /**
+     * Retorna uma lista paginada de todos as partidas associados a uma determinada instância
+     * de {@link Participant}.
+     *
+     * @param id Identificador único do participante.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as partidas associados ao participante.
+     */
+    @Query("SELECT m FROM Match m JOIN m.players p WHERE p.id = :id")
+    Page<Match> findParticipantMatches(@Param("id") Long id, Pageable pageable);
 
 }

@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services.people;
 
+import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
@@ -82,6 +83,18 @@ public class ParticipantService {
         log.info("Members page of number '{}' and size '{}' from team '{}' was returned.", number, size, team);
 
         return membersPage;
+    }
+
+    public Page<Match> findParticipantMatches(Long id, Pageable pageable) {
+
+        this.findParticipantById(id);
+        var matchPage = participantRepository.findParticipantMatches(id, pageable);
+
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        log.info("Match page of number '{}' and size '{}' from Participant '{}' was returned.", number, size, id);
+
+        return matchPage;
     }
 
     /**

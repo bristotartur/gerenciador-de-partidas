@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
+import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
@@ -30,6 +31,7 @@ public class ParticipantController {
 
     private final ParticipantService participantService;
     private final ParticipantMapper participantMapper;
+    private final MatchController matchController;
 
     @GetMapping
     public ResponseEntity<Page<ExposingParticipantDto>> listAllParticipants(Pageable pageable) {
@@ -54,13 +56,26 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/from")
-    public ResponseEntity<Page<ExposingParticipantDto>> listMembersFromTeam(@RequestParam("team") Team team,
+    public ResponseEntity<Page<ExposingParticipantDto>> listMembersFromTeam(@RequestParam("team") String teamName,
                                                                             Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-        log.info("Request to get Participant page of number '{}' and size '{}' from team'{}' was made.", number, size, team);
+        var team = Team.findTeamLike(teamName);
+
+        log.info("Request to get Participant page of number '{}' and size '{}' from team '{}' was made.", number, size, team);
 
         var dtoPage = this.createExposingDtoPage(participantService.findMambersFromTeam(team, pageable));
+        return ResponseEntity.ok().body(dtoPage);
+    }
+
+    @GetMapping(path = "/{id}/matches")
+    public ResponseEntity<Page<ExposingMatchDto>> listParticipantMatches(@PathVariable Long id, Pageable pageable) {
+
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        log.info("Request to get Match page of number '{}' and size '{}' from Participant '{}' was made.", number, size, id);
+
+        var dtoPage = matchController.createExposingDtoPage(participantService.findParticipantMatches(id, pageable));
         return ResponseEntity.ok().body(dtoPage);
     }
 
@@ -103,10 +118,16 @@ public class ParticipantController {
 
     private ExposingParticipantDto createSingleExposingDto(Participant participant) {
 
+        var id = participant.getId();
+        var team = participant.getTeam().value;
         var dto = participantMapper.toNewExposingParticipantDto(participant);
-        var pageable = PageRequest.of(0, 20);
+        var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).listAllParticipants(pageable)).withRel("participants"));
+        dto.add(linkTo(methodOn(this.getClass()).listMembersFromTeam(team, pageable)).withRel("teamMembers"));
+        dto.add(linkTo(methodOn(EditionController.class).findEditionById(dto.getEditionId())).withRel("edition"));
+        dto.add(linkTo(methodOn(this.getClass()).listParticipantMatches(id, pageable)).withRel("matches"));
+
         return dto;
     }
 
@@ -123,9 +144,15 @@ public class ParticipantController {
     private ExposingParticipantDto addSingleParticipantLink(Participant participant) {
 
         var id = participant.getId();
+        var team = participant.getTeam().value;
         var dto = participantMapper.toNewExposingParticipantDto(participant);
+        var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findParticipantById(id)).withSelfRel());
+        dto.add(linkTo(methodOn(this.getClass()).listMembersFromTeam(team, pageable)).withRel("teamMembers"));
+        dto.add(linkTo(methodOn(EditionController.class).findEditionById(dto.getEditionId())).withRel("edition"));
+        dto.add(linkTo(methodOn(this.getClass()).listParticipantMatches(id, pageable)).withRel("matches"));
+
         return dto;
     }
 

@@ -59,7 +59,8 @@ public enum ExceptionMessages {
     CANNOT_UPDATE_STATUS("Status '%s' só pode ser alterado para '%s'."),
     INVALID_PATTERN("Padrão inválido para '%s'."),
     INVALID_SPORT("Modalidade esportiva não identificada ou não suportada."),
-    INVALID_STATUS("Status não identificado ou não suportado.");
+    INVALID_STATUS("Status não identificado ou não suportado."),
+    INVALID_TEAM("Equeipe inválida ou não identificada.");
 
     /**
      * Valor interno das constantes de {@link ExceptionMessages} contendo suas

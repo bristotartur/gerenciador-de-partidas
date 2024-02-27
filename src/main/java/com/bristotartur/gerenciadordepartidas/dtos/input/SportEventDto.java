@@ -3,7 +3,6 @@ package com.bristotartur.gerenciadordepartidas.dtos.input;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
-import com.bristotartur.gerenciadordepartidas.enums.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 

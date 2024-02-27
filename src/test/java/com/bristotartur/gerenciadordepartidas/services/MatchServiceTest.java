@@ -89,18 +89,13 @@ class MatchServiceTest {
 
         var pageable = PageRequest.of(0, 2);
 
-        var futsalDto = MatchTestUtil.createNewMatchDto(Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId());
-        var handballDto = MatchTestUtil.createNewMatchDto(Sports.HANDBALL, teamA, teamB, playersIds, handballEvent.getId());
-
         var matches = List.of(
                 futsalEvent.getMatches().get(0),
                 handballEvent.getMatches().get(0));
 
         var matchPage = new PageImpl<>(matches, pageable, matches.size());
         var result = matchService.findAllMatches(pageable);
-
-        System.out.println(matchPage.getContent());
-        System.out.println(result.getContent());
+        
         assertEquals(result.getContent(), matchPage.getContent());
         assertEquals(result.getTotalPages(), matchPage.getTotalPages());
     }

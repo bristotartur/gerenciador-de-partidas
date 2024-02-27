@@ -1,20 +1,16 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.*;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
-import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchValidator;
-import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.SportEventTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -30,10 +26,6 @@ import static org.mockito.ArgumentMatchers.any;
 @ActiveProfiles("test")
 class MatchValidatorTest {
 
-    @Autowired
-    private MatchService matchService;
-
-    private Edition edition;
     private Team teamA;
     private Team teamB;
     private Team teamC;
@@ -41,7 +33,6 @@ class MatchValidatorTest {
 
     @BeforeEach
     void setUp() {
-        edition = EditionTestUtil.createNewEdition(Status.IN_PROGRESS);
 
         teamA = Team.ATOMICA;
         teamB = Team.MESTRES_DE_OBRAS;

@@ -42,7 +42,7 @@ public final class MatchValidator {
         var teamA = matchDto.teamA();
         var teamB = matchDto.teamB();
 
-        if (matchDto.teamA().equals(matchDto.teamB())) {
+        if (teamA.equals(teamB)) {
             throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
         }
     }

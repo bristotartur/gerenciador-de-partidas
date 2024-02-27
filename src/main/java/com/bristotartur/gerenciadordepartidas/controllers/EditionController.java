@@ -96,7 +96,7 @@ public class EditionController {
         var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).listAllEditions(pageable)).withRel("editions"));
-        dto.add(linkTo(methodOn(SportEventController.class).listSportEventsFromEdition(edition.getId(), pageable)).withRel("sportEvents"));
+        dto.add(linkTo(methodOn(SportEventController.class).listSportEventsFromEdition(id, pageable)).withRel("sportEvents"));
         return dto;
     }
 

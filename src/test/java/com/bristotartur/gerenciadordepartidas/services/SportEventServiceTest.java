@@ -43,8 +43,6 @@ class SportEventServiceTest {
     private EntityManager entityManager;
     @Autowired
     private SportEventRepository sportEventRepository;
-    @Autowired
-    private MatchServiceMediator matchServiceMediator;
 
     private SportEvent sportEventA;
     private SportEvent sportEventB;

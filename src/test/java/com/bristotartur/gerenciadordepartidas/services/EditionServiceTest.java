@@ -149,10 +149,10 @@ class EditionServiceTest {
     @DisplayName("Should throw BadRequestException when trying to leave two Editions in progress")
     void Should_ThrowBadRequestException_When_TryingToLeaveTwoEditionsInProgress() {
 
-        var editionA = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
-        var editionB = EditionTestUtil.createNewEdition(Status.SCHEDULED, entityManager);
+        EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
+        var edition = EditionTestUtil.createNewEdition(Status.SCHEDULED, entityManager);
 
-        assertThrows(BadRequestException.class, () -> editionService.updateEditionStatus(editionB.getId(), Status.IN_PROGRESS));
+        assertThrows(BadRequestException.class, () -> editionService.updateEditionStatus(edition.getId(), Status.IN_PROGRESS));
     }
 
     @Test

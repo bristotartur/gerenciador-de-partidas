@@ -308,3 +308,56 @@ cujo objetivo é ajudar os clientes a consumirem o serviço sem a necessidade de
 mesmo o corpo de resposta do evento não possuindo um campo para sua edição, ele possui um link para ela e vice-versa, o
 que facilita a navegação pelos recursos da API. Isto é especialmente útil para entidades que possuem muitos relacionamentos,
 como é o caso das *partidas*, que serão abordadas mais adiante.
+
+### Adicionando participantes:
+
+Antes de criar as *partidas* é necessário adicionar os *participantes* da gincana. Utilize a URL abaixo com o método `POST`
+junto do corpo de requisição mostrado em seguida:
+
+```plaintext
+http://localhost:8080/gerenciador-de-partidas/api/participants
+```
+```json
+{
+  "name": "Carlos Eduardo",
+  "classNumber": "3-53",
+  "team": "PAPA_LEGUAS",
+  "editionId": 1
+}
+```
+Este será o corpo de resposta:
+
+```json
+{
+  "participantId": 1,
+  "name": "Carlos Eduardo",
+  "classNumber": "3-53",
+  "team": "PAPA_LEGUAS",
+  "_links": {
+    "participants": {
+      "href": "http://localhost:8080/gerenciador-de-partidas/api/participants"
+    },
+    "teamMembers": {
+      "href": "http://localhost:8080/gerenciador-de-partidas/api/participants/from?team=papa-leguas"
+    },
+    "edition": {
+      "href": "http://localhost:8080/gerenciador-de-partidas/api/editions/1"
+    },
+    "matches": {
+      "href": "http://localhost:8080/gerenciador-de-partidas/api/participants/1/matches"
+    }
+  }
+}
+```
+Todo participante deve obrigatoriamente pertencer a uma equipe, sendo que cada equipe representa um ou mais cursos disponíveis 
+no CEDUP. Segue abaixo uma tabela sobre as equipes existentes:
+
+| Nome da equipe   | Representação no sistema                          | Cursos                                 | Mascote         |
+|------------------|---------------------------------------------------|----------------------------------------|-----------------|
+| Atômica          | `ATOMICA`, `atomica`                              | Alimentos, Química e Análises Clínicas | Formiga Atômica |
+| Mestres de Obras | `MESTRES_DE_OBRAS`, `mestres-de-obras`, `mestres` | Edificações                            | Super Mario     |
+| Papa-Léguas      | `PAPA_LEGUAS`, `papa-leguas`, `papa`              | Informática e Ciência de Dados         | Papa-Léguas     |
+| Twister          | `TWISTER`, `twister`                              | Administração                          | Taz             |
+| Unicontti        | `UNICONTTI`, `unicontti`                          | Comércio e Marketing                   | Tio Patinhas    |
+
+Para prosseguir, escolha duas equipes e adicione 5 participantes em cada para começar a criar partidas. 

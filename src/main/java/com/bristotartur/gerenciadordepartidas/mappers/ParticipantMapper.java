@@ -50,7 +50,6 @@ public interface ParticipantMapper {
      * @return Uma nova instãncia de {@link ExposingParticipantDto}.
      */
     @Mapping(target = "participantId", source = "participant.id")
-    @Mapping(target = "editionId", source = "participant.edition.id")
     ExposingParticipantDto toNewExposingParticipantDto(Participant participant);
 
 }

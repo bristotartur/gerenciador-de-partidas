@@ -13,6 +13,5 @@ public class ExposingParticipantDto extends RepresentationModel<ExposingParticip
     private final String name;
     private final String classNumber;
     private final Team team;
-    private final Long editionId;
 
 }

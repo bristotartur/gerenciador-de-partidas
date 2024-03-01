@@ -125,7 +125,6 @@ public class ParticipantController {
 
         dto.add(linkTo(methodOn(this.getClass()).listAllParticipants(pageable)).withRel("participants"));
         dto.add(linkTo(methodOn(this.getClass()).listMembersFromTeam(team, pageable)).withRel("teamMembers"));
-        dto.add(linkTo(methodOn(EditionController.class).findEditionById(dto.getEditionId())).withRel("edition"));
         dto.add(linkTo(methodOn(this.getClass()).listParticipantMatches(id, pageable)).withRel("matches"));
 
         return dto;
@@ -150,7 +149,6 @@ public class ParticipantController {
 
         dto.add(linkTo(methodOn(this.getClass()).findParticipantById(id)).withSelfRel());
         dto.add(linkTo(methodOn(this.getClass()).listMembersFromTeam(team, pageable)).withRel("teamMembers"));
-        dto.add(linkTo(methodOn(EditionController.class).findEditionById(dto.getEditionId())).withRel("edition"));
         dto.add(linkTo(methodOn(this.getClass()).listParticipantMatches(id, pageable)).withRel("matches"));
 
         return dto;

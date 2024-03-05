@@ -91,15 +91,11 @@ public enum Team {
      */
     public static Team findTeamLike(String team) {
 
-        if (team.compareToIgnoreCase("mestres") == 0) {
-            return MESTRES_DE_OBRAS;
-        }
-        if (team.compareToIgnoreCase("papa") == 0) {
-            return PAPA_LEGUAS;
-        }
-        var formatedTeam = team.replace("-", "_").toUpperCase();
+        if (team.compareToIgnoreCase("mestres") == 0) return MESTRES_DE_OBRAS;
+        if (team.compareToIgnoreCase("papa") == 0) return PAPA_LEGUAS;
 
         try {
+            var formatedTeam = team.replace("-", "_").toUpperCase();
             return valueOf(formatedTeam);
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(ExceptionMessages.INVALID_TEAM.message, e);

@@ -3,7 +3,9 @@ package com.bristotartur.gerenciadordepartidas.services;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ForbiddenException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.services.actions.ActionValidator;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
@@ -41,10 +43,17 @@ class ActionValidatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when Match is not in progress")
-    void Should_ThrowBadRequestException_When_MatchIsNotInProgress() {
+    @DisplayName("Should throw ConflictException when Match is not in progress")
+    void Should_ThrowConflictException_When_MatchIsNotInProgress() {
+
+        match.setMatchStatus(Status.SCHEDULED);
+        assertThrows(ConflictException.class, () -> ActionValidator.checkMatchForAction(match));
+
         match.setMatchStatus(Status.ENDED);
-        assertThrows(BadRequestException.class, () -> ActionValidator.checkMatchForAction(match));
+        assertThrows(ConflictException.class, () -> ActionValidator.checkMatchForAction(match));
+
+        match.setMatchStatus(Status.OPEN_FOR_EDITS);
+        assertThrows(ConflictException.class, () -> ActionValidator.checkMatchForAction(match));
     }
 
     @Test
@@ -55,10 +64,10 @@ class ActionValidatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when player is not included in Match")
-    void Should_ThrowBadRequestException_When_PlayerIsNotIncludedInMatch() {
+    @DisplayName("Should throw UnprocessableEntityException when player is not included in Match")
+    void Should_ThrowForbiddenException_When_PlayerIsNotIncludedInMatch() {
         var player = ParticipantTestUtil.createNewParticipant(any(), any(), any());
-        assertThrows(BadRequestException.class, () -> ActionValidator.checkPlayerForAction(player, match));
+        assertThrows(UnprocessableEntityException.class, () -> ActionValidator.checkPlayerForAction(player, match));
     }
 
 }

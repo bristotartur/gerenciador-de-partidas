@@ -7,7 +7,9 @@ import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.GoalRepository;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
@@ -60,6 +62,7 @@ public class GoalService {
      * @param matchId Identificador único da partida.
      * @param sport Modalidade esportiva da partida.
      * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     *
      * @return Um {@link Page} contendo os gols relacionados a partida especificada.
      */
     public Page<Goal> findGoalsFromMatch(Long matchId, Sports sport, Pageable pageable) {
@@ -97,7 +100,10 @@ public class GoalService {
      *
      * @param goalDto DTO do tipo {@link GoalDto} dados do gol a ser salvo.
      * @return O gol recém-salvo.
+     *
      * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link GoalDto}.
+     * @throws ConflictException Caso tente-se adicionar um gol a uma partida que não está em andamento.
+     * @throws UnprocessableEntityException Caso o jogador associado ao gol não esteja relacionado a partida.
      */
     public Goal saveGoal(GoalDto goalDto) {
 
@@ -119,7 +125,9 @@ public class GoalService {
      * estava associado terá seu placar alterado.
      *
      * @param id Identificador único do gol.
+     *
      * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado.
+     * @throws ConflictException Caso tente-se excluír um gol relacionado a uma partida que não está em andamento.
      */
     public void deleteGoalById(Long id) {
 
@@ -145,9 +153,12 @@ public class GoalService {
      * @param id Identificador único do gol a ser atualizado.
      * @param goalDto DTO do tipo {@link GoalDto} contendo os dados atualizados do gol.
      * @return O gol atualizado.
+     *
      * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado ou
      * alguma entidade não corresponda aos IDs fornecidos por {@link GoalDto}.
      * @throws BadRequestException Caso a modalidade esportiva da partida fornecida não seja suportada para gols.
+     * @throws ConflictException Caso tente-se atualizar um gol relacionado a uma partida que não está em andamento.
+     * @throws UnprocessableEntityException Caso o jogador associado ao gol não esteja relacionado a partida.
      */
     public Goal replaceGoal(Long id, GoalDto goalDto) {
 

@@ -3,7 +3,10 @@ package com.bristotartur.gerenciadordepartidas.services.actions;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
+import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.mappers.PenaltyCardMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
@@ -72,7 +75,10 @@ public class PenaltyCardService {
      *
      * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados do cartão a ser salvo.
      * @return O cartão recém-salvo.
+     *
      * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link PenaltyCardDto}.
+     * @throws ConflictException Caso tente-se adicionar um cartão a uma partida que não está em andamento.
+     * @throws UnprocessableEntityException Caso o jogador associado ao cartão não esteja relacionado a partida.
      */
     public PenaltyCard savePenaltyCard(PenaltyCardDto penaltyCardDto) {
 
@@ -92,6 +98,9 @@ public class PenaltyCardService {
      * Remove um cartão do banco de dados com base no seu ID.
      *
      * @param id Identificador único do cartão.
+     *
+     * @throws NotFoundException Caso nenhum cartão relacionado ao ID seja encontrado.
+     * @throws ConflictException Caso a partida relacionada ao cartão não esteja em andamento.
      */
     public void deletePenaltyCardById(Long id) {
 
@@ -112,8 +121,13 @@ public class PenaltyCardService {
      * @param id Identificador único do cartão a ser atualizado.
      * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados atualizados do cartão.
      * @return O cartão atualizado.
+     *
      * @throws NotFoundException Caso nenhum cartão correspondente ao ID for encontrado ou alguma
      * entidade não corresponda aos IDs fornecidos por {@link PenaltyCardDto}.
+     * @throws BadRequestException Caso a modalidade esportiva da partida fornecida não seja suportada para cartões.
+     * @throws ConflictException Caso a partida relacionada ao cartão não esteja em andamento.
+     * @throws UnprocessableEntityException Caso o jogador associado ao cartão não esteja relacionado a partida.
+     *
      */
     public PenaltyCard replacePenaltyCard(Long id, PenaltyCardDto penaltyCardDto) {
 

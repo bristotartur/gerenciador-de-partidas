@@ -100,8 +100,9 @@ Com a aplicação rodando, você pode agora começar a utilizar o programa!
 ## Utilizando a API
 
 Para utilizar a API do *Gerenciador de Partidas* é recomendado o uso de softwares especializados em testes de APIs, como
-o [Postman](https://www.postman.com/) ou o [Insomnia](https://insomnia.rest/). Você pode também utilizar o comando *curl*,
-que é uma ferramenta de linha de comando focada no consumo de APIs, mas esta alternativa não será abordada neste tutorial.
+o [Postman](https://www.postman.com/) ou o [Insomnia](https://insomnia.rest/). Você pode também utilizar o comando *curl*, que é uma ferramenta de linha de comando 
+focada no consumo de APIs e que vem pré-instalado junto de alguns sistemas operacionais. Independente de qual opção escolher,
+será pressuposto que você tenha conhecimento e saiba usar alguma destas ferramentas para consumir e testar esta API.
 
 ### Iniciando a gincana:
 
@@ -112,7 +113,7 @@ indireta a elas. A URL geral para interações com *edições* é a seguinte:
 ```plaintext
 http://localhost:8080/gerenciador-de-partidas/api/editions
 ```
-Para criar uma nova *edição*, basta utilizar a URL acima com o método POST e inserir um corpo de requisição definido a data
+Para criar uma nova *edição*, basta utilizar a URL acima com o método `POST` e inserir um corpo de requisição definindo a data
 de início (*opening*) e encerramento (*closure*) da gincana:
 
 ```json
@@ -185,10 +186,10 @@ uma exceção deste tipo:
 
 ```json
 {
-    "title": "BadRequestException.",
-    "status": 400,
+    "title": "UnprocessableEntityException.",
+    "status": 422,
     "details": "Atributos de eventos esportivos só podem ser atualizados com o status 'SCHEDULED'.",
-    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException",
     "timestamp": "2024-02-24T16:36:10.84352"
 }
 ```
@@ -256,10 +257,10 @@ haja a tentativa de criar dois eventos com o mesmo tipo e modalidade, a seguinte
 
 ```json
 {
-    "title": "BadRequestException.",
-    "status": 400,
+    "title": "ConflictException.",
+    "status": 409,
     "details": "Evento esportivo de tipo 'FUTSAL' e modalidade 'MASCULINE' já existe na edição '1'.",
-    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.ConflictException",
     "timestamp": "2024-02-24T18:38:25.8560947"
 }
 ```
@@ -282,10 +283,10 @@ tente-se operar sobre um evento que não pode ter seus campos alterados, você r
 
 ```json
 {
-    "title": "BadRequestException.",
-    "status": 400,
+    "title": "UnprocessableEntityException.",
+    "status": 422,
     "details": "Operações não podem ser realizadas em edições já encerradas.",
-    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException",
     "timestamp": "2024-02-24T19:44:26.9374694"
 }
 ```
@@ -293,10 +294,10 @@ ou, caso tente atualizar o status de um *evento* cuja edição não está em and
 
 ```json
 {
-    "title": "BadRequestException.",
-    "status": 400,
+    "title": "UnprocessableEntityException.",
+    "status": 422,
     "details": "Eventos só podem ter seu status atualizado caso sua edição estaja com o status 'IN_PROGRESS'.",
-    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException",
+    "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException",
     "timestamp": "2024-02-24T19:40:33.1745262"
 }
 ```

@@ -2,8 +2,9 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.repositories.EditionRepository;
 import com.bristotartur.gerenciadordepartidas.services.events.EditionService;
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
@@ -99,16 +100,16 @@ class EditionServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when ID from Edition with non accept status is passed to delete")
-    void Should_ThrowBadRequestException_When_IdFromEditionWithNonAcceptStatusIsPassedToDelete() {
+    @DisplayName("Should throw UnprocessableEntity when ID from Edition with non accept status is passed to delete")
+    void Should_ThrowUnprocessableEntity_When_IdFromEditionWithNonAcceptStatusIsPassedToDelete() {
 
         var editionA = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
         var editionB = EditionTestUtil.createNewEdition(Status.ENDED, entityManager);
         var editionC = EditionTestUtil.createNewEdition(Status.OPEN_FOR_EDITS, entityManager);
 
-        assertThrows(BadRequestException.class, () -> editionService.deleteEditionById(editionA.getId()));
-        assertThrows(BadRequestException.class, () -> editionService.deleteEditionById(editionB.getId()));
-        assertThrows(BadRequestException.class, () -> editionService.deleteEditionById(editionC.getId()));
+        assertThrows(UnprocessableEntityException.class, () -> editionService.deleteEditionById(editionA.getId()));
+        assertThrows(UnprocessableEntityException.class, () -> editionService.deleteEditionById(editionB.getId()));
+        assertThrows(UnprocessableEntityException.class, () -> editionService.deleteEditionById(editionC.getId()));
     }
 
     @Test
@@ -136,23 +137,23 @@ class EditionServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when invalid Status is passed to update Edition Status")
-    void Should_ThrowBadRequestException_When_InvalidStatusIsPassedToUpdateEditionStatus() {
+    @DisplayName("Should throw UnprocessableEntityException when invalid Status is passed to update Edition Status")
+    void Should_ThrowUnprocessableEntityException_When_InvalidStatusIsPassedToUpdateEditionStatus() {
 
         var edition = EditionTestUtil.createNewEdition(Status.SCHEDULED, entityManager);
 
-        assertThrows(BadRequestException.class, () -> editionService.updateEditionStatus(edition.getId(), Status.ENDED));
-        assertThrows(BadRequestException.class, () -> editionService.updateEditionStatus(edition.getId(), Status.OPEN_FOR_EDITS));
+        assertThrows(UnprocessableEntityException.class, () -> editionService.updateEditionStatus(edition.getId(), Status.ENDED));
+        assertThrows(UnprocessableEntityException.class, () -> editionService.updateEditionStatus(edition.getId(), Status.OPEN_FOR_EDITS));
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to leave two Editions in progress")
-    void Should_ThrowBadRequestException_When_TryingToLeaveTwoEditionsInProgress() {
+    @DisplayName("Should throw ConflictException when trying to leave two Editions in progress")
+    void Should_ThrowConflictException_When_TryingToLeaveTwoEditionsInProgress() {
 
         EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
         var edition = EditionTestUtil.createNewEdition(Status.SCHEDULED, entityManager);
 
-        assertThrows(BadRequestException.class, () -> editionService.updateEditionStatus(edition.getId(), Status.IN_PROGRESS));
+        assertThrows(ConflictException.class, () -> editionService.updateEditionStatus(edition.getId(), Status.IN_PROGRESS));
     }
 
     @Test
@@ -169,10 +170,10 @@ class EditionServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to operate on unfinished Editions")
-    void Should_ThrowBadRequestException_When_TryingToOperateOnFinishedEditions() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to operate on unfinished Editions")
+    void Should_ThrowUnprocessableEntityException_When_TryingToOperateOnFinishedEditions() {
         var edition = EditionTestUtil.createNewEdition(Status.ENDED, entityManager);
-        assertThrows(BadRequestException.class, () -> editionService.checkEditionStatusById(edition.getId()));
+        assertThrows(UnprocessableEntityException.class, () -> editionService.checkEditionStatusById(edition.getId()));
     }
 
 }

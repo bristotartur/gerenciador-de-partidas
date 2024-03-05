@@ -3,8 +3,9 @@ package com.bristotartur.gerenciadordepartidas.services.events;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.mappers.EditionMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.EditionRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +58,7 @@ public class EditionService {
         var edition = this.findEditionById(id);
 
         if (!edition.getEditionStatus().equals(Status.SCHEDULED)) {
-            throw new BadRequestException("Uma edição só pode ser excluída antes de ser iniciada.");
+            throw new UnprocessableEntityException("Uma edição só pode ser excluída antes de ser iniciada.");
         }
         editionRepository.deleteById(id);
         log.info("Edition '{}' was deleted.", id);
@@ -80,7 +81,7 @@ public class EditionService {
         Optional<Edition> alreadyInProgressEdition = editionRepository.findByEditionStatus(newStatus);
 
         if (newStatus.equals(Status.IN_PROGRESS) && alreadyInProgressEdition.isPresent()) {
-            throw new BadRequestException("Apenas uma edição de cada pode ter o status 'IN_PROGRESS'.");
+            throw new ConflictException("Apenas uma edição de cada pode ter o status 'IN_PROGRESS'.");
         }
         edition.setEditionStatus(newStatus);
         var updatedEdition = editionRepository.save(edition);
@@ -95,7 +96,7 @@ public class EditionService {
         var status = edition.getEditionStatus();
 
         if (status.equals(Status.ENDED)) {
-            throw new BadRequestException("Operações não podem ser realizadas em edições já encerradas.");
+            throw new UnprocessableEntityException("Operações não podem ser realizadas em edições já encerradas.");
         }
     }
 

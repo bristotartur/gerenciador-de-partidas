@@ -59,4 +59,16 @@ public class RestExceptionHandler {
                 .build(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ResponseEntity<ExceptionDetails> handleUnprocessableEntityException(UnprocessableEntityException exception) {
+
+        return new ResponseEntity<>(ExceptionDetails.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .title("UnprocessableEntityException")
+                .details(exception.getMessage())
+                .developerMessage(exception.getClass().getName())
+                .build(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
 }

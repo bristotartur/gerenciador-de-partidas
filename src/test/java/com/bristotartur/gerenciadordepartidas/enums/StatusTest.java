@@ -1,6 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.enums;
 
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -59,20 +60,20 @@ class StatusTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when invalid Status are passed")
-    void Should_TheowBadRequestException_When_InvalidStatusArePassed() {
+    @DisplayName("Should throw UnprocessableEntityException when invalid Status are passed")
+    void Should_TheowUnprocessableEntityException_When_InvalidStatusArePassed() {
 
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.SCHEDULED, Status.ENDED));
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.SCHEDULED, Status.OPEN_FOR_EDITS));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.SCHEDULED, Status.ENDED));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.SCHEDULED, Status.OPEN_FOR_EDITS));
 
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.IN_PROGRESS, Status.SCHEDULED));
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.IN_PROGRESS, Status.OPEN_FOR_EDITS));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.IN_PROGRESS, Status.SCHEDULED));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.IN_PROGRESS, Status.OPEN_FOR_EDITS));
 
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.ENDED, Status.SCHEDULED));
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.ENDED, Status.IN_PROGRESS));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.ENDED, Status.SCHEDULED));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.ENDED, Status.IN_PROGRESS));
 
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.OPEN_FOR_EDITS, Status.SCHEDULED));
-        assertThrows(BadRequestException.class, () -> Status.checkStatus(Status.OPEN_FOR_EDITS, Status.IN_PROGRESS));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.OPEN_FOR_EDITS, Status.SCHEDULED));
+        assertThrows(UnprocessableEntityException.class, () -> Status.checkStatus(Status.OPEN_FOR_EDITS, Status.IN_PROGRESS));
     }
 
 }

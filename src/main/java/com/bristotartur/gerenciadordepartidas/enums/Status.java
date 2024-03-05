@@ -6,6 +6,7 @@ import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.events.TaskEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -82,7 +83,7 @@ public enum Status {
      * @param originalStatus Status que será atualizado.
      * @param newStatus O nova Status, que será analizado para verificar se está apto para atualizar
      *                  o Status original.
-     * @throws BadRequestException Caso o novo Status não esteja apto para atualizar o antigo Status.
+     * @throws UnprocessableEntityException Caso o novo Status não esteja apto para atualizar o antigo Status.
      */
     public static void checkStatus(Status originalStatus, Status newStatus) {
 
@@ -92,16 +93,16 @@ public enum Status {
 
         switch (originalStatus) {
             case SCHEDULED -> {
-                if (!newStatus.equals(IN_PROGRESS)) throw new BadRequestException(message.formatted(SCHEDULED, IN_PROGRESS));
+                if (!newStatus.equals(IN_PROGRESS)) throw new UnprocessableEntityException(message.formatted(SCHEDULED, IN_PROGRESS));
             }
             case IN_PROGRESS -> {
-                if (!newStatus.equals(ENDED)) throw new BadRequestException(message.formatted(IN_PROGRESS, ENDED));
+                if (!newStatus.equals(ENDED)) throw new UnprocessableEntityException(message.formatted(IN_PROGRESS, ENDED));
             }
             case ENDED -> {
-                if (!newStatus.equals(OPEN_FOR_EDITS)) throw new BadRequestException(message.formatted(ENDED, OPEN_FOR_EDITS));
+                if (!newStatus.equals(OPEN_FOR_EDITS)) throw new UnprocessableEntityException(message.formatted(ENDED, OPEN_FOR_EDITS));
             }
             case OPEN_FOR_EDITS -> {
-                if (!newStatus.equals(ENDED)) throw new BadRequestException(message.formatted(OPEN_FOR_EDITS, ENDED));
+                if (!newStatus.equals(ENDED)) throw new UnprocessableEntityException(message.formatted(OPEN_FOR_EDITS, ENDED));
             }
         }
     }

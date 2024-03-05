@@ -8,8 +8,9 @@ import com.bristotartur.gerenciadordepartidas.dtos.input.TransferableEventData;
 import com.bristotartur.gerenciadordepartidas.enums.EventType;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.mappers.SportEventMapper;
 import com.bristotartur.gerenciadordepartidas.repositories.SportEventRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,9 @@ public class SportEventService implements EventStrategy<SportEvent> {
         return events;
     }
 
+    /**
+     * @throws NotFoundException Caso nenhuma edição correspondente ao ID seja encontrada.
+     */
     @Override
     public Page<SportEvent> findAllEventsFromEdition(Long editionId, Pageable pageable) {
 
@@ -78,6 +82,9 @@ public class SportEventService implements EventStrategy<SportEvent> {
         return events;
     }
 
+    /**
+     * @throws NotFoundException Caso o nenhum evento esportivo correspondente ao ID seja encontrado.
+     */
     @Override
     public Page<Participant> findParticipantsFromEvent(Long id, Pageable pageable) {
 
@@ -91,6 +98,9 @@ public class SportEventService implements EventStrategy<SportEvent> {
         return events;
     }
 
+    /**
+    * @throws NotFoundException Caso o nenhum evento esportivo correspondente ao ID seja encontrado.
+    */
     @Override
     public SportEvent findEventById(Long id) {
 
@@ -101,6 +111,10 @@ public class SportEventService implements EventStrategy<SportEvent> {
         return event;
     }
 
+    /**
+     * @throws NotFoundException Caso o nenhum evento correspondente ao ID seja encontrado.
+     * @throws UnprocessableEntityException Caso o evento esteja encerrado.
+     */
     @Override
     public SportEvent findEventAndCheckStatus(Long id) {
 
@@ -108,11 +122,15 @@ public class SportEventService implements EventStrategy<SportEvent> {
         var status = event.getEventStatus();
 
         if (status.equals(Status.ENDED)) {
-            throw new BadRequestException(ExceptionMessages.INVALID_MATCH_OPERATION_ON_EVENT.message);
+            throw new UnprocessableEntityException(ExceptionMessages.INVALID_MATCH_OPERATION_ON_EVENT.message);
         }
         return event;
     }
 
+    /**
+     * @throws NotFoundException Caso nenhuma edição correspondente ao ID fornecido no DTO seja encontrada.
+     * @throws ConflictException Caso já exista um evento com o mesmo tipo e modalidade passados pelo DTO.
+     */
     @Override
     public SportEvent saveEvent(TransferableEventData<SportEvent> eventDto) {
 
@@ -129,13 +147,17 @@ public class SportEventService implements EventStrategy<SportEvent> {
         return event;
     }
 
+    /**
+     * @throws NotFoundException Caso o nenhum evento correspondente ao ID seja encontrado.
+     * @throws UnprocessableEntityException Caso o evento não esteja agendado.
+     */
     @Override
     public void deleteEventById(Long id) {
 
         var event = this.findEventById(id);
 
         if (!event.getEventStatus().equals(Status.SCHEDULED)) {
-            throw new BadRequestException(ExceptionMessages.INVALID_STATUS_TO_DELETE.message);
+            throw new UnprocessableEntityException(ExceptionMessages.INVALID_STATUS_TO_DELETE.message);
         }
         var editionId = event.getEdition().getId();
         sportEventRepository.deleteById(id);
@@ -143,6 +165,12 @@ public class SportEventService implements EventStrategy<SportEvent> {
         log.info("SportEvent '{}' from Edition '{}' was deleted.", id, editionId);
     }
 
+    /**
+     * @throws NotFoundException Caso o nenhum evento correspondente ao ID seja encontrado.
+     * @throws ConflictException Caso já exista um evento com o mesmo tipo e modalidade passados pelo DTO.
+     * @throws UnprocessableEntityException Caso o evento esportivo não esteja apto para ser atualizado ou a edição
+     * associada ao evento esteja encerrada.
+     */
     @Override
     public SportEvent replaceEvent(Long id, TransferableEventData<SportEvent> eventDto) {
 
@@ -166,9 +194,8 @@ public class SportEventService implements EventStrategy<SportEvent> {
     }
 
     /**
-     *
-     * @throws BadRequestException Caso o ID ou status passados sejam inválido ou não seja possível
-     * atualizar o status do evento.
+     * @throws NotFoundException Caso o nenhum evento correspondente ao ID seja encontrado.
+     * @throws UnprocessableEntityException Caso o evento não esteja apto para ter seu status atualizado.
      */
     @Override
     public SportEvent updateEventStatus(Long id, Status newStatus) {

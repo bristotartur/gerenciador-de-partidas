@@ -6,7 +6,8 @@ import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.services.events.SportEventValidator;
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
@@ -60,8 +61,8 @@ class SportEventValidatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when DTO with not unique Type and Modality in Edition is passed")
-    void Should_ThrowBadRequestException_When_DtoWithNotUniqueTypeAndModalityInEditionIsPassed() {
+    @DisplayName("Should throw ConflictException when DTO with not unique Type and Modality in Edition is passed")
+    void Should_ThrowConflictException_When_DtoWithNotUniqueTypeAndModalityInEditionIsPassed() {
 
         var events = List.of(
                 SportEventTestUtil.createNewSportEvent(Sports.FUTSAL, Modality.MASCULINE, edition),
@@ -69,7 +70,7 @@ class SportEventValidatorTest {
 
         var dto = SportEventTestUtil.createNewSportEventDto(Sports.FUTSAL, Modality.MASCULINE, 12, 1L);
 
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventForEdition(events, dto));
+        assertThrows(ConflictException.class, () -> SportEventValidator.checkSportEventForEdition(events, dto));
     }
 
     @Test
@@ -79,10 +80,10 @@ class SportEventValidatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when unscheduled SportEvent is passed")
-    void Should_ThrowBadRequestException_When_UnscheduledSportEventIsPassed() {
+    @DisplayName("Should throw UnprocessableEntityException when unscheduled SportEvent is passed")
+    void Should_ThrowUnprocessableEntityException_When_UnscheduledSportEventIsPassed() {
         event.setEventStatus(Status.IN_PROGRESS);
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventForUpdate(event));
+        assertThrows(UnprocessableEntityException.class, () -> SportEventValidator.checkSportEventForUpdate(event));
     }
 
     @Test
@@ -92,9 +93,9 @@ class SportEventValidatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when registerd Matches exceeds the limit of new total matches value")
-    void Should_ThrowBadRequestException_When_RegisteredMatchesExceedsTheLimitOfNewTotalMatchesValue() {
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkNewTotalMatchesForSportEvent(event, 5));
+    @DisplayName("Should throw UnprocessableEntityException when registerd Matches exceeds the limit of new total matches value")
+    void Should_ThrowUnprocessableEntityException_When_RegisteredMatchesExceedsTheLimitOfNewTotalMatchesValue() {
+        assertThrows(UnprocessableEntityException.class, () -> SportEventValidator.checkNewTotalMatchesForSportEvent(event, 5));
     }
 
     @Test
@@ -105,13 +106,13 @@ class SportEventValidatorTest {
 
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to start SportEvent with no sufficient matches")
-    void Should_ThrowBadRequestException_When_TryingToStartSportEventWithNoSufficientMatches() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to start SportEvent with no sufficient matches")
+    void Should_ThrowUnprocessableEntityException_When_TryingToStartSportEventWithNoSufficientMatches() {
 
         event.setTotalMatches(7);
         event.setEventStatus(Status.IN_PROGRESS);
 
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
+        assertThrows(UnprocessableEntityException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
     }
 
     @Test
@@ -133,24 +134,24 @@ class SportEventValidatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to finish SportEvent with no sufficient matches")
-    void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithNoSufficientMatches() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to finish SportEvent with no sufficient matches")
+    void Should_ThrowUnprocessableEntityException_When_TryingToFinishSportEventWithNoSufficientMatches() {
 
         matches.remove(0);
         event.setMatches(matches);
 
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
+        assertThrows(UnprocessableEntityException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to finish SportEvent with unfinished matches")
-    void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithUnfinishedMatches() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to finish SportEvent with unfinished matches")
+    void Should_ThrowUnprocessableEntityException_When_TryingToFinishSportEventWithUnfinishedMatches() {
 
         matches.add(MatchTestUtil.createNewMatch(any(), any(), any(), event,Status.IN_PROGRESS));
         matches.forEach(match -> match.setMatchStatus(Status.IN_PROGRESS));
         event.setMatches(matches);
 
-        assertThrows(BadRequestException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
+        assertThrows(UnprocessableEntityException.class, () -> SportEventValidator.checkSportEventToUpdateStatus(event, Status.ENDED, Status.IN_PROGRESS));
     }
 
 }

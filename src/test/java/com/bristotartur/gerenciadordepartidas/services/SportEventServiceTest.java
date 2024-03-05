@@ -4,11 +4,11 @@ import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.enums.*;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
+import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.repositories.SportEventRepository;
 import com.bristotartur.gerenciadordepartidas.services.events.SportEventService;
-import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.MatchTestUtil;
 import com.bristotartur.gerenciadordepartidas.utils.ParticipantTestUtil;
@@ -170,13 +170,13 @@ class SportEventServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when SportEvent with invalid Status for Match is find")
-    void Should_ThrowBadRequestException_When_SportEventWithInvalidStatusForMatchIsFind() {
+    @DisplayName("Should throw UnprocessableEntityException when SportEvent with invalid Status for Match is find")
+    void Should_ThrowUnprocessableEntityException_When_SportEventWithInvalidStatusForMatchIsFind() {
 
         sportEventA.setEventStatus(Status.ENDED);
         entityManager.merge(sportEventA);
 
-        assertThrows(BadRequestException.class, () -> sportEventService.findEventAndCheckStatus(sportEventA.getId()));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.findEventAndCheckStatus(sportEventA.getId()));
     }
 
     @Test
@@ -193,8 +193,8 @@ class SportEventServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to create or update SportEvent in finished Edition")
-    void Should_ThrowBadRequestException_When_TryingToCreateOrUpdateSportEventInFinishedEdition() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to create or update SportEvent in finished Edition")
+    void Should_ThrowUnprocessableEntityException_When_TryingToCreateOrUpdateSportEventInFinishedEdition() {
 
         var finishedEdition = EditionTestUtil.createNewEdition(Status.ENDED, entityManager);
         entityManager.merge(sportEventA);
@@ -203,13 +203,13 @@ class SportEventServiceTest {
         var editionId = finishedEdition.getId();
         var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, total, editionId);
 
-        assertThrows(BadRequestException.class, () -> sportEventService.saveEvent(dto));
-        assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(sportEventA.getId(), dto));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.saveEvent(dto));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.replaceEvent(sportEventA.getId(), dto));
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when DTO with not unique Type and Modality in Edition is passed")
-    void Should_ThrowBadRequestException_When_DtoWithNotUniqueTypeAndModalityInEditionIsPassed() {
+    @DisplayName("Should throw ConflictException when DTO with not unique Type and Modality in Edition is passed")
+    void Should_ThrowConflictException_When_DtoWithNotUniqueTypeAndModalityInEditionIsPassed() {
 
         entityManager.merge(sportEventA);
         entityManager.merge(sportEventB);
@@ -221,8 +221,8 @@ class SportEventServiceTest {
 
         var dto = SportEventTestUtil.createNewSportEventDto(type, modality, total, editionId);
 
-        assertThrows(BadRequestException.class, () -> sportEventService.saveEvent(dto));
-        assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(sportEventB.getId(), dto));
+        assertThrows(ConflictException.class, () -> sportEventService.saveEvent(dto));
+        assertThrows(ConflictException.class, () -> sportEventService.replaceEvent(sportEventB.getId(), dto));
     }
 
     @Test
@@ -238,8 +238,8 @@ class SportEventServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to modify not scheduled SportEvent")
-    void Should_ThrowBadRequestException_When_TryingToModifyNotScheduledSportEvent() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to modify not scheduled SportEvent")
+    void Should_ThrowUnprocessableEntityException_When_TryingToModifyNotScheduledSportEvent() {
 
         sportEventB.setEventStatus(Status.IN_PROGRESS);
         entityManager.merge(sportEventB);
@@ -250,8 +250,8 @@ class SportEventServiceTest {
 
         var dto = SportEventTestUtil.createNewSportEventDto(Sports.VOLLEYBALL, Modality.MIXED, total, editionId);
 
-        assertThrows(BadRequestException.class, () -> sportEventService.deleteEventById(id));
-        assertThrows(BadRequestException.class, () -> sportEventService.replaceEvent(id, dto));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.deleteEventById(id));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.replaceEvent(id, dto));
     }
 
     @Test
@@ -298,8 +298,8 @@ class SportEventServiceTest {
     }
 
     @Test
-    @DisplayName("Should update SportEvent status when valid Status is passed")
-    void Should_ThrowBadRequestException_When_InvaalidStatusIsPassed() {
+    @DisplayName("Should throw UnprocessableEntityException when invalid Status is passed")
+    void Should_ThrowUnprocessableEntityException_When_InvalidStatusIsPassed() {
 
         var editionMock = EditionTestUtil.createNewEdition(Status.IN_PROGRESS, entityManager);
         var sportEventC = SportEventTestUtil.createNewSportEvent(
@@ -308,17 +308,17 @@ class SportEventServiceTest {
         var message = ExceptionMessages.CANNOT_UPDATE_STATUS.message;
 
         assertThatThrownBy(() -> sportEventService.updateEventStatus(sportEventC.getId(), Status.ENDED))
-                .isInstanceOf(BadRequestException.class)
+                .isInstanceOf(UnprocessableEntityException.class)
                 .hasMessage(message.formatted(Status.SCHEDULED, Status.IN_PROGRESS));
 
         assertThatThrownBy(() -> sportEventService.updateEventStatus(sportEventC.getId(), Status.OPEN_FOR_EDITS))
-                .isInstanceOf(BadRequestException.class)
+                .isInstanceOf(UnprocessableEntityException.class)
                 .hasMessage(message.formatted(Status.SCHEDULED, Status.IN_PROGRESS));
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to start SportEvent with no sufficient matches")
-    void Should_ThrowBadRequestException_When_TryingToStartSportEventWithNoSufficientMatches() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to start SportEvent with no sufficient matches")
+    void Should_ThrowUnprocessableEntityException_When_TryingToStartSportEventWithNoSufficientMatches() {
 
         var matches = List.of(
                 MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.SCHEDULED));
@@ -328,12 +328,12 @@ class SportEventServiceTest {
 
         var id = sportEventA.getId();
 
-        assertThrows(BadRequestException.class, () -> sportEventService.updateEventStatus(id, Status.IN_PROGRESS));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.updateEventStatus(id, Status.IN_PROGRESS));
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to finish SportEvent with no sufficient matches")
-    void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithNoSufficientMatches() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to finish SportEvent with no sufficient matches")
+    void Should_ThrowUnprocessableEntityException_When_TryingToFinishSportEventWithNoSufficientMatches() {
 
         var matches = List.of(
                 MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
@@ -346,12 +346,12 @@ class SportEventServiceTest {
         entityManager.merge(sportEventA);
 
         var id = sportEventA.getId();
-        assertThrows(BadRequestException.class, () -> sportEventService.updateEventStatus(id, Status.ENDED));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.updateEventStatus(id, Status.ENDED));
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to finish SportEvent with unfinished matches")
-    void Should_ThrowBadRequestException_When_TryingToFinishSportEventWithUnfinishedMatches() {
+    @DisplayName("Should throw UnprocessableEntityException when trying to finish SportEvent with unfinished matches")
+    void Should_ThrowUnprocessableEntityException_When_TryingToFinishSportEventWithUnfinishedMatches() {
 
         var matches = List.of(
                 MatchTestUtil.createNewMatch(Team.PAPA_LEGUAS, Team.TWISTER, participants, sportEventA, Status.ENDED),
@@ -366,7 +366,7 @@ class SportEventServiceTest {
         entityManager.merge(sportEventA);
 
         var id = sportEventA.getId();
-        assertThrows(BadRequestException.class, () -> sportEventService.updateEventStatus(id, Status.ENDED));
+        assertThrows(UnprocessableEntityException.class, () -> sportEventService.updateEventStatus(id, Status.ENDED));
     }
 
 }

@@ -11,6 +11,7 @@ import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.utils.EditionTestUtil;
@@ -222,7 +223,7 @@ class MatchServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when trying to create or update Match on finished event")
+    @DisplayName("Should throw UnprocessableEntityException when trying to create or update Match on finished event")
     void Should_ThrowbadRequestException_When_TryingToCreateOrUpdateMatchOnFinishedEvent() {
 
         var sportEvent = SportEventTestUtil.createNewSportEvent(
@@ -237,8 +238,8 @@ class MatchServiceTest {
         sportEvent.setEventStatus(Status.ENDED);
         entityManager.merge(sportEvent);
 
-        assertThrows(BadRequestException.class, () -> matchService.saveMatch(dto));
-        assertThrows(BadRequestException.class, () -> matchService.replaceMatch(match.getId(), dto));
+        assertThrows(UnprocessableEntityException.class, () -> matchService.saveMatch(dto));
+        assertThrows(UnprocessableEntityException.class, () -> matchService.replaceMatch(match.getId(), dto));
     }
 
     @Test
@@ -335,8 +336,8 @@ class MatchServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when invalid Match Status is passed")
-    void Should_ThrowBadRequestException_When_InvalidMatchStatusIsPassed() {
+    @DisplayName("Should throw UnprocessableEntityException when invalid Match Status is passed")
+    void Should_ThrowUnprocessableEntityException_When_InvalidMatchStatusIsPassed() {
 
         var dto = MatchTestUtil.createNewMatchDto(
                 Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId(), futsalEvent.getModality()
@@ -344,8 +345,8 @@ class MatchServiceTest {
         var futsalMatch = matchService.saveMatch(dto);
         var id = futsalMatch.getId();
 
-        assertThrows(BadRequestException.class, () -> matchService.updateMatchStatus(id, Status.ENDED));
-        assertThrows(BadRequestException.class, () -> matchService.updateMatchStatus(id, Status.OPEN_FOR_EDITS));
+        assertThrows(UnprocessableEntityException.class, () -> matchService.updateMatchStatus(id, Status.ENDED));
+        assertThrows(UnprocessableEntityException.class, () -> matchService.updateMatchStatus(id, Status.OPEN_FOR_EDITS));
     }
 
     @Test

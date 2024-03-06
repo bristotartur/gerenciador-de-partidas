@@ -81,7 +81,9 @@ public class EditionService {
         Optional<Edition> alreadyInProgressEdition = editionRepository.findByEditionStatus(newStatus);
 
         if (newStatus.equals(Status.IN_PROGRESS) && alreadyInProgressEdition.isPresent()) {
-            throw new ConflictException("Apenas uma edição de cada pode ter o status 'IN_PROGRESS'.");
+            if (!edition.equals(alreadyInProgressEdition.get())) {
+                throw new ConflictException("Apenas uma edição de cada pode ter o status 'IN_PROGRESS'.");
+            }
         }
         edition.setEditionStatus(newStatus);
         var updatedEdition = editionRepository.save(edition);

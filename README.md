@@ -186,7 +186,7 @@ uma exceção deste tipo:
 
 ```json
 {
-    "title": "UnprocessableEntityException.",
+    "title": "Unprocessable Entity.",
     "status": 422,
     "details": "Atributos de eventos esportivos só podem ser atualizados com o status 'SCHEDULED'.",
     "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException",
@@ -257,7 +257,7 @@ haja a tentativa de criar dois eventos com o mesmo tipo e modalidade, a seguinte
 
 ```json
 {
-    "title": "ConflictException.",
+    "title": "Conflict Exception.",
     "status": 409,
     "details": "Evento esportivo de tipo 'FUTSAL' e modalidade 'MASCULINE' já existe na edição '1'.",
     "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.ConflictException",
@@ -283,7 +283,7 @@ tente-se operar sobre um evento que não pode ter seus campos alterados, você r
 
 ```json
 {
-    "title": "UnprocessableEntityException.",
+    "title": "Unprocessable Entity.",
     "status": 422,
     "details": "Operações não podem ser realizadas em edições já encerradas.",
     "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException",
@@ -294,7 +294,7 @@ ou, caso tente atualizar o status de um *evento* cuja edição não está em and
 
 ```json
 {
-    "title": "UnprocessableEntityException.",
+    "title": "Unprocessable Entity.",
     "status": 422,
     "details": "Eventos só podem ter seu status atualizado caso sua edição estaja com o status 'IN_PROGRESS'.",
     "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException",

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.bristotartur</groupId>
 	<artifactId>gerenciador-de-partidas</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-ALPHA</version>
 	<name>gerenciador-de-partidas</name>
 	<description>Gerenciador de partidas para uma gincana</description>
 	<properties>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>3.1.5</version>
+			<version>3.2.1</version>
 		</dependency>
 
 		<dependency>
@@ -67,6 +67,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 
 		<dependency>
@@ -121,5 +127,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2/</url>
+		</repository>
+	</repositories>
 
 </project>

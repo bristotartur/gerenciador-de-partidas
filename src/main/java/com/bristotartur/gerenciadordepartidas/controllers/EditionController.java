@@ -1,11 +1,13 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
+import com.bristotartur.gerenciadordepartidas.controllers.docs.EditionOperations;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.mappers.EditionMapper;
 import com.bristotartur.gerenciadordepartidas.services.events.EditionService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +28,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
+@Tag(name = "Edition")
 public class EditionController {
 
     private final EditionService editionService;
     private final EditionMapper editionMapper;
 
+    @EditionOperations.ListAllEditionsOperation
     @GetMapping
     public ResponseEntity<Page<ExposingEditionDto>> listAllEditions(Pageable pageable) {
 
@@ -43,6 +47,7 @@ public class EditionController {
         return ResponseEntity.ok().body(dtoPage);
     }
 
+    @EditionOperations.FindEditionByIdOperation
     @GetMapping(path = "/{id}")
     public ResponseEntity<ExposingEditionDto> findEditionById(@PathVariable Long id) {
 
@@ -52,6 +57,7 @@ public class EditionController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @EditionOperations.SaveEditionOperation
     @PostMapping
     public ResponseEntity<ExposingEditionDto> saveEdition(@RequestBody @Valid EditionDto editionDto) {
 
@@ -61,6 +67,7 @@ public class EditionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @EditionOperations.DeleteEditionOperation
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteEdition(@PathVariable Long id) {
 
@@ -70,6 +77,7 @@ public class EditionController {
         return ResponseEntity.noContent().build();
     }
 
+    @EditionOperations.ReplaceEditionOperation
     @PutMapping(path = "/{id}")
     public ResponseEntity<ExposingEditionDto> replaceEdition(@PathVariable Long id,
                                                              @RequestBody @Valid EditionDto editionDto) {
@@ -79,6 +87,7 @@ public class EditionController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @EditionOperations.UpdateEditionStatusOperation
     @PutMapping(path = "/{id}/update")
     public ResponseEntity<ExposingEditionDto> updateEditionStatus(@PathVariable Long id,
                                                                   @RequestParam("status") String editionStatus) {

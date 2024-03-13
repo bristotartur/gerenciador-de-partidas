@@ -1,0 +1,13 @@
+spring:
+  data-source:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/gerenciador_de_partidas
+    username: postgres
+    password: postgres
+
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+      

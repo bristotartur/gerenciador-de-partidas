@@ -3,19 +3,10 @@ server:
     include-stacktrace: on_param
 
 spring:
+  profiles:
+    default: dev
+
   data:
     web:
       pageable:
-        default-page-size: 12
-
-  data-source:
-    platform: postgres
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/gerenciador_de_partidas
-    username: postgres
-    password: 1234
-
-  jpa:
-    database: POSTGRESQL
-    hibernate:
-      ddl-auto: update
+        default-page-size: 14

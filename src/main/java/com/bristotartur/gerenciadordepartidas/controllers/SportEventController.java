@@ -1,5 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
+import com.bristotartur.gerenciadordepartidas.controllers.docs.SportEventOperations;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingSportEventDto;
 import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
@@ -7,6 +8,7 @@ import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.mappers.SportEventMapper;
 import com.bristotartur.gerenciadordepartidas.services.events.SportEventService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +29,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
+@Tag(name = "Sport Event")
 public class SportEventController {
 
     private final SportEventService sportEventService;
     private final SportEventMapper sportEventMapper;
 
+    @SportEventOperations.ListAllSportEventsOperation
     @GetMapping
     public ResponseEntity<Page<ExposingSportEventDto>> listAllSportEvents(Pageable pageable) {
 
@@ -44,6 +48,7 @@ public class SportEventController {
         return ResponseEntity.ok().body(dtoPage);
     }
 
+    @SportEventOperations.ListSportEventsFromEditionOperation
     @GetMapping(path = "/from")
     public ResponseEntity<Page<ExposingSportEventDto>> listSportEventsFromEdition(@RequestParam("edition") Long editionId,
                                                                                   Pageable pageable) {
@@ -56,8 +61,9 @@ public class SportEventController {
         return ResponseEntity.ok().body(dtoPage);
     }
 
+    @SportEventOperations.ListSportEventsBySportOperation
     @GetMapping(path = "/list")
-    public ResponseEntity<Page<ExposingSportEventDto>> listSportEventsbySport(@RequestParam String sportType,
+    public ResponseEntity<Page<ExposingSportEventDto>> listSportEventsBySport(@RequestParam("sport") String sportType,
                                                                              Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -69,6 +75,7 @@ public class SportEventController {
         return ResponseEntity.ok().body(dtoPage);
     }
 
+    @SportEventOperations.FindSportEventByIdOperation
     @GetMapping(path = "/{id}")
     public ResponseEntity<ExposingSportEventDto> findSportEventById(@PathVariable Long id) {
 
@@ -78,6 +85,7 @@ public class SportEventController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @SportEventOperations.SaveSportEventOperation
     @PostMapping
     public ResponseEntity<ExposingSportEventDto> saveSportEvent(@RequestBody @Valid SportEventDto sportEventDto) {
 
@@ -87,6 +95,7 @@ public class SportEventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @SportEventOperations.DeleteSportEventOperation
     @DeleteMapping(path = "{id}")
     public ResponseEntity<Void> deleteSportEvent(@PathVariable Long id) {
 
@@ -96,6 +105,7 @@ public class SportEventController {
         return ResponseEntity.noContent().build();
     }
 
+    @SportEventOperations.ReplaceSportEventOperation
     @PutMapping(path = "/{id}")
     public ResponseEntity<ExposingSportEventDto> replaceSportEvent(@PathVariable Long id,
                                                                    @RequestBody @Valid SportEventDto sportEventDto) {
@@ -105,6 +115,7 @@ public class SportEventController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @SportEventOperations.UpdateSportEventStatusOperation
     @PutMapping(path = "/{id}/update")
     public ResponseEntity<ExposingSportEventDto> updateSportEventStatus(@PathVariable Long id,
                                                                         @RequestParam("status") String eventStatus) {
@@ -117,7 +128,6 @@ public class SportEventController {
 
     private ExposingSportEventDto createSingleExposingDto(SportEvent sportEvent) {
 
-        var id = sportEvent.getId();
         var editionId = sportEvent.getId();
         var dto = sportEventMapper.toNewExposingSportEventDto(sportEvent);
 
@@ -143,8 +153,6 @@ public class SportEventController {
         var id = sportEvent.getId();
         var editionId = sportEvent.getEdition().getId();
         var dto = sportEventMapper.toNewExposingSportEventDto(sportEvent);
-
-        var pageable = PageRequest.of(0, 12);
 
         dto.add(linkTo(methodOn(this.getClass()).findSportEventById(id)).withSelfRel());
         dto.add(linkTo(methodOn(EditionController.class).findEditionById(editionId)).withRel("edition"));

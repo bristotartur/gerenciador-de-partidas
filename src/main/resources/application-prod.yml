@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   data-source:
     platform: postgres
@@ -10,4 +13,3 @@ spring:
     database: POSTGRESQL
     hibernate:
       ddl-auto: update
-      

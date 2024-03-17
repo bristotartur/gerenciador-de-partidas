@@ -19,6 +19,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +82,23 @@ public class MatchService {
 
         log.info("Matches page of number '{}' and size '{}' with type '{}' was returned.", number, size, sport);
         return matches;
+    }
+
+    /**
+     * Busca por todas as partidas relacionadas a um evento esportivo específico.
+     *
+     * @param sportEventId Identificador único do evento esportivo.
+     * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @return Um {@link Page} contendo todas as partidas relacionadas ao evento esportivo especificado.
+     */
+    public Page<? extends Match> findMatchesBySportEvent(Long sportEventId, Pageable pageable) {
+
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        var matches = sportEventService.findEventById(sportEventId).getMatches();
+
+        log.info("Match page of number '{}' and size '{}' from SportEvent '{}' was returned.", number, size, sportEventId);
+        return new PageImpl<>(matches, pageable, matches.size());
     }
 
     /**

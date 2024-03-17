@@ -129,6 +129,25 @@ class MatchServiceTest {
     }
 
     @Test
+    @DisplayName("Should retrieve all Matches from a specific SportEvent when existing SportEvent ID is passed")
+    void Should_RetrieveAllMatchesFromSportEvent_When_ExistingSportEventIdIsPassed() {
+
+        var futsalDto = MatchTestUtil.createNewMatchDto(
+                Sports.FUTSAL, teamA, teamB, playersIds, futsalEvent.getId(), futsalEvent.getModality()
+        );
+        matchService.saveMatch(futsalDto);
+        matchService.saveMatch(futsalDto);
+        matchService.saveMatch(futsalDto);
+
+        var sportEventMatches = futsalEvent.getMatches();
+        var pageable = PageRequest.of(0, sportEventMatches.size());
+        var result = matchService.findMatchesBySportEvent(futsalEvent.getId(), pageable);
+
+        assertEquals(result.getContent(), sportEventMatches);
+        assertEquals(result.getPageable(), pageable);
+    }
+
+    @Test
     @DisplayName("Should find Match when existing Match ID is passed to search")
     void Should_FindMatch_When_ExistingMatchIdIsPassedToSearch() {
 

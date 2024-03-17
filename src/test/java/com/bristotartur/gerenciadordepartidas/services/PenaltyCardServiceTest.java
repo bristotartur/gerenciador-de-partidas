@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.*;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.repositories.PenaltyCardRepository;
@@ -43,8 +43,8 @@ class PenaltyCardServiceTest {
     private Edition edition;
     private Participant playerA;
     private Participant playerB;
-    private MatchDto futsalDto;
-    private MatchDto handballDto;
+    private RequestMatchDto futsalDto;
+    private RequestMatchDto handballDto;
 
     @BeforeEach
     void setUp() {

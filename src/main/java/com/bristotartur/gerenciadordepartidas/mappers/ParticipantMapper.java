@@ -2,8 +2,8 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseParticipantDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
  * Interface responsável por gerar o mapeamento de dados relativos a entidade {@link Participant}
  * para uma instância concreta da mesma.
  *
- * @see ParticipantDto
+ * @see RequestParticipantDto
  */
 @Mapper(componentModel = "spring")
 public interface ParticipantMapper {
@@ -19,7 +19,7 @@ public interface ParticipantMapper {
     /**
      * Gera uma nova instância de {@link Participant} com base nos dados fornecidos.
      *
-     * @param participantDto DTO do tipo {@link ParticipantDto} contendo os dados do novo participante.
+     * @param dto DTO do tipo {@link RequestParticipantDto} contendo os dados do novo participante.
      * @return Uma nova instância do tipo {@link Participant} com base nos dados fornecidos.
      */
     @Mapping(target = "id", ignore = true)
@@ -27,13 +27,13 @@ public interface ParticipantMapper {
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "goal", ignore = true)
     @Mapping(target = "penaltyCards", ignore = true)
-    Participant toNewParticipant(ParticipantDto participantDto, Edition edition);
+    Participant toNewParticipant(RequestParticipantDto dto, Edition edition);
 
     /**
      * Atualiza uma instância existente de {@link Participant} com base nos dados fornecidos.
      *
      * @param id Identificador único do participante que será atualizado.
-     * @param participantDto DTO do tipo {@link ParticipantDto} contendo os dados do novo participante.
+     * @param dto DTO do tipo {@link RequestParticipantDto} contendo os dados do novo participante.
      * @return Uma nova instância atualizada de {@link Participant} com base nos dados fornecidos.
      */
     @Mapping(target = "id", source = "id")
@@ -41,15 +41,15 @@ public interface ParticipantMapper {
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "goal", ignore = true)
     @Mapping(target = "penaltyCards", ignore = true)
-    Participant toExistingParticipant(Long id, ParticipantDto participantDto, Edition edition);
+    Participant toExistingParticipant(Long id, RequestParticipantDto dto, Edition edition);
 
     /**
-     * Gera uma nova instância de {@link ExposingParticipantDto} a partir de qualquer instância de {@link Participant}.
+     * Gera uma nova instância de {@link ResponseParticipantDto} a partir de qualquer instância de {@link Participant}.
      *
      * @param participant Participante contendo os dados a serem mapeados.
-     * @return Uma nova instãncia de {@link ExposingParticipantDto}.
+     * @return Uma nova instãncia de {@link ResponseParticipantDto}.
      */
     @Mapping(target = "participantId", source = "participant.id")
-    ExposingParticipantDto toNewExposingParticipantDto(Participant participant);
+    ResponseParticipantDto toNewExposingParticipantDto(Participant participant);
 
 }

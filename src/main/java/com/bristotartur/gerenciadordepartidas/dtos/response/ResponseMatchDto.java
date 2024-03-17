@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.exposing;
+package com.bristotartur.gerenciadordepartidas.dtos.response;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.enums.*;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  */
 @RequiredArgsConstructor
 @Getter
-public class ExposingMatchDto extends RepresentationModel<ExposingMatchDto> {
+public class ResponseMatchDto extends RepresentationModel<ResponseMatchDto> {
 
     private final Long matchId;
     private final Sports sport;

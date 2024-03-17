@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.*;
 
 import java.time.LocalDateTime;
@@ -122,17 +122,17 @@ public final class MatchTestUtil {
     }
 
     /**
-     * Cria uma nova instância de {@link MatchDto}.
+     * Cria uma nova instância de {@link RequestMatchDto}.
      *
      * @param sport O tipo de esporte da partida.
      * @param teamA Constante de {@link Team} que representa a equipe A da partida.
      * @param teamB Constante de {@link Team} que representa a equipe B da partida.
      * @param playerIds Identificadores únicos dos jogadores presentes na partida.
-     * @return Uma nova instância de {@link MatchDto} com os dados passados.
+     * @return Uma nova instância de {@link RequestMatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId) {
+    public static RequestMatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId) {
 
-        return MatchDto.builder()
+        return RequestMatchDto.builder()
                 .matchImportance(Importance.NONE)
                 .sport(sport)
                 .teamA(teamA)
@@ -146,18 +146,18 @@ public final class MatchTestUtil {
     }
 
     /**
-     * Cria uma nova instância de {@link MatchDto}.
+     * Cria uma nova instância de {@link RequestMatchDto}.
      *
      * @param sport O tipo de esporte da partida.
      * @param teamA Constante de {@link Team} que representa a equipe A da partida.
      * @param teamB Constante de {@link Team} que representa a equipe B da partida.
      * @param playerIds Identificadores únicos dos jogadores presentes na partida.
      * @param modality A modalidade da partida, podendo ser feminina, masculina ou mista.
-     * @return Uma nova instância de {@link MatchDto} com os dados passados.
+     * @return Uma nova instância de {@link RequestMatchDto} com os dados passados.
      */
-    public static MatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId, Modality modality) {
+    public static RequestMatchDto createNewMatchDto(Sports sport, Team teamA, Team teamB, List<Long> playerIds, Long eventId, Modality modality) {
 
-        return MatchDto.builder()
+        return RequestMatchDto.builder()
                 .matchImportance(Importance.NONE)
                 .sport(sport)
                 .teamA(teamA)

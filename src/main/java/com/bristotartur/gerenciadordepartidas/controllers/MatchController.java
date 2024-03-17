@@ -2,9 +2,9 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseMatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
@@ -35,7 +35,7 @@ public class MatchController {
     private final ParticipantMapper participantMapper;
 
     @GetMapping
-    public ResponseEntity<Page<ExposingMatchDto>> listAllMatches(Pageable pageable) {
+    public ResponseEntity<Page<ResponseMatchDto>> listAllMatches(Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -46,7 +46,7 @@ public class MatchController {
     }
 
     @GetMapping(path = "/list")
-    public ResponseEntity<Page<ExposingMatchDto>> listMatchesBySport(@RequestParam String sportType, Pageable pageable) {
+    public ResponseEntity<Page<ResponseMatchDto>> listMatchesBySport(@RequestParam String sportType, Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -59,7 +59,7 @@ public class MatchController {
     }
 
     @GetMapping(path = "/from")
-    public ResponseEntity<Page<ExposingMatchDto>> listMatchesFromSportEvent(@RequestParam("sport-event") Long sportEventId,
+    public ResponseEntity<Page<ResponseMatchDto>> listMatchesFromSportEvent(@RequestParam("sport-event") Long sportEventId,
                                                                             Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -70,7 +70,7 @@ public class MatchController {
     }
 
     @GetMapping(path = "/{id}/players")
-    public ResponseEntity<Page<ExposingParticipantDto>> listMatchPlayers(@PathVariable Long id, Pageable pageable) {
+    public ResponseEntity<Page<ResponseParticipantDto>> listMatchPlayers(@PathVariable Long id, Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -86,7 +86,7 @@ public class MatchController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExposingMatchDto> findMatchById(@PathVariable Long id) {
+    public ResponseEntity<ResponseMatchDto> findMatchById(@PathVariable Long id) {
 
         log.info("Request to find Match '{}' was made.", id);
 
@@ -95,11 +95,11 @@ public class MatchController {
     }
 
     @PostMapping
-    public ResponseEntity<ExposingMatchDto> saveMatch(@RequestBody @Valid MatchDto matchDto) {
+    public ResponseEntity<ResponseMatchDto> saveMatch(@RequestBody @Valid RequestMatchDto requestMatchDto) {
 
-        log.info("Request to create a new Match of type '{}' was made.", matchDto.sport());
+        log.info("Request to create a new Match of type '{}' was made.", requestMatchDto.sport());
 
-        var dto = this.createSingleExposingDto(matchService.saveMatch(matchDto));
+        var dto = this.createSingleExposingDto(matchService.saveMatch(requestMatchDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -113,17 +113,17 @@ public class MatchController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ExposingMatchDto> replaceMatch(@PathVariable Long id,
-                                                         @RequestBody @Valid MatchDto matchDto) {
+    public ResponseEntity<ResponseMatchDto> replaceMatch(@PathVariable Long id,
+                                                         @RequestBody @Valid RequestMatchDto requestMatchDto) {
 
-        log.info("Request to update Match '{}' of type '{}' was made.", id, matchDto.sport());
+        log.info("Request to update Match '{}' of type '{}' was made.", id, requestMatchDto.sport());
 
-        var dto = this.createSingleExposingDto(matchService.replaceMatch(id, matchDto));
+        var dto = this.createSingleExposingDto(matchService.replaceMatch(id, requestMatchDto));
         return ResponseEntity.ok().body(dto);
     }
 
     @PutMapping(path = "/{id}/update")
-    public ResponseEntity<ExposingMatchDto> updateMatchStatus(@PathVariable Long id,
+    public ResponseEntity<ResponseMatchDto> updateMatchStatus(@PathVariable Long id,
                                                               @RequestParam("status") String matchStatus) {
 
         var status = Status.findStatusLike(matchStatus);
@@ -133,7 +133,7 @@ public class MatchController {
         return ResponseEntity.ok().body(dto);
     }
 
-    private ExposingMatchDto createSingleExposingDto(Match match) {
+    private ResponseMatchDto createSingleExposingDto(Match match) {
 
         var id = match.getId();
 
@@ -149,7 +149,7 @@ public class MatchController {
         return dto;
     }
 
-    public Page<ExposingMatchDto> createExposingDtoPage(Page<? extends Match> matchPage) {
+    public Page<ResponseMatchDto> createExposingDtoPage(Page<? extends Match> matchPage) {
 
         var matches = matchPage.getContent();
         var dtos = matches.stream()
@@ -159,7 +159,7 @@ public class MatchController {
         return new PageImpl<>(dtos, matchPage.getPageable(), matchPage.getSize());
     }
 
-    private ExposingMatchDto addSingleMatchLink(Match match) {
+    private ResponseMatchDto addSingleMatchLink(Match match) {
 
         var id = match.getId();
 
@@ -174,7 +174,7 @@ public class MatchController {
         return dto;
     }
 
-    private ExposingParticipantDto addPlayerLink(Participant player, Long matchId) {
+    private ResponseParticipantDto addPlayerLink(Participant player, Long matchId) {
 
         var id = player.getId();
         var dto = participantMapper.toNewExposingParticipantDto(player);
@@ -185,7 +185,7 @@ public class MatchController {
         return dto;
     }
 
-    private void addExtraLinks(ExposingMatchDto dto, Long matchId, Pageable pageable) {
+    private void addExtraLinks(ResponseMatchDto dto, Long matchId, Pageable pageable) {
 
         var sport = dto.getSport();
 

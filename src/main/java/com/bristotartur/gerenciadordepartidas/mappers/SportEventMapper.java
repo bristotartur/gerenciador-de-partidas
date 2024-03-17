@@ -2,8 +2,8 @@ package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingSportEventDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestSportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseSportEventDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -19,15 +19,15 @@ public interface SportEventMapper {
     @Mapping(target = "eventStatus", expression = "java(Status.SCHEDULED)")
     @Mapping(target = "matches", ignore = true)
     @Mapping(target = "participants", ignore = true)
-    SportEvent toNewSportEvent(SportEventDto sportEventDto, Edition edition);
+    SportEvent toNewSportEvent(RequestSportEventDto dto, Edition edition);
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "type", source = "sportEventDto.type")
-    @Mapping(target = "modality", source = "sportEventDto.modality")
-    @Mapping(target = "totalMatches", source = "sportEventDto.totalMatches")
+    @Mapping(target = "type", source = "dto.type")
+    @Mapping(target = "modality", source = "dto.modality")
+    @Mapping(target = "totalMatches", source = "dto.totalMatches")
     @Mapping(target = "edition", source = "edition")
     @Mapping(target = "participants", source = "sportEvent.participants")
-    SportEvent toExistingSportEvent(Long id, SportEventDto sportEventDto, SportEvent sportEvent, Edition edition);
+    SportEvent toExistingSportEvent(Long id, RequestSportEventDto dto, SportEvent sportEvent, Edition edition);
 
     @Mapping(target = "sportEventId", source = "sportEvent.id")
     @Mapping(target = "firstPlace", source = "sportEvent.firstPlace")
@@ -35,6 +35,6 @@ public interface SportEventMapper {
     @Mapping(target = "thirdPlace", source = "sportEvent.thirdPlace")
     @Mapping(target = "fourthPlace", source = "sportEvent.fourthPlace")
     @Mapping(target = "fifthPlace", source = "sportEvent.fifthPlace")
-    ExposingSportEventDto toNewExposingSportEventDto(SportEvent sportEvent);
+    ResponseSportEventDto toNewExposingSportEventDto(SportEvent sportEvent);
 
 }

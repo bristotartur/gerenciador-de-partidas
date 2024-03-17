@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.exposing;
+package com.bristotartur.gerenciadordepartidas.dtos.response;
 
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Getter
-public class ExposingPenaltyCardDto extends RepresentationModel<ExposingPenaltyCardDto> {
+public class ResponsePenaltyCardDto extends RepresentationModel<ResponsePenaltyCardDto> {
 
     private final Long penaltyCardId;
     private final PenaltyCardColor color;

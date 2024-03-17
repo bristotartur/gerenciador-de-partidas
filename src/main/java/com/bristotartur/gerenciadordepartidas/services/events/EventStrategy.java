@@ -5,7 +5,7 @@ import com.bristotartur.gerenciadordepartidas.domain.events.Event;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.events.TaskEvent;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.TransferableEventData;
+import com.bristotartur.gerenciadordepartidas.dtos.request.TransferableEventData;
 import com.bristotartur.gerenciadordepartidas.enums.EventType;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import org.springframework.data.domain.Page;

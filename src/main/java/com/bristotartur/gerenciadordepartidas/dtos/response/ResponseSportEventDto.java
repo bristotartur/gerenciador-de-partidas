@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.exposing;
+package com.bristotartur.gerenciadordepartidas.dtos.response;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
@@ -13,8 +13,8 @@ import org.springframework.hateoas.RepresentationModel;
 @RequiredArgsConstructor
 @Getter
 @Schema(description = "Corpo de resposta para Eventos Esportivos")
-public class ExposingSportEventDto
-        extends RepresentationModel<ExposingSportEventDto> implements ExposableEventData<SportEvent> {
+public class ResponseSportEventDto
+        extends RepresentationModel<ResponseSportEventDto> implements ExposableEventData<SportEvent> {
 
     @Schema(description = "Identificador único do Evento Esportivo", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private final Long sportEventId;

@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.exposing;
+package com.bristotartur.gerenciadordepartidas.dtos.response;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Event;
 

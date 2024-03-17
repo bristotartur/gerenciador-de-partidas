@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.input;
+package com.bristotartur.gerenciadordepartidas.dtos.request;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
@@ -9,19 +9,23 @@ import lombok.Builder;
 
 @Builder
 @Schema(description = "DTO de requisição de Eventos Esportivos")
-public record SportEventDto(
+public record RequestSportEventDto(
 
         @Schema(description = "Tipo de esporte do Evento Esportivo", example = "FUTSAL")
-        @NotNull Sports type,
+        @NotNull
+        Sports type,
 
         @Schema(description = "Modalidade do Evento Esportivo", example = "MASCULINE")
-        @NotNull Modality modality,
+        @NotNull
+        Modality modality,
 
         @Schema(description = "Total de partidas do Evento Esportivo", example = "14")
-        @NotNull Integer totalMatches,
+        @NotNull
+        Integer totalMatches,
 
         @Schema(description = "Identificador único da Edição do Evento Esportivo", example = "1")
-        @NotNull Long editionId
+        @NotNull
+        Long editionId
 
 ) implements TransferableEventData<SportEvent> {
 }

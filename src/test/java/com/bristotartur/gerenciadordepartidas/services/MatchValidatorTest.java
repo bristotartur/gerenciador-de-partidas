@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.*;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchValidator;
@@ -118,7 +118,7 @@ class MatchValidatorTest {
         event.setMatches(matches);
 
         var importance = Importance.NORMAL;
-        var dto = MatchDto.builder().matchImportance(importance).build();
+        var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
         assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
@@ -145,7 +145,7 @@ class MatchValidatorTest {
         event.setMatches(matchesA);
         event2.setMatches(matchesB);
         var importance = Importance.SEMIFINAL;
-        var dto = MatchDto.builder().matchImportance(importance).build();
+        var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
         assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
@@ -171,7 +171,7 @@ class MatchValidatorTest {
         event.setMatches(matches);
 
         var importance = Importance.THIRD_PLACE_PLAYOFF;
-        var dto = MatchDto.builder().matchImportance(importance).build();
+        var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
         assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
@@ -194,7 +194,7 @@ class MatchValidatorTest {
         event.setMatches(matches);
 
         var importance = Importance.FINAL;
-        var dto = MatchDto.builder().matchImportance(importance).build();
+        var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
         assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
@@ -256,7 +256,7 @@ class MatchValidatorTest {
                 ParticipantTestUtil.createNewParticipant(any(), teamA, any()),
                 ParticipantTestUtil.createNewParticipant(any(), teamB, any())
         );
-        var dto = MatchDto.builder()
+        var dto = RequestMatchDto.builder()
                 .teamA(teamA)
                 .teamB(teamB).build();
 
@@ -274,7 +274,7 @@ class MatchValidatorTest {
         players.forEach(player -> player.setId(getRandomLongId()));
 
         var invalidPlayerId = players.get(1).getId();
-        var dto = MatchDto.builder()
+        var dto = RequestMatchDto.builder()
                 .teamA(teamA)
                 .teamB(teamB).build();
 
@@ -298,7 +298,7 @@ class MatchValidatorTest {
         playersFromTeamA.forEach(player -> player.setId(getRandomLongId()));
         playersFromTeamB.forEach(player -> player.setId(getRandomLongId()));
 
-        var dto = MatchDto.builder()
+        var dto = RequestMatchDto.builder()
                 .teamA(teamA)
                 .teamB(teamB).build();
 

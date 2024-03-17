@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.mappers;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
-import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestEditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseEditionDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -20,11 +20,11 @@ public interface EditionMapper {
     @Mapping(target = "participants", ignore = true)
     @Mapping(target = "taskEvents", ignore = true)
     @Mapping(target = "sportEvents", ignore = true)
-    Edition toNewEdition(EditionDto editionDto);
+    Edition toNewEdition(RequestEditionDto dto);
 
-    @Mapping(target = "opening", source = "editionDto.opening")
-    @Mapping(target = "closure", source = "editionDto.closure")
-    Edition toExistingEdition(Long id, EditionDto editionDto, Edition originalEdition);
+    @Mapping(target = "opening", source = "dto.opening")
+    @Mapping(target = "closure", source = "dto.closure")
+    Edition toExistingEdition(Long id, RequestEditionDto dto, Edition originalEdition);
 
     @Mapping(target = "editionId", source = "edition.id")
     @Mapping(target = "atomica", source = "edition.atomicaPontuation")
@@ -32,6 +32,6 @@ public interface EditionMapper {
     @Mapping(target = "papaLeguas", source = "edition.papaPontuation")
     @Mapping(target = "twister", source = "edition.twisterPontuation")
     @Mapping(target = "unicontti", source = "edition.uniconttiPontuation")
-    ExposingEditionDto toNewExposingEditionDto(Edition edition);
+    ResponseEditionDto toNewExposingEditionDto(Edition edition);
 
 }

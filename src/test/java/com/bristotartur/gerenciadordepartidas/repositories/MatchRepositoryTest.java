@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.repositories;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -43,7 +43,7 @@ class MatchRepositoryTest {
     private Team teamA;
     private Team teamB;
     private final List<Long> playersIds = new LinkedList<>();
-    private MatchDto chessDto;
+    private RequestMatchDto chessDto;
 
     @BeforeEach
     void setUp() {

@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.services;
 
-import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestEditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -71,7 +71,7 @@ class EditionServiceTest {
     void Should_ThrowNotFoundException_When_InvalidEditionIdisPassedToAnyMethod() {
 
         var id = getRandomLongId();
-        var dto = new EditionDto(any(), any());
+        var dto = new RequestEditionDto(any(), any());
 
         assertThrows(NotFoundException.class, () -> editionService.findEditionById(id));
         assertThrows(NotFoundException.class, () -> editionService.deleteEditionById(id));
@@ -83,7 +83,7 @@ class EditionServiceTest {
     @DisplayName("Should save Edition when valid EditionDto is passed to save")
     void Should_SaveEdition_When_ValidEditionDtoIsPassedToSave() {
 
-        var dto = new EditionDto(LocalDate.now(), LocalDate.now());
+        var dto = new RequestEditionDto(LocalDate.now(), LocalDate.now());
         var result = editionService.saveEdition(dto);
 
         assertTrue(editionRepository.findById(result.getId()).isPresent());
@@ -117,7 +117,7 @@ class EditionServiceTest {
     void Should_UpdateEdition_When_EditionDtoWithNewValuesIsPassed() {
 
         var edition = EditionTestUtil.createNewEdition(Status.SCHEDULED, entityManager);
-        var dto = new EditionDto(LocalDate.of(2024, Month.FEBRUARY, 16), LocalDate.of(2024, Month.FEBRUARY, 17));
+        var dto = new RequestEditionDto(LocalDate.of(2024, Month.FEBRUARY, 16), LocalDate.of(2024, Month.FEBRUARY, 17));
 
         var result = editionService.replaceEdition(edition.getId(), dto);
 

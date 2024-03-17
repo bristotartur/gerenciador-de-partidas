@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
-import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestSportEventDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -78,9 +78,9 @@ public final class SportEventTestUtil {
         return event;
     }
 
-    public static SportEventDto createNewSportEventDto(Sports type, Modality modality, Integer totalMatches, Long editionId) {
+    public static RequestSportEventDto createNewSportEventDto(Sports type, Modality modality, Integer totalMatches, Long editionId) {
 
-        return SportEventDto.builder()
+        return RequestSportEventDto.builder()
                 .type(type)
                 .modality(modality)
                 .totalMatches(totalMatches)

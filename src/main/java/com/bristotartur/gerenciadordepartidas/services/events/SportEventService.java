@@ -3,8 +3,8 @@ package com.bristotartur.gerenciadordepartidas.services.events;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.TransferableEventData;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestSportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.TransferableEventData;
 import com.bristotartur.gerenciadordepartidas.enums.EventType;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -134,7 +134,7 @@ public class SportEventService implements EventStrategy<SportEvent> {
     @Override
     public SportEvent saveEvent(TransferableEventData<SportEvent> eventDto) {
 
-        var dto = (SportEventDto) eventDto;
+        var dto = (RequestSportEventDto) eventDto;
         var edition = editionService.findEditionById(dto.editionId());
         editionService.checkEditionStatusById(edition.getId());
 
@@ -174,7 +174,7 @@ public class SportEventService implements EventStrategy<SportEvent> {
     @Override
     public SportEvent replaceEvent(Long id, TransferableEventData<SportEvent> eventDto) {
 
-        var dto = (SportEventDto) eventDto;
+        var dto = (RequestSportEventDto) eventDto;
         var originalEvent = this.findEventById(id);
 
         SportEventValidator.checkSportEventForUpdate(originalEvent);

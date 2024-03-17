@@ -2,8 +2,8 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.controllers.docs.SportEventOperations;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingSportEventDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestSportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseSportEventDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.mappers.SportEventMapper;
@@ -37,7 +37,7 @@ public class SportEventController {
 
     @SportEventOperations.ListAllSportEventsOperation
     @GetMapping
-    public ResponseEntity<Page<ExposingSportEventDto>> listAllSportEvents(Pageable pageable) {
+    public ResponseEntity<Page<ResponseSportEventDto>> listAllSportEvents(Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -50,7 +50,7 @@ public class SportEventController {
 
     @SportEventOperations.ListSportEventsFromEditionOperation
     @GetMapping(path = "/from")
-    public ResponseEntity<Page<ExposingSportEventDto>> listSportEventsFromEdition(@RequestParam("edition") Long editionId,
+    public ResponseEntity<Page<ResponseSportEventDto>> listSportEventsFromEdition(@RequestParam("edition") Long editionId,
                                                                                   Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -63,8 +63,8 @@ public class SportEventController {
 
     @SportEventOperations.ListSportEventsBySportOperation
     @GetMapping(path = "/list")
-    public ResponseEntity<Page<ExposingSportEventDto>> listSportEventsBySport(@RequestParam("sport") String sportType,
-                                                                             Pageable pageable) {
+    public ResponseEntity<Page<ResponseSportEventDto>> listSportEventsBySport(@RequestParam("sport") String sportType,
+                                                                              Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
         var sport = Sports.findSportLike(sportType);
@@ -77,7 +77,7 @@ public class SportEventController {
 
     @SportEventOperations.FindSportEventByIdOperation
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExposingSportEventDto> findSportEventById(@PathVariable Long id) {
+    public ResponseEntity<ResponseSportEventDto> findSportEventById(@PathVariable Long id) {
 
         log.info("Request to find SportEvent '{}' was made.", id);
 
@@ -87,11 +87,11 @@ public class SportEventController {
 
     @SportEventOperations.SaveSportEventOperation
     @PostMapping
-    public ResponseEntity<ExposingSportEventDto> saveSportEvent(@RequestBody @Valid SportEventDto sportEventDto) {
+    public ResponseEntity<ResponseSportEventDto> saveSportEvent(@RequestBody @Valid RequestSportEventDto requestSportEventDto) {
 
         log.info("Request to create SportEvent was made.");
 
-        var dto = this.createSingleExposingDto(sportEventService.saveEvent(sportEventDto));
+        var dto = this.createSingleExposingDto(sportEventService.saveEvent(requestSportEventDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -107,17 +107,17 @@ public class SportEventController {
 
     @SportEventOperations.ReplaceSportEventOperation
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ExposingSportEventDto> replaceSportEvent(@PathVariable Long id,
-                                                                   @RequestBody @Valid SportEventDto sportEventDto) {
+    public ResponseEntity<ResponseSportEventDto> replaceSportEvent(@PathVariable Long id,
+                                                                   @RequestBody @Valid RequestSportEventDto requestSportEventDto) {
         log.info("Request to update SportEvent '{}' was made.", id);
 
-        var dto = this.createSingleExposingDto(sportEventService.replaceEvent(id, sportEventDto));
+        var dto = this.createSingleExposingDto(sportEventService.replaceEvent(id, requestSportEventDto));
         return ResponseEntity.ok().body(dto);
     }
 
     @SportEventOperations.UpdateSportEventStatusOperation
     @PutMapping(path = "/{id}/update")
-    public ResponseEntity<ExposingSportEventDto> updateSportEventStatus(@PathVariable Long id,
+    public ResponseEntity<ResponseSportEventDto> updateSportEventStatus(@PathVariable Long id,
                                                                         @RequestParam("status") String eventStatus) {
         var status = Status.findStatusLike(eventStatus);
         log.info("Request to update SportEvent '{}' to status '{}' was made.", id, status);
@@ -126,7 +126,7 @@ public class SportEventController {
         return ResponseEntity.ok().body(dto);
     }
 
-    private ExposingSportEventDto createSingleExposingDto(SportEvent sportEvent) {
+    private ResponseSportEventDto createSingleExposingDto(SportEvent sportEvent) {
 
         var editionId = sportEvent.getId();
         var dto = sportEventMapper.toNewExposingSportEventDto(sportEvent);
@@ -138,7 +138,7 @@ public class SportEventController {
         return dto;
     }
 
-    private Page<ExposingSportEventDto> createExposingDtoPage(Page<SportEvent> sportEventPage) {
+    private Page<ResponseSportEventDto> createExposingDtoPage(Page<SportEvent> sportEventPage) {
 
         var events = sportEventPage.getContent();
         var dtos = events.stream()
@@ -148,7 +148,7 @@ public class SportEventController {
         return new PageImpl<>(dtos, sportEventPage.getPageable(), events.size());
     }
 
-    private ExposingSportEventDto addSingleSportEventLink(SportEvent sportEvent) {
+    private ResponseSportEventDto addSingleSportEventLink(SportEvent sportEvent) {
 
         var id = sportEvent.getId();
         var editionId = sportEvent.getEdition().getId();

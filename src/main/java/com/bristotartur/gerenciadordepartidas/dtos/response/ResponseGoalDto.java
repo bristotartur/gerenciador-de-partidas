@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.exposing;
+package com.bristotartur.gerenciadordepartidas.dtos.response;
 
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Getter
-public class ExposingGoalDto extends RepresentationModel<ExposingGoalDto> {
+public class ResponseGoalDto extends RepresentationModel<ResponseGoalDto> {
 
     private final Long goalId;
     private final String player;

@@ -1,9 +1,9 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingParticipantDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseMatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.mappers.ParticipantMapper;
 import com.bristotartur.gerenciadordepartidas.services.people.ParticipantService;
@@ -34,7 +34,7 @@ public class ParticipantController {
     private final MatchController matchController;
 
     @GetMapping
-    public ResponseEntity<Page<ExposingParticipantDto>> listAllParticipants(Pageable pageable) {
+    public ResponseEntity<Page<ResponseParticipantDto>> listAllParticipants(Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -45,7 +45,7 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/find")
-    public ResponseEntity<Page<ExposingParticipantDto>> findParticipantsByNameLike(@RequestParam String name,
+    public ResponseEntity<Page<ResponseParticipantDto>> findParticipantsByNameLike(@RequestParam String name,
                                                                                    Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -56,7 +56,7 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/from")
-    public ResponseEntity<Page<ExposingParticipantDto>> listMembersFromTeam(@RequestParam("team") String teamName,
+    public ResponseEntity<Page<ResponseParticipantDto>> listMembersFromTeam(@RequestParam("team") String teamName,
                                                                             Pageable pageable) {
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -69,7 +69,7 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/{id}/matches")
-    public ResponseEntity<Page<ExposingMatchDto>> listParticipantMatches(@PathVariable Long id, Pageable pageable) {
+    public ResponseEntity<Page<ResponseMatchDto>> listParticipantMatches(@PathVariable Long id, Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -80,7 +80,7 @@ public class ParticipantController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExposingParticipantDto> findParticipantById(@PathVariable Long id) {
+    public ResponseEntity<ResponseParticipantDto> findParticipantById(@PathVariable Long id) {
 
         log.info("Request to find Participant '{}' was made.", id);
 
@@ -89,11 +89,11 @@ public class ParticipantController {
     }
 
     @PostMapping
-    public ResponseEntity<ExposingParticipantDto> saveParticipant(@RequestBody @Valid ParticipantDto participantDto) {
+    public ResponseEntity<ResponseParticipantDto> saveParticipant(@RequestBody @Valid RequestParticipantDto requestParticipantDto) {
 
         log.info("Request to create a new Participant was made.");
 
-        var dto = this.createSingleExposingDto(participantService.saveParticipant(participantDto));
+        var dto = this.createSingleExposingDto(participantService.saveParticipant(requestParticipantDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -107,16 +107,16 @@ public class ParticipantController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ExposingParticipantDto> replaceParticipant(@PathVariable Long id,
-                                                                     @RequestBody @Valid ParticipantDto participantDto) {
+    public ResponseEntity<ResponseParticipantDto> replaceParticipant(@PathVariable Long id,
+                                                                     @RequestBody @Valid RequestParticipantDto requestParticipantDto) {
 
         log.info("Request to update Participant '{}' was made.", id);
 
-        var dto = this.createSingleExposingDto(participantService.replaceParticipant(id, participantDto));
+        var dto = this.createSingleExposingDto(participantService.replaceParticipant(id, requestParticipantDto));
         return ResponseEntity.ok().body(dto);
     }
 
-    private ExposingParticipantDto createSingleExposingDto(Participant participant) {
+    private ResponseParticipantDto createSingleExposingDto(Participant participant) {
 
         var id = participant.getId();
         var team = participant.getTeam().value;
@@ -130,7 +130,7 @@ public class ParticipantController {
         return dto;
     }
 
-    private Page<ExposingParticipantDto> createExposingDtoPage(Page<Participant> participantPage) {
+    private Page<ResponseParticipantDto> createExposingDtoPage(Page<Participant> participantPage) {
 
         var participants = participantPage.getContent();
         var dtos = participants.stream()
@@ -140,7 +140,7 @@ public class ParticipantController {
         return new PageImpl<>(dtos, participantPage.getPageable(), participantPage.getSize());
     }
 
-    private ExposingParticipantDto addSingleParticipantLink(Participant participant) {
+    private ResponseParticipantDto addSingleParticipantLink(Participant participant) {
 
         var id = participant.getId();
         var team = participant.getTeam().value;

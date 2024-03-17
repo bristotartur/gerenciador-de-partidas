@@ -2,8 +2,8 @@ package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.controllers.docs.EditionOperations;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseEditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestEditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.mappers.EditionMapper;
 import com.bristotartur.gerenciadordepartidas.services.events.EditionService;
@@ -36,7 +36,7 @@ public class EditionController {
 
     @EditionOperations.ListAllEditionsOperation
     @GetMapping
-    public ResponseEntity<Page<ExposingEditionDto>> listAllEditions(Pageable pageable) {
+    public ResponseEntity<Page<ResponseEditionDto>> listAllEditions(Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -49,7 +49,7 @@ public class EditionController {
 
     @EditionOperations.FindEditionByIdOperation
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExposingEditionDto> findEditionById(@PathVariable Long id) {
+    public ResponseEntity<ResponseEditionDto> findEditionById(@PathVariable Long id) {
 
         log.info("Request to find Edition '{}' was made.", id);
 
@@ -59,11 +59,11 @@ public class EditionController {
 
     @EditionOperations.SaveEditionOperation
     @PostMapping
-    public ResponseEntity<ExposingEditionDto> saveEdition(@RequestBody @Valid EditionDto editionDto) {
+    public ResponseEntity<ResponseEditionDto> saveEdition(@RequestBody @Valid RequestEditionDto requestEditionDto) {
 
         log.info("Request to create Edition was made.");
 
-        var dto = this.createSingleExposingDto(editionService.saveEdition(editionDto));
+        var dto = this.createSingleExposingDto(editionService.saveEdition(requestEditionDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -79,17 +79,17 @@ public class EditionController {
 
     @EditionOperations.ReplaceEditionOperation
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ExposingEditionDto> replaceEdition(@PathVariable Long id,
-                                                             @RequestBody @Valid EditionDto editionDto) {
+    public ResponseEntity<ResponseEditionDto> replaceEdition(@PathVariable Long id,
+                                                             @RequestBody @Valid RequestEditionDto requestEditionDto) {
         log.info("Request to update Edition was made.");
 
-        var dto = this.createSingleExposingDto(editionService.replaceEdition(id, editionDto));
+        var dto = this.createSingleExposingDto(editionService.replaceEdition(id, requestEditionDto));
         return ResponseEntity.ok().body(dto);
     }
 
     @EditionOperations.UpdateEditionStatusOperation
     @PutMapping(path = "/{id}/update")
-    public ResponseEntity<ExposingEditionDto> updateEditionStatus(@PathVariable Long id,
+    public ResponseEntity<ResponseEditionDto> updateEditionStatus(@PathVariable Long id,
                                                                   @RequestParam("status") String editionStatus) {
         var status = Status.findStatusLike(editionStatus);
         log.info("Request to update Edition '{}' with to status '{}' was made.", id, status);
@@ -98,7 +98,7 @@ public class EditionController {
         return ResponseEntity.ok().body(dto);
     }
 
-    private ExposingEditionDto createSingleExposingDto(Edition edition) {
+    private ResponseEditionDto createSingleExposingDto(Edition edition) {
 
         var dto = editionMapper.toNewExposingEditionDto(edition);
         var id = edition.getId();
@@ -109,7 +109,7 @@ public class EditionController {
         return dto;
     }
 
-    private Page<ExposingEditionDto> createExposingDtoPage(Page<Edition> editionsPage) {
+    private Page<ResponseEditionDto> createExposingDtoPage(Page<Edition> editionsPage) {
 
         var editions = editionsPage.getContent();
 
@@ -120,7 +120,7 @@ public class EditionController {
         return new PageImpl<>(dtos, editionsPage.getPageable(), editions.size());
     }
 
-    private ExposingEditionDto addSingleEditionLink(Edition edition) {
+    private ResponseEditionDto addSingleEditionLink(Edition edition) {
 
         var id = edition.getId();
         var dto = editionMapper.toNewExposingEditionDto(edition);

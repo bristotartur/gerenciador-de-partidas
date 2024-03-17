@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
@@ -71,23 +71,23 @@ public class PenaltyCardService {
     }
 
     /**
-     * Salva um cartão no sistema com base nos dados fornecidos em {@link PenaltyCardDto}.
+     * Salva um cartão no sistema com base nos dados fornecidos em {@link RequestPenaltyCardDto}.
      *
-     * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados do cartão a ser salvo.
+     * @param requestPenaltyCardDto DTO do tipo {@link RequestPenaltyCardDto} contendo os dados do cartão a ser salvo.
      * @return O cartão recém-salvo.
      *
-     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link PenaltyCardDto}.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link RequestPenaltyCardDto}.
      * @throws ConflictException Caso tente-se adicionar um cartão a uma partida que não está em andamento.
      * @throws UnprocessableEntityException Caso o jogador associado ao cartão não esteja relacionado a partida.
      */
-    public PenaltyCard savePenaltyCard(PenaltyCardDto penaltyCardDto) {
+    public PenaltyCard savePenaltyCard(RequestPenaltyCardDto requestPenaltyCardDto) {
 
-        var match = matchServiceMediator.findMatch(penaltyCardDto.matchId(), penaltyCardDto.sport());
-        var player = participantService.findParticipantById(penaltyCardDto.playerId());
+        var match = matchServiceMediator.findMatch(requestPenaltyCardDto.matchId(), requestPenaltyCardDto.sport());
+        var player = participantService.findParticipantById(requestPenaltyCardDto.playerId());
         ActionValidator.checkMatchForAction(match);
         ActionValidator.checkPlayerForAction(player, match);
 
-        var savedPenaltyCard = penaltyCardMapper.toNewPenaltyCard(penaltyCardDto, player, match);
+        var savedPenaltyCard = penaltyCardMapper.toNewPenaltyCard(requestPenaltyCardDto, player, match);
         savedPenaltyCard =  penaltyCardRepository.save(savedPenaltyCard);
 
         log.info("Penalty Card '{}' was created in Match '{}'.", savedPenaltyCard.getId(), match.getId());
@@ -115,30 +115,30 @@ public class PenaltyCardService {
 
     /**
      * Atualiza um cartão existente no banco de dados com base no seu ID e os dados fornecidos em
-     * {@link PenaltyCardDto}, realizando uma validação prévia destes dados antes de atualizar o cartão.
+     * {@link RequestPenaltyCardDto}, realizando uma validação prévia destes dados antes de atualizar o cartão.
      * Isso envolve a substituição completa dos dados do cartão existente pelos novos dados fornecidos.
      *
      * @param id Identificador único do cartão a ser atualizado.
-     * @param penaltyCardDto DTO do tipo {@link PenaltyCardDto} contendo os dados atualizados do cartão.
+     * @param requestPenaltyCardDto DTO do tipo {@link RequestPenaltyCardDto} contendo os dados atualizados do cartão.
      * @return O cartão atualizado.
      *
      * @throws NotFoundException Caso nenhum cartão correspondente ao ID for encontrado ou alguma
-     * entidade não corresponda aos IDs fornecidos por {@link PenaltyCardDto}.
+     * entidade não corresponda aos IDs fornecidos por {@link RequestPenaltyCardDto}.
      * @throws BadRequestException Caso a modalidade esportiva da partida fornecida não seja suportada para cartões.
      * @throws ConflictException Caso a partida relacionada ao cartão não esteja em andamento.
      * @throws UnprocessableEntityException Caso o jogador associado ao cartão não esteja relacionado a partida.
      *
      */
-    public PenaltyCard replacePenaltyCard(Long id, PenaltyCardDto penaltyCardDto) {
+    public PenaltyCard replacePenaltyCard(Long id, RequestPenaltyCardDto requestPenaltyCardDto) {
 
         this.findPenaltyCardById(id);
 
-        var match = matchServiceMediator.findMatchForCard(penaltyCardDto.matchId(), penaltyCardDto.sport());
-        var player = participantService.findParticipantById(penaltyCardDto.playerId());
+        var match = matchServiceMediator.findMatchForCard(requestPenaltyCardDto.matchId(), requestPenaltyCardDto.sport());
+        var player = participantService.findParticipantById(requestPenaltyCardDto.playerId());
         ActionValidator.checkMatchForAction(match);
         ActionValidator.checkPlayerForAction(player, match);
 
-        var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, penaltyCardDto, player, match);
+        var updatedPenaltyCard = penaltyCardMapper.toExistingPenaltyCard(id, requestPenaltyCardDto, player, match);
         updatedPenaltyCard = penaltyCardRepository.save(updatedPenaltyCard);
 
         log.info("Penalty Card '{}' from Match '{}' was updated.", id, match.getId());

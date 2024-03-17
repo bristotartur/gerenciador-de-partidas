@@ -5,7 +5,7 @@ import com.bristotartur.gerenciadordepartidas.domain.matches.ChessMatch;
 import com.bristotartur.gerenciadordepartidas.domain.matches.FutsalMatch;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -55,8 +55,8 @@ class MatchServiceMediatorTest {
     private Team teamB;
     private final List<Participant> players = new LinkedList<>();
     private final List<Long> playersIds = new LinkedList<>();
-    private MatchDto futsalDto;
-    private MatchDto handballDto;
+    private RequestMatchDto futsalDto;
+    private RequestMatchDto handballDto;
 
     @BeforeEach
     void setUp() {

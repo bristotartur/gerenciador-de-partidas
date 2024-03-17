@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.PenaltyCardColor;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import jakarta.persistence.EntityManager;
@@ -63,17 +63,17 @@ public final class PenaltyCardTestUtil {
     }
 
     /**
-     * Cria uma nova instância de {@link PenaltyCardDto}.
+     * Cria uma nova instância de {@link RequestPenaltyCardDto}.
      *
      * @param sport Modalidade esportica da partida em a penalidade ocorreu.
      * @param color A cor do cartão.
      * @param playerId Identificador único do jogador que recebeu o cartão.
      * @param matchId Identificador único da partida em que a penalidade ocorreu.
-     * @return Uma nova instância de {@link PenaltyCardDto}
+     * @return Uma nova instância de {@link RequestPenaltyCardDto}
      */
-    public static PenaltyCardDto createNewPenaltyCardDto(Sports sport, PenaltyCardColor color, Long playerId, Long matchId) {
+    public static RequestPenaltyCardDto createNewPenaltyCardDto(Sports sport, PenaltyCardColor color, Long playerId, Long matchId) {
 
-        return PenaltyCardDto.builder()
+        return RequestPenaltyCardDto.builder()
                 .sport(sport)
                 .color(color)
                 .playerId(playerId)

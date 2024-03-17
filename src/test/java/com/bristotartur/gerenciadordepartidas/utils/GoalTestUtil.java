@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.utils;
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.dtos.input.GoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestGoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import jakarta.persistence.EntityManager;
 
@@ -58,15 +58,15 @@ public final class GoalTestUtil {
     }
 
     /**
-     * Cria uma nova instância de {@link GoalDto}.
+     * Cria uma nova instância de {@link RequestGoalDto}.
      *
      * @param playerId Identificador único do jogador que marcou o gol.
      * @param matchId Identificador único da partida em que o gol ocorreu.
-     * @return Uma nova instância de {@link GoalDto} com os dados passados.
+     * @return Uma nova instância de {@link RequestGoalDto} com os dados passados.
      */
-    public static GoalDto createNewGoalDto(Long playerId, Long matchId, Sports sport) {
+    public static RequestGoalDto createNewGoalDto(Long playerId, Long matchId, Sports sport) {
 
-        return GoalDto.builder()
+        return RequestGoalDto.builder()
                 .goalTime(LocalTime.now())
                 .playerId(playerId)
                 .matchId(matchId)

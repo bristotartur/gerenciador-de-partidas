@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingPenaltyCardDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.PenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestPenaltyCardDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponsePenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.mappers.PenaltyCardMapper;
 import com.bristotartur.gerenciadordepartidas.services.actions.PenaltyCardService;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class PenaltyCardController {
     private final PenaltyCardMapper penaltyCardMapper;
 
     @GetMapping
-    public ResponseEntity<Page<ExposingPenaltyCardDto>> listAllPenaltyCards(Pageable pageable) {
+    public ResponseEntity<Page<ResponsePenaltyCardDto>> listAllPenaltyCards(Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -42,7 +42,7 @@ public class PenaltyCardController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExposingPenaltyCardDto> findPenaltyCardById(@PathVariable Long id) {
+    public ResponseEntity<ResponsePenaltyCardDto> findPenaltyCardById(@PathVariable Long id) {
 
         log.info("Request to find Penalty Card '{}' was made.", id);
 
@@ -51,11 +51,11 @@ public class PenaltyCardController {
     }
 
     @PostMapping
-    public ResponseEntity<ExposingPenaltyCardDto> savePenaltyCard(@RequestBody @Valid PenaltyCardDto penaltyCardDto) {
+    public ResponseEntity<ResponsePenaltyCardDto> savePenaltyCard(@RequestBody @Valid RequestPenaltyCardDto requestPenaltyCardDto) {
 
         log.info("Request to create a new Penalty Card was made.");
 
-        var dto = this.createSingleExposingDto(penaltyCardService.savePenaltyCard(penaltyCardDto));
+        var dto = this.createSingleExposingDto(penaltyCardService.savePenaltyCard(requestPenaltyCardDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -69,16 +69,16 @@ public class PenaltyCardController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ExposingPenaltyCardDto> replacePenaltyCard(@PathVariable Long id,
-                                                                     @RequestBody @Valid PenaltyCardDto penaltyCardDto) {
+    public ResponseEntity<ResponsePenaltyCardDto> replacePenaltyCard(@PathVariable Long id,
+                                                                     @RequestBody @Valid RequestPenaltyCardDto requestPenaltyCardDto) {
 
         log.info("Request to update Penalty Card '{}' was made.", id);
 
-        var dto = this.createSingleExposingDto(penaltyCardService.replacePenaltyCard(id, penaltyCardDto));
+        var dto = this.createSingleExposingDto(penaltyCardService.replacePenaltyCard(id, requestPenaltyCardDto));
         return ResponseEntity.ok().body(dto);
     }
 
-    private ExposingPenaltyCardDto createSingleExposingDto(PenaltyCard penaltyCard) {
+    private ResponsePenaltyCardDto createSingleExposingDto(PenaltyCard penaltyCard) {
 
         var playerId = penaltyCard.getPlayer().getId();
         var matchId = penaltyCard.getMatch().getId();
@@ -92,7 +92,7 @@ public class PenaltyCardController {
         return dto;
     }
 
-    private Page<ExposingPenaltyCardDto> createExposingDtoPage(Page<PenaltyCard> penaltyCardPage) {
+    private Page<ResponsePenaltyCardDto> createExposingDtoPage(Page<PenaltyCard> penaltyCardPage) {
 
         var penaltyCards = penaltyCardPage.getContent();
         var dtos = penaltyCards.stream()
@@ -102,7 +102,7 @@ public class PenaltyCardController {
         return new PageImpl<>(dtos, penaltyCardPage.getPageable(), penaltyCardPage.getSize());
     }
 
-    private ExposingPenaltyCardDto addSingleGoalLink(PenaltyCard penaltyCard) {
+    private ResponsePenaltyCardDto addSingleGoalLink(PenaltyCard penaltyCard) {
 
         var id = penaltyCard.getId();
         var playerId = penaltyCard.getPlayer().getId();

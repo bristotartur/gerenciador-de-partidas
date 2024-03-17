@@ -1,8 +1,8 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingGoalDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.GoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestGoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseGoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
@@ -32,7 +32,7 @@ public class GoalController {
     private final GoalMapper goalMapper;
 
     @GetMapping
-    public ResponseEntity<Page<ExposingGoalDto>> listAllGoals(Pageable pageable) {
+    public ResponseEntity<Page<ResponseGoalDto>> listAllGoals(Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -44,7 +44,7 @@ public class GoalController {
     }
 
     @GetMapping(path = "/from")
-    public ResponseEntity<Page<ExposingGoalDto>> listGoalsFromMatch(@RequestParam("match") Long matchId,
+    public ResponseEntity<Page<ResponseGoalDto>> listGoalsFromMatch(@RequestParam("match") Long matchId,
                                                                     @RequestParam("type") String sportType,
                                                                     Pageable pageable) {
         var number = pageable.getPageNumber();
@@ -58,7 +58,7 @@ public class GoalController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ExposingGoalDto> findGoalById(@PathVariable Long id) {
+    public ResponseEntity<ResponseGoalDto> findGoalById(@PathVariable Long id) {
 
         log.info("Request to find Goal '{}' was made.", id);
 
@@ -67,11 +67,11 @@ public class GoalController {
     }
 
     @PostMapping
-    public ResponseEntity<ExposingGoalDto> saveGoal(@RequestBody @Valid GoalDto goalDto) {
+    public ResponseEntity<ResponseGoalDto> saveGoal(@RequestBody @Valid RequestGoalDto requestGoalDto) {
 
         log.info("Request to create a new Goal was made.");
 
-        var dto = this.createSingleExposingDto(goalService.saveGoal(goalDto));
+        var dto = this.createSingleExposingDto(goalService.saveGoal(requestGoalDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
@@ -85,16 +85,16 @@ public class GoalController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ExposingGoalDto> replaceGoal(@PathVariable Long id,
-                                                       @RequestBody @Valid GoalDto goalDto) {
+    public ResponseEntity<ResponseGoalDto> replaceGoal(@PathVariable Long id,
+                                                       @RequestBody @Valid RequestGoalDto requestGoalDto) {
 
         log.info("Request to update Goal '{}' was made.", id);
 
-        var dto = this.createSingleExposingDto(goalService.replaceGoal(id, goalDto));
+        var dto = this.createSingleExposingDto(goalService.replaceGoal(id, requestGoalDto));
         return ResponseEntity.ok().body(dto);
     }
 
-    private ExposingGoalDto createSingleExposingDto(Goal goal) {
+    private ResponseGoalDto createSingleExposingDto(Goal goal) {
 
         var playerId = goal.getPlayer().getId();
         var matchId = goal.getMatch().getId();
@@ -108,7 +108,7 @@ public class GoalController {
         return dto;
     }
 
-    private Page<ExposingGoalDto> createExposingDtoPage(Page<Goal> goalPage) {
+    private Page<ResponseGoalDto> createExposingDtoPage(Page<Goal> goalPage) {
 
         var goals = goalPage.getContent();
         var dtos = goals.stream()
@@ -118,7 +118,7 @@ public class GoalController {
         return new PageImpl<>(dtos, goalPage.getPageable(), goalPage.getSize());
     }
 
-    private ExposingGoalDto addSingleGoalLink(Goal goal) {
+    private ResponseGoalDto addSingleGoalLink(Goal goal) {
 
         var id = goal.getId();
         var playerId = goal.getPlayer().getId();

@@ -4,7 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.Event;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestSportEventDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 /**
  * Classe utilitária responsável por fornecer métodos para a validação de instâncias de {@link SportEvent}
- * e {@link SportEventDto} para gerar ou criar novos eventos esportivos.
+ * e {@link RequestSportEventDto} para gerar ou criar novos eventos esportivos.
  *
  * @see Event
  * @see Status
@@ -37,13 +37,13 @@ public final class SportEventValidator {
      * de mesmo tipo e modalidade que os passados pelo DTO na edição, uma exceção será lançada.
      *
      * @param sportEvents Lista contendo todas as instâncias de {@link SportEvent} associadas a uma mesma edição.
-     * @param dto DTO do do tipo {@link SportEventDto} contendo os dados do novo evento.
+     * @param dto DTO do do tipo {@link RequestSportEventDto} contendo os dados do novo evento.
      * @throws ConflictException Caso já exista um evento com o mesmo tipo e modalidade passados pelo DTO.
      *
      * @apiNote O método não realiza nenhuma validação prévia da relação entre os eventos esportivos presentes
      * na listagem passada como argumento, assumindo que todos sejam da mesma edição.
      */
-    public static void checkSportEventForEdition(List<SportEvent> sportEvents, SportEventDto dto) {
+    public static void checkSportEventForEdition(List<SportEvent> sportEvents, RequestSportEventDto dto) {
 
         var type = dto.type();
         Optional<SportEvent> eventOptional = sportEvents.stream()

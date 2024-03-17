@@ -4,7 +4,7 @@ import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -329,7 +329,7 @@ class MatchServiceTest {
 
         var result = matchService.createExposingMatchDto(handballMatch);
 
-        assertInstanceOf(ExposingMatchDto.class, result);
+        assertInstanceOf(ResponseMatchDto.class, result);
         assertEquals(result.getTeamA(), teamA);
         assertEquals(result.getTeamB(), teamB);
     }

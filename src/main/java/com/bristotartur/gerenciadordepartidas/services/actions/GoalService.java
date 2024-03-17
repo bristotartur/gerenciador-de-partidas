@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.services.actions;
 
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
-import com.bristotartur.gerenciadordepartidas.dtos.input.GoalDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestGoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
@@ -94,27 +94,27 @@ public class GoalService {
     }
 
     /**
-     * Salva um gol no sistema com base nos dados fornecidos em {@link GoalDto}, realizando uma validação
+     * Salva um gol no sistema com base nos dados fornecidos em {@link RequestGoalDto}, realizando uma validação
      * prévia destes dados antes de gerar o gol e persistí-lo. A partida na qual este gol estiver associado
      * terá seu placar alterado.
      *
-     * @param goalDto DTO do tipo {@link GoalDto} dados do gol a ser salvo.
+     * @param requestGoalDto DTO do tipo {@link RequestGoalDto} dados do gol a ser salvo.
      * @return O gol recém-salvo.
      *
-     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link GoalDto}.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link RequestGoalDto}.
      * @throws ConflictException Caso tente-se adicionar um gol a uma partida que não está em andamento.
      * @throws UnprocessableEntityException Caso o jogador associado ao gol não esteja relacionado a partida.
      */
-    public Goal saveGoal(GoalDto goalDto) {
+    public Goal saveGoal(RequestGoalDto requestGoalDto) {
 
-        var match = matchServiceMediator.findMatchForGoal(goalDto.matchId(), goalDto.sport());
-        var player = participantService.findParticipantById(goalDto.playerId());
+        var match = matchServiceMediator.findMatchForGoal(requestGoalDto.matchId(), requestGoalDto.sport());
+        var player = participantService.findParticipantById(requestGoalDto.playerId());
 
         ActionValidator.checkMatchForAction(match);
         ActionValidator.checkPlayerForAction(player, match);
 
         this.increaseScore(player.getTeam(), match);
-        var savedGoal = goalRepository.save(goalMapper.toNewGoal(goalDto, player, match));
+        var savedGoal = goalRepository.save(goalMapper.toNewGoal(requestGoalDto, player, match));
 
         log.info("Goal '{}' was created in Match '{}'.", savedGoal.getId(), match.getId());
         return savedGoal;
@@ -143,7 +143,7 @@ public class GoalService {
     }
 
     /**
-     * <p>Atualiza um gol existente no banco de dados com base no seu ID e os dados fornecidos em {@link GoalDto},
+     * <p>Atualiza um gol existente no banco de dados com base no seu ID e os dados fornecidos em {@link RequestGoalDto},
      * realizando uma validação prévia destes dados antes de atualizar o gol. Isso envolve a substituição
      * completa dos dados do gol existente pelos novos dados fornecidos.</p>
      *
@@ -151,23 +151,23 @@ public class GoalService {
      * mudem a equipe que o marcou ou a partida em que ele ocorreu.</p>
      *
      * @param id Identificador único do gol a ser atualizado.
-     * @param goalDto DTO do tipo {@link GoalDto} contendo os dados atualizados do gol.
+     * @param requestGoalDto DTO do tipo {@link RequestGoalDto} contendo os dados atualizados do gol.
      * @return O gol atualizado.
      *
      * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado ou
-     * alguma entidade não corresponda aos IDs fornecidos por {@link GoalDto}.
+     * alguma entidade não corresponda aos IDs fornecidos por {@link RequestGoalDto}.
      * @throws BadRequestException Caso a modalidade esportiva da partida fornecida não seja suportada para gols.
      * @throws ConflictException Caso tente-se atualizar um gol relacionado a uma partida que não está em andamento.
      * @throws UnprocessableEntityException Caso o jogador associado ao gol não esteja relacionado a partida.
      */
-    public Goal replaceGoal(Long id, GoalDto goalDto) {
+    public Goal replaceGoal(Long id, RequestGoalDto requestGoalDto) {
 
         var originalGol = this.findGoalById(id);
         var originaMatch = originalGol.getMatch();
         ActionValidator.checkMatchForAction(originaMatch);
 
-        var newMatch = matchServiceMediator.findMatchForGoal(goalDto.matchId(), goalDto.sport());
-        var newPlayer = participantService.findParticipantById(goalDto.playerId());
+        var newMatch = matchServiceMediator.findMatchForGoal(requestGoalDto.matchId(), requestGoalDto.sport());
+        var newPlayer = participantService.findParticipantById(requestGoalDto.playerId());
         ActionValidator.checkMatchForAction(newMatch);
         ActionValidator.checkPlayerForAction(newPlayer, newMatch);
 
@@ -177,7 +177,7 @@ public class GoalService {
             this.increaseScore(newPlayer.getTeam(), newMatch);
             this.decreaseScore(originalPlayerTeam, originaMatch);
         }
-        var updatedGoal = goalRepository.save(goalMapper.toExistingGoal(id, goalDto, newPlayer, newMatch));
+        var updatedGoal = goalRepository.save(goalMapper.toExistingGoal(id, requestGoalDto, newPlayer, newMatch));
 
         log.info("Goal '{}' from Match '{}' was updated.", id, updatedGoal.getMatch().getId());
         return updatedGoal;

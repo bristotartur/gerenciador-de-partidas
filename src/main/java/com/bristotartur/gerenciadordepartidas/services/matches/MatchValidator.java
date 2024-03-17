@@ -3,7 +3,7 @@ package com.bristotartur.gerenciadordepartidas.services.matches;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Importance;
 import com.bristotartur.gerenciadordepartidas.enums.Modality;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 /**
  * Classe utilitária responsável por fornecer métodos para a validação de instâncias de {@link Match}
- * e {@link MatchDto}, para gerar, criar ou realizar qualquer tipo de manipulação de dados referentes
+ * e {@link RequestMatchDto}, para gerar, criar ou realizar qualquer tipo de manipulação de dados referentes
  * a partidas.
  *
  * @see SportEvent
@@ -34,13 +34,13 @@ public final class MatchValidator {
      * Verifica se as equipes presentes no DTO da partida não são as mesmas. Caso sejam, uma exceção
      * será lançada.
      *
-     * @param matchDto DTO do tipo {@link MatchDto} contendo as equipes da partida.
+     * @param requestMatchDto DTO do tipo {@link RequestMatchDto} contendo as equipes da partida.
      * @throws BadRequestException Caso as duas equipes sejam iguais.
      */
-    public static void checkTeamsForMatch(MatchDto matchDto) {
+    public static void checkTeamsForMatch(RequestMatchDto requestMatchDto) {
 
-        var teamA = matchDto.teamA();
-        var teamB = matchDto.teamB();
+        var teamA = requestMatchDto.teamA();
+        var teamB = requestMatchDto.teamB();
 
         if (teamA.equals(teamB)) {
             throw new BadRequestException(ExceptionMessages.INVALID_TEAMS_FOR_MATCH.message);
@@ -53,18 +53,18 @@ public final class MatchValidator {
      * o mesmo tipo de esporte e modalidade.</p>
      *
      * @param event Instância de {@link SportEvent} associada a partida.
-     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida.
+     * @param requestMatchDto DTO do tipo {@link RequestMatchDto} contendo os dados da partida.
      * @throws BadRequestException Caso a partida não esteja apta para o evento.
      *
      * @apiNote Este método não realiza nenhuma validação prévia entre a relação do evento e do DTO,
      * assumindo que estejam relacionados.
      */
-    public static void checkMatchForSportEvent(SportEvent event, MatchDto matchDto) {
+    public static void checkMatchForSportEvent(SportEvent event, RequestMatchDto requestMatchDto) {
 
         var eventType = event.getType();
         var eventModality = event.getModality();
 
-        if (!matchDto.sport().equals(eventType) || !matchDto.modality().equals(eventModality)) {
+        if (!requestMatchDto.sport().equals(eventType) || !requestMatchDto.modality().equals(eventModality)) {
             throw new BadRequestException(ExceptionMessages.INVALID_MATCH_FOR_EVENT.message);
         }
     }
@@ -90,15 +90,15 @@ public final class MatchValidator {
      * </ul>
      *
      * @param event Instância de {@link SportEvent} associada a partida.
-     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida.
+     * @param requestMatchDto DTO do tipo {@link RequestMatchDto} contendo os dados da partida.
      * @throws BadRequestException Caso não seja possível adicionar uma partida com uma determinada importância.
      *
      * @apiNote Este método não realiza nenhuma validação prévia entre a relação do evento e do DTO,
      * assumindo que estejam relacionados.
      */
-    public static void checKMatchImportance(SportEvent event, MatchDto matchDto) {
+    public static void checKMatchImportance(SportEvent event, RequestMatchDto requestMatchDto) {
 
-        var importance = matchDto.matchImportance();
+        var importance = requestMatchDto.matchImportance();
 
         checkMatchesForImportance(event.getMatches(), importance);
 
@@ -259,19 +259,19 @@ public final class MatchValidator {
      * registrados na partida.
      *
      * @param players Listagem dos jogadores pertencentes a partida.
-     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida.
+     * @param requestMatchDto DTO do tipo {@link RequestMatchDto} contendo os dados da partida.
      * @throws BadRequestException Caso haja jogadores de apenas uma equipe ou jogadores de outras equipes
      * na partida.
      *
      * @apiNote O método não realiza nenhuma validação prévia sobre a relação entre a lista de jogadores e os IDs
      * do DTO, assumindo que os jogadores já estão relacionados com os IDs do DTO.
      */
-    public static void checkPlayersForMatch(List<Participant> players, MatchDto matchDto) {
+    public static void checkPlayersForMatch(List<Participant> players, RequestMatchDto requestMatchDto) {
 
-        checkPlayersWithDifferentTeams(players, matchDto);
+        checkPlayersWithDifferentTeams(players, requestMatchDto);
 
-        var teamA = matchDto.teamA();
-        var teamB = matchDto.teamB();
+        var teamA = requestMatchDto.teamA();
+        var teamB = requestMatchDto.teamB();
 
         var playersTeams = players.stream()
                 .map(Participant::getTeam)
@@ -291,13 +291,13 @@ public final class MatchValidator {
      * e uma exceção será lançada.
      *
      * @param players Lista do tipo {@link Participant} contendo os jogadores da partida.
-     * @param matchDto DTO do tipo {@link MatchDto} contendo os IDs das equipes presentes na partida.
+     * @param requestMatchDto DTO do tipo {@link RequestMatchDto} contendo os IDs das equipes presentes na partida.
      * @throws BadRequestException Caso algum jogador não pertença a alguma das equipes.
      */
-    private static void checkPlayersWithDifferentTeams(List<Participant> players, MatchDto matchDto) {
+    private static void checkPlayersWithDifferentTeams(List<Participant> players, RequestMatchDto requestMatchDto) {
 
-        var teamA = matchDto.teamA();
-        var teamB = matchDto.teamB();
+        var teamA = requestMatchDto.teamA();
+        var teamB = requestMatchDto.teamB();
 
         Optional<Participant> invalidPlayer = players.stream()
                 .filter(player -> !player.getTeam().equals(teamA)

@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.exposing;
+package com.bristotartur.gerenciadordepartidas.dtos.response;
 
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 @Getter
 @Schema(description = "DTO para representar uma Edição")
-public class ExposingEditionDto extends RepresentationModel<ExposingEditionDto> {
+public class ResponseEditionDto extends RepresentationModel<ResponseEditionDto> {
 
     @Schema(description = "Identificador único da Edição", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private final Long editionId;

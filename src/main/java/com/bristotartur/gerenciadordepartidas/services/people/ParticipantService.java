@@ -2,7 +2,7 @@ package com.bristotartur.gerenciadordepartidas.services.people;
 
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.input.ParticipantDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestParticipantDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
@@ -114,18 +114,18 @@ public class ParticipantService {
     }
 
     /**
-     * Salva um participante no sistema com base nos dados fornecidos em {@link ParticipantDto}, realizando
+     * Salva um participante no sistema com base nos dados fornecidos em {@link RequestParticipantDto}, realizando
      * uma validação prévia destes dados antes de gerar o participante e persistí-lo.
      *
-     * @param participantDto DTO do tipo {@link ParticipantDto} contendo os dados do participante a ser salvo.
+     * @param requestParticipantDto DTO do tipo {@link RequestParticipantDto} contendo os dados do participante a ser salvo.
      * @return O participante recém-salvo.
-     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link ParticipantDto}.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link RequestParticipantDto}.
      * @throws BadRequestException Caso o número da turma do participante seja inválido.
      */
-    public Participant saveParticipant(ParticipantDto participantDto) {
+    public Participant saveParticipant(RequestParticipantDto requestParticipantDto) {
 
-        var edition = editionService.findEditionById(participantDto.editionId());
-        var participant = participantMapper.toNewParticipant(participantDto, edition);
+        var edition = editionService.findEditionById(requestParticipantDto.editionId());
+        var participant = participantMapper.toNewParticipant(requestParticipantDto, edition);
 
         this.reformatClassNumber(participant);
         var savedParticipant = participantRepository.save(participant);
@@ -157,21 +157,21 @@ public class ParticipantService {
 
     /**
      * Atualiza um participante existente no banco de dados com base no seu ID e os dados fornecidos
-     * em {@link ParticipantDto} realizando uma validação prévia destes dados antes de atualizar o participante.
+     * em {@link RequestParticipantDto} realizando uma validação prévia destes dados antes de atualizar o participante.
      * Isso envolve a substituição completa dos dados do participante existente pelos novos dados fornecidos.
      *
      * @param id Identificador único do participante.
-     * @param participantDto DTO do tipo {@link ParticipantDto} contendo os dados do participante a ser salvo.
+     * @param requestParticipantDto DTO do tipo {@link RequestParticipantDto} contendo os dados do participante a ser salvo.
      * @return O participante atualizado.
-     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link ParticipantDto}.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link RequestParticipantDto}.
      * @throws BadRequestException Caso o número da turma do participante seja inválido.
      */
-    public Participant replaceParticipant(Long id, ParticipantDto participantDto) {
+    public Participant replaceParticipant(Long id, RequestParticipantDto requestParticipantDto) {
 
         this.findParticipantById(id);
 
-        var edition = editionService.findEditionById(participantDto.editionId());
-        var participant = participantMapper.toExistingParticipant(id, participantDto, edition);
+        var edition = editionService.findEditionById(requestParticipantDto.editionId());
+        var participant = participantMapper.toExistingParticipant(id, requestParticipantDto, edition);
 
         this.reformatClassNumber(participant);
         var updatedParticipant = participantRepository.save(participant);

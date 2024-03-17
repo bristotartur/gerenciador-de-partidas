@@ -1,7 +1,7 @@
 package com.bristotartur.gerenciadordepartidas.services.events;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
-import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestEditionDto;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
@@ -45,9 +45,9 @@ public class EditionService {
         return edition;
     }
 
-    public Edition saveEdition(EditionDto editionDto) {
+    public Edition saveEdition(RequestEditionDto requestEditionDto) {
 
-        var edition = editionRepository.save(editionMapper.toNewEdition(editionDto));
+        var edition = editionRepository.save(editionMapper.toNewEdition(requestEditionDto));
 
         log.info("Edition '{}' was created.", edition.getId());
         return edition;
@@ -64,10 +64,10 @@ public class EditionService {
         log.info("Edition '{}' was deleted.", id);
     }
 
-    public Edition replaceEdition(Long id, EditionDto editionDto) {
+    public Edition replaceEdition(Long id, RequestEditionDto requestEditionDto) {
 
         var originalEdition = this.findEditionById(id);
-        var updatedEdition = editionRepository.save(editionMapper.toExistingEdition(id, editionDto, originalEdition));
+        var updatedEdition = editionRepository.save(editionMapper.toExistingEdition(id, requestEditionDto, originalEdition));
 
         log.info("Edition '{}' was updated", id);
         return updatedEdition;

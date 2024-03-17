@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.exposing;
+package com.bristotartur.gerenciadordepartidas.dtos.response;
 
 import com.bristotartur.gerenciadordepartidas.enums.Team;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 @RequiredArgsConstructor
 @Getter
-public class ExposingParticipantDto extends RepresentationModel<ExposingParticipantDto> {
+public class ResponseParticipantDto extends RepresentationModel<ResponseParticipantDto> {
 
     private final Long participantId;
     private final String name;

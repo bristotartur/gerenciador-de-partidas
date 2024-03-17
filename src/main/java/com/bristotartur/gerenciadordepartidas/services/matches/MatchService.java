@@ -3,8 +3,8 @@ package com.bristotartur.gerenciadordepartidas.services.matches;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.domain.matches.Match;
 import com.bristotartur.gerenciadordepartidas.domain.people.Participant;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingMatchDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.MatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestMatchDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseMatchDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
@@ -138,12 +138,12 @@ public class MatchService {
     }
 
     /**
-     * Gera um DTO do tipo {@link ExposingMatchDto} com base na partida fornecida.
+     * Gera um DTO do tipo {@link ResponseMatchDto} com base na partida fornecida.
      *
      * @param match Partida que terá seus dados mapeados para o DTO.
-     * @return Nova instância de {@link ExposingMatchDto} contendo os dados fornecidos.
+     * @return Nova instância de {@link ResponseMatchDto} contendo os dados fornecidos.
      */
-    public ExposingMatchDto createExposingMatchDto(Match match) {
+    public ResponseMatchDto createExposingMatchDto(Match match) {
 
         var sportType = matchRepository.findMatchTypeById(match.getId(), entityManager);
         var sport = Sports.valueOf(sportType);
@@ -152,25 +152,25 @@ public class MatchService {
     }
 
     /**
-     * Salva uma partida no sistema com base nos dados fornecidos em {@link MatchDto}, realizando uma validação
+     * Salva uma partida no sistema com base nos dados fornecidos em {@link RequestMatchDto}, realizando uma validação
      * prévia destes dados antes de gerar a partida e persistí-la.
      *
-     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados da partida a ser salva.
+     * @param requestMatchDto DTO do tipo {@link RequestMatchDto} contendo os dados da partida a ser salva.
      * @return A partida recém-salva.
-     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link MatchDto}.
+     * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link RequestMatchDto}.
      * @throws BadRequestException Caso a seleção das equipes ou jogadores seja irregular.
      */
-    public Match saveMatch(MatchDto matchDto) {
+    public Match saveMatch(RequestMatchDto requestMatchDto) {
 
-        var event = sportEventService.findEventAndCheckStatus(matchDto.eventId());
-        var players = this.findPlayersById(matchDto.playerIds());
+        var event = sportEventService.findEventAndCheckStatus(requestMatchDto.eventId());
+        var players = this.findPlayersById(requestMatchDto.playerIds());
 
-        this.creatingAndUpdatingValidations(matchDto, event, players);
+        this.creatingAndUpdatingValidations(requestMatchDto, event, players);
 
-        var match = matchMapper.toNewMatch(matchDto, players, event);
-        var savedMatch = matchServiceMediator.saveMatch(match, matchDto.sport());
+        var match = matchMapper.toNewMatch(requestMatchDto, players, event);
+        var savedMatch = matchServiceMediator.saveMatch(match, requestMatchDto.sport());
 
-        log.info("Match '{}' with type '{}' was created.", savedMatch.getId(), matchDto.sport());
+        log.info("Match '{}' with type '{}' was created.", savedMatch.getId(), requestMatchDto.sport());
         return savedMatch;
     }
 
@@ -195,33 +195,33 @@ public class MatchService {
     }
 
     /**
-     * Atualiza uma partida existente no banco de dados com base no seu ID e os dados fornecidos em {@link MatchDto},
+     * Atualiza uma partida existente no banco de dados com base no seu ID e os dados fornecidos em {@link RequestMatchDto},
      * realizando uma validação prévia destes dados antes de atualizar a partida. Isso envolve a substituição
      * completa dos dados da partida existente pelos novos dados fornecidos.
      *
      * @param id Identificador único da partida a ser atualizada.
-     * @param matchDto DTO do tipo {@link MatchDto} contendo os dados atualizados da partida.
+     * @param requestMatchDto DTO do tipo {@link RequestMatchDto} contendo os dados atualizados da partida.
      * @return A partida atualizada.
      * @throws NotFoundException Caso nenhuma partida correspondente ao ID for encontrada ou
-     * alguma entidade não corresponda aos IDs fornecidos por {@link MatchDto}.
+     * alguma entidade não corresponda aos IDs fornecidos por {@link RequestMatchDto}.
      * @throws BadRequestException Caso a seleção das equipes ou jogadores seja irregular.
      */
-    public Match replaceMatch(Long id, MatchDto matchDto) {
+    public Match replaceMatch(Long id, RequestMatchDto requestMatchDto) {
 
         var existingMatch = this.findMatchById(id);
 
         if (!existingMatch.getMatchStatus().equals(Status.SCHEDULED)) {
             throw new BadRequestException(ExceptionMessages.INVALID_MATCH_OPERATION.message);
         }
-        var event = sportEventService.findEventAndCheckStatus(matchDto.eventId());
-        var players = this.findPlayersById(matchDto.playerIds());
+        var event = sportEventService.findEventAndCheckStatus(requestMatchDto.eventId());
+        var players = this.findPlayersById(requestMatchDto.playerIds());
 
-        this.creatingAndUpdatingValidations(matchDto, event, players);
+        this.creatingAndUpdatingValidations(requestMatchDto, event, players);
 
-        var match = matchMapper.toExistingMatch(id, matchDto, existingMatch, players, event);
-        var updatedMatch = matchServiceMediator.saveMatch(match, matchDto.sport());
+        var match = matchMapper.toExistingMatch(id, requestMatchDto, existingMatch, players, event);
+        var updatedMatch = matchServiceMediator.saveMatch(match, requestMatchDto.sport());
 
-        log.info("Match '{}' of type '{}' was updated.", id, matchDto.sport());
+        log.info("Match '{}' of type '{}' was updated.", id, requestMatchDto.sport());
         return updatedMatch;
     }
 
@@ -271,11 +271,11 @@ public class MatchService {
      * Realiza as validações necessárias para criar e atualizar partidas. A função deste método é tornar o código
      * dos métodos relacionados a criação e atualização de partidas mais conciso, melhorando sua legibilidade.
      *
-     * @param dto DTO do tipo {@link MatchDto} contendo os dados da partida a ser criada ou atualizada.
+     * @param dto DTO do tipo {@link RequestMatchDto} contendo os dados da partida a ser criada ou atualizada.
      * @param event Evento relacionado a partida.
      * @param players Listagem dos jogadores relacionados a partida.
      */
-    private void creatingAndUpdatingValidations(MatchDto dto, SportEvent event, List<Participant> players) {
+    private void creatingAndUpdatingValidations(RequestMatchDto dto, SportEvent event, List<Participant> players) {
 
         MatchValidator.checkTeamsForMatch(dto);
         MatchValidator.checkMatchForSportEvent(event, dto);

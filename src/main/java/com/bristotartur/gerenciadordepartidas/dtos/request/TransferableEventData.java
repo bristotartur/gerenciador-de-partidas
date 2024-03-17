@@ -1,4 +1,4 @@
-package com.bristotartur.gerenciadordepartidas.dtos.input;
+package com.bristotartur.gerenciadordepartidas.dtos.request;
 
 import com.bristotartur.gerenciadordepartidas.domain.events.Event;
 

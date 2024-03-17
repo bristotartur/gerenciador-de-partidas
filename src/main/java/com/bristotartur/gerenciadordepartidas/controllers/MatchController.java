@@ -58,12 +58,23 @@ public class MatchController {
         return ResponseEntity.ok().body(dtos);
     }
 
+    @GetMapping(path = "/from")
+    public ResponseEntity<Page<ExposingMatchDto>> listMatchesFromSportEvent(@RequestParam("sport-event") Long sportEventId,
+                                                                            Pageable pageable) {
+        var number = pageable.getPageNumber();
+        var size = pageable.getPageSize();
+        log.info("Request to get Match page of number '{}' and size '{}' from SportEvent '{}' was made.", number, size, sportEventId);
+
+        var dtos = this.createExposingDtoPage(matchService.findMatchesBySportEvent(sportEventId, pageable));
+        return ResponseEntity.ok().body(dtos);
+    }
+
     @GetMapping(path = "/{id}/players")
     public ResponseEntity<Page<ExposingParticipantDto>> listMatchPlayers(@PathVariable Long id, Pageable pageable) {
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
-        log.info("Request to get Player page of number '{}' and size '{}' from Macth '{}' was made.", number, size, id);
+        log.info("Request to get Player page of number '{}' and size '{}' from Match '{}' was made.", number, size, id);
 
         var players = matchService.findAllMatchPlayers(id, pageable);
         var dtos = players.getContent().stream()
@@ -157,7 +168,7 @@ public class MatchController {
 
         dto.add(linkTo(methodOn(this.getClass()).findMatchById(id)).withSelfRel());
         dto.add(linkTo(methodOn(this.getClass()).listMatchPlayers(id,pageable)).withRel("matchPlayers"));
-        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(dto.getSport().name(), pageable)).withRel("matchesOfSameTpe"));
+        dto.add(linkTo(methodOn(this.getClass()).listMatchesBySport(dto.getSport().name(), pageable)).withRel("matchesOfSameType"));
         this.addExtraLinks(dto, match.getId(), pageable);
 
         return dto;

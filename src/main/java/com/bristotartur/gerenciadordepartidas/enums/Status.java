@@ -57,10 +57,10 @@ public enum Status {
      */
     public static Status findStatusLike(String status) {
 
-        var formatedStatus = status.replace("-", "_").toUpperCase();
+        var formattedStatus = status.replace("-", "_").toUpperCase();
 
         try {
-            return valueOf(formatedStatus);
+            return valueOf(formattedStatus);
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(ExceptionMessages.INVALID_STATUS.message, e);
         }
@@ -75,15 +75,15 @@ public enum Status {
      *     <li>SCHEDULED: Pode ser alterado apenas para 'IN_PROGRESS'.</li>
      *     <li>IN_PROGRESS: Pode ser alterado apenas para 'ENDED'.</li>
      *     <li>ENDED: Pode ser alterado apenas para 'OPEN_FOR_EDITS'.</li>
-     *     <li>OPEN_FOR_EDITS: Pode ser alterado apenas para 'IN_PROGRESS'.</li>
+     *     <li>OPEN_FOR_EDITS: Pode ser alterado apenas para 'ENDED'.</li>
      * </ul>
      *
-     * <p>Caso o Status original e o novo Status forem o mesmo, nada acontecerá.</p>
+     * <p>Caso o Status original e o novo Status sejam o mesmo, nada acontecerá.</p>
      *
      * @param originalStatus Status que será atualizado.
-     * @param newStatus O nova Status, que será analizado para verificar se está apto para atualizar
+     * @param newStatus O nova Status, que será analisado para verificar se está apto para atualizar
      *                  o Status original.
-     * @throws UnprocessableEntityException Caso o novo Status não esteja apto para atualizar o antigo Status.
+     * @throws UnprocessableEntityException Caso o novo Status não seja adequado para atualizar o antigo Status.
      */
     public static void checkStatus(Status originalStatus, Status newStatus) {
 

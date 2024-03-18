@@ -95,8 +95,8 @@ public enum Team {
         if (team.compareToIgnoreCase("papa") == 0) return PAPA_LEGUAS;
 
         try {
-            var formatedTeam = team.replace("-", "_").toUpperCase();
-            return valueOf(formatedTeam);
+            var formattedTeam = team.replace("-", "_").toUpperCase();
+            return valueOf(formattedTeam);
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(ExceptionMessages.INVALID_TEAM.message, e);
         }

@@ -51,10 +51,10 @@ public enum Sports implements EventType<SportEvent> {
      */
     public static Sports findSportLike(String sport) {
 
-        var formatedSport = sport.replace("-", "_").toUpperCase();
+        var formattedSport = sport.replace("-", "_").toUpperCase();
 
         try {
-            return valueOf(formatedSport);
+            return valueOf(formattedSport);
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(ExceptionMessages.INVALID_SPORT.message, e);
         }

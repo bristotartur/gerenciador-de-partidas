@@ -49,11 +49,11 @@ public class Match {
     @Enumerated(EnumType.STRING)
     private Importance matchImportance;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "team_a")
     @Enumerated(EnumType.STRING)
     private Team teamA;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "team_b")
     @Enumerated(EnumType.STRING)
     private Team teamB;
 
@@ -71,10 +71,10 @@ public class Match {
     @JoinColumn(name = "event_id", nullable = false) 
     private SportEvent event;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "team_score_a")
     private Integer teamScoreA;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "team_score_b")
     private Integer teamScoreB;
 
     @Column(nullable = false)

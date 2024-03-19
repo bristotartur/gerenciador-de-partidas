@@ -24,19 +24,19 @@ public class Edition {
     private Long id;
 
     @Column(nullable = false)
-    private Integer atomicaPontuation;
+    private Integer atomicaScore;
 
     @Column(nullable = false)
-    private Integer mestresPontuation;
+    private Integer mestresScore;
 
     @Column(nullable = false)
-    private Integer papaPontuation;
+    private Integer papaScore;
 
     @Column(nullable = false)
-    private Integer twisterPontuation;
+    private Integer twisterScore;
 
     @Column(nullable = false)
-    private Integer uniconttiPontuation;
+    private Integer uniconttiScore;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

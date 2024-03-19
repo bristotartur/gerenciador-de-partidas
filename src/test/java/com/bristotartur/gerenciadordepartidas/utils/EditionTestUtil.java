@@ -14,11 +14,11 @@ public final class EditionTestUtil {
     public static Edition createNewEdition(Status status) {
 
         return Edition.builder()
-                .atomicaPontuation(0)
-                .mestresPontuation(0)
-                .papaPontuation(0)
-                .twisterPontuation(0)
-                .uniconttiPontuation(0)
+                .atomicaScore(0)
+                .mestresScore(0)
+                .papaScore(0)
+                .twisterScore(0)
+                .uniconttiScore(0)
                 .editionStatus(status)
                 .opening(LocalDate.now())
                 .closure(LocalDate.now())
@@ -28,11 +28,11 @@ public final class EditionTestUtil {
     public static Edition createNewEdition(Status status, EntityManager entityManager) {
 
         var edition =  Edition.builder()
-                .atomicaPontuation(0)
-                .mestresPontuation(0)
-                .papaPontuation(0)
-                .twisterPontuation(0)
-                .uniconttiPontuation(0)
+                .atomicaScore(0)
+                .mestresScore(0)
+                .papaScore(0)
+                .twisterScore(0)
+                .uniconttiScore(0)
                 .editionStatus(status)
                 .opening(LocalDate.now())
                 .closure(LocalDate.now())

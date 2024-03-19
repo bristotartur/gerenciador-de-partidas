@@ -12,11 +12,11 @@ public interface EditionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "editionStatus", expression = "java(Status.SCHEDULED)")
-    @Mapping(target = "atomicaPontuation", constant = "0")
-    @Mapping(target = "mestresPontuation", constant = "0")
-    @Mapping(target = "papaPontuation", constant = "0")
-    @Mapping(target = "twisterPontuation", constant = "0")
-    @Mapping(target = "uniconttiPontuation", constant = "0")
+    @Mapping(target = "atomicaScore", constant = "0")
+    @Mapping(target = "mestresScore", constant = "0")
+    @Mapping(target = "papaScore", constant = "0")
+    @Mapping(target = "twisterScore", constant = "0")
+    @Mapping(target = "uniconttiScore", constant = "0")
     @Mapping(target = "participants", ignore = true)
     @Mapping(target = "taskEvents", ignore = true)
     @Mapping(target = "sportEvents", ignore = true)
@@ -27,11 +27,11 @@ public interface EditionMapper {
     Edition toExistingEdition(Long id, RequestEditionDto dto, Edition originalEdition);
 
     @Mapping(target = "editionId", source = "edition.id")
-    @Mapping(target = "atomica", source = "edition.atomicaPontuation")
-    @Mapping(target = "mestres", source = "edition.mestresPontuation")
-    @Mapping(target = "papaLeguas", source = "edition.papaPontuation")
-    @Mapping(target = "twister", source = "edition.twisterPontuation")
-    @Mapping(target = "unicontti", source = "edition.uniconttiPontuation")
+    @Mapping(target = "atomica", source = "edition.atomicaScore")
+    @Mapping(target = "mestres", source = "edition.mestresScore")
+    @Mapping(target = "papaLeguas", source = "edition.papaScore")
+    @Mapping(target = "twister", source = "edition.twisterScore")
+    @Mapping(target = "unicontti", source = "edition.uniconttiScore")
     ResponseEditionDto toNewExposingEditionDto(Edition edition);
 
 }

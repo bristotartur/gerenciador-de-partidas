@@ -1,5 +1,6 @@
-package com.bristotartur.gerenciadordepartidas.controllers.docs;
+package com.bristotartur.gerenciadordepartidas.docs.examples;
 
+import com.bristotartur.gerenciadordepartidas.docs.EditionOperations;
 import com.bristotartur.gerenciadordepartidas.handlers.ExceptionDetails;
 import com.bristotartur.gerenciadordepartidas.handlers.ValidationExceptionDetails;
 

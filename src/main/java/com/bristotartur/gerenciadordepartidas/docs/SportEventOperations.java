@@ -1,7 +1,8 @@
-package com.bristotartur.gerenciadordepartidas.controllers.docs;
+package com.bristotartur.gerenciadordepartidas.docs;
 
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingSportEventDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.SportEventDto;
+import com.bristotartur.gerenciadordepartidas.docs.examples.ExceptionResponseExamples;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestSportEventDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseSportEventDto;
 import com.bristotartur.gerenciadordepartidas.handlers.ExceptionDetails;
 import com.bristotartur.gerenciadordepartidas.handlers.ValidationExceptionDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -293,7 +294,7 @@ public final class SportEventOperations {
                             description = "Evento Esportivo correspondente ao ID",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingSportEventDto.class),
+                                    schema = @Schema(implementation = ResponseSportEventDto.class),
                                     examples = @ExampleObject(
                                             name = "sportEventExample",
                                             summary = "Exemplo de Evento Esportivo",
@@ -328,7 +329,7 @@ public final class SportEventOperations {
             requestBody = @RequestBody(
                     description = "Corpo de requisição contendo detalhes do Evento Esportivo a ser criado",
                     required = true,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SportEventDto.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestSportEventDto.class))
             ),
             responses = {
                     @ApiResponse(
@@ -336,7 +337,7 @@ public final class SportEventOperations {
                             description = "Evento Esportivo adicionado com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingSportEventDto.class),
+                                    schema = @Schema(implementation = ResponseSportEventDto.class),
                                     examples = @ExampleObject(
                                             name = "sportEventExample",
                                             summary = "Exemplo de Evento Esportivo",
@@ -372,7 +373,7 @@ public final class SportEventOperations {
                     ),
                     @ApiResponse(
                             responseCode = "409",
-                            description = "Estado do Evento Esportivo é conflituoso com o estado de outras Entidades",
+                            description = "Estado do Evento Esportivo é conflituoso com o estado de outras entidades",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = ExceptionDetails.class),
@@ -461,7 +462,7 @@ public final class SportEventOperations {
             requestBody = @RequestBody(
                     description = "Corpo de requisição contendo os novos dados do Evento Esportivo a ser atualizado",
                     required = true,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SportEventDto.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestSportEventDto.class))
             ),
             responses = {
                     @ApiResponse(
@@ -469,7 +470,7 @@ public final class SportEventOperations {
                             description = "Evento Esportivo atualizado com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingSportEventDto.class),
+                                    schema = @Schema(implementation = ResponseSportEventDto.class),
                                     examples = @ExampleObject(
                                             name = "sportEventExample",
                                             summary = "Exemplo de Evento Esportivo",
@@ -505,7 +506,7 @@ public final class SportEventOperations {
                     ),
                     @ApiResponse(
                             responseCode = "409",
-                            description = "Estado do Evento Esportivo é conflituoso com o estado de outras Entidades",
+                            description = "Estado do Evento Esportivo é conflituoso com o estado de outras entidades",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = ExceptionDetails.class),
@@ -571,7 +572,7 @@ public final class SportEventOperations {
                             description = "Status do Evento Esportivo atualizado com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingSportEventDto.class),
+                                    schema = @Schema(implementation = ResponseSportEventDto.class),
                                     examples = @ExampleObject(
                                             name = "sportEventExample",
                                             summary = "Exemplo de Evento Esportivo",

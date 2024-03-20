@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
-import com.bristotartur.gerenciadordepartidas.controllers.docs.EditionOperations;
+import com.bristotartur.gerenciadordepartidas.docs.EditionOperations;
 import com.bristotartur.gerenciadordepartidas.domain.events.Edition;
 import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseEditionDto;
 import com.bristotartur.gerenciadordepartidas.dtos.request.RequestEditionDto;

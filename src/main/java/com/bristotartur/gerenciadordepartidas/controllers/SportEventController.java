@@ -1,6 +1,6 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
-import com.bristotartur.gerenciadordepartidas.controllers.docs.SportEventOperations;
+import com.bristotartur.gerenciadordepartidas.docs.SportEventOperations;
 import com.bristotartur.gerenciadordepartidas.domain.events.SportEvent;
 import com.bristotartur.gerenciadordepartidas.dtos.request.RequestSportEventDto;
 import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseSportEventDto;

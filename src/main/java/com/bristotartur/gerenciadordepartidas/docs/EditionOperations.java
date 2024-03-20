@@ -1,8 +1,9 @@
-package com.bristotartur.gerenciadordepartidas.controllers.docs;
+package com.bristotartur.gerenciadordepartidas.docs;
 
 import com.bristotartur.gerenciadordepartidas.controllers.EditionController;
-import com.bristotartur.gerenciadordepartidas.dtos.exposing.ExposingEditionDto;
-import com.bristotartur.gerenciadordepartidas.dtos.input.EditionDto;
+import com.bristotartur.gerenciadordepartidas.docs.examples.ExceptionResponseExamples;
+import com.bristotartur.gerenciadordepartidas.dtos.request.RequestEditionDto;
+import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseEditionDto;
 import com.bristotartur.gerenciadordepartidas.handlers.ExceptionDetails;
 import com.bristotartur.gerenciadordepartidas.handlers.ValidationExceptionDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -131,7 +132,7 @@ public final class EditionOperations {
                     schema = @Schema(implementation = Pageable.class),
                     examples = @ExampleObject(
                             name = "edition PageableExample",
-                            summary = "Exemplo de pageable para Eventos Esportivos",
+                            summary = "Exemplo de pageable para Edições",
                             value = PAGEABLE_EXAMPLE
                     )
             ),
@@ -162,7 +163,12 @@ public final class EditionOperations {
                     description = "Identificador único da Edição",
                     required = true,
                     in = ParameterIn.PATH,
-                    schema = @Schema(type = "integer", format = "int64")
+                    schema = @Schema(type = "integer", format = "int64"),
+                    examples = @ExampleObject(
+                            name = "editionIdExample",
+                            summary = "Exemplo de ID de Edição",
+                            value = "1"
+                    )
             ),
             responses = {
                     @ApiResponse(
@@ -170,7 +176,7 @@ public final class EditionOperations {
                             description = "Edição encontrada",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingEditionDto.class),
+                                    schema = @Schema(implementation = ResponseEditionDto.class),
                                     examples = @ExampleObject(
                                             name = "editionExample",
                                             summary = "Exemplo de Edição",
@@ -201,9 +207,9 @@ public final class EditionOperations {
             summary = "Adiciona uma nova Edição",
             description = "Gera uma nova Edição a partir dos dados fornecidos.",
             requestBody = @RequestBody(
-                    description = "Objeto contendo detalhes da Edição a ser criada",
+                    description = "Corpo de requisição contendo detalhes da Edição a ser criada",
                     required = true,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = EditionDto.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestEditionDto.class))
             ),
             responses = {
                     @ApiResponse(
@@ -211,7 +217,7 @@ public final class EditionOperations {
                             description = "Edição adicionada com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingEditionDto.class),
+                                    schema = @Schema(implementation = ResponseEditionDto.class),
                                     examples = @ExampleObject(
                                             name = "editionExample",
                                             summary = "Exemplo de Edição",
@@ -254,7 +260,12 @@ public final class EditionOperations {
                     description = "Identificador único da Edição",
                     required = true,
                     in = ParameterIn.PATH,
-                    schema = @Schema(type = "integer", format = "int64")
+                    schema = @Schema(type = "integer", format = "int64"),
+                    examples = @ExampleObject(
+                            name = "editionIdExample",
+                            summary = "Exemplo de ID de Edição",
+                            value = "1"
+                    )
             ),
             responses = {
                     @ApiResponse(
@@ -302,12 +313,17 @@ public final class EditionOperations {
                     description = "Identificador único da Edição",
                     required = true,
                     in = ParameterIn.PATH,
-                    schema = @Schema(type = "integer", format = "int64")
+                    schema = @Schema(type = "integer", format = "int64"),
+                    examples = @ExampleObject(
+                            name = "editionIdExample",
+                            summary = "Exemplo de ID de Edição",
+                            value = "1"
+                    )
             ),
             requestBody = @RequestBody(
-                    description = "Objeto contendo os novos detalhes da edição",
+                    description = "Corpo de requisição contendo os novos dados da Edição a ser atualizada",
                     required = true,
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = EditionDto.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestEditionDto.class))
             ),
             responses = {
                     @ApiResponse(
@@ -315,7 +331,7 @@ public final class EditionOperations {
                             description = "Edição atualizada com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingEditionDto.class),
+                                    schema = @Schema(implementation = ResponseEditionDto.class),
                                     examples = @ExampleObject(
                                             name = "editionExample",
                                             summary = "Exemplo de Edição",
@@ -372,13 +388,24 @@ public final class EditionOperations {
                             description = "Identificador único da Edição",
                             required = true,
                             in = ParameterIn.PATH,
-                            schema = @Schema(type = "integer", format = "int64")
+                            schema = @Schema(type = "integer", format = "int64"),
+                            examples = @ExampleObject(
+                                    name = "editionIdExample",
+                                    summary = "Exemplo de ID de Edição",
+                                    value = "1"
+                            )
                     ),
                     @Parameter(
                             name = "status",
                             description = "Novo status desejado para a Edição",
                             required = true,
-                            in = ParameterIn.QUERY
+                            in = ParameterIn.QUERY,
+                            examples = {
+                                    @ExampleObject(name = "scheduledExample", summary = "Status 'agendado'", value = "SCHEDULED"),
+                                    @ExampleObject(name = "inProgressExample", summary = "Status 'em andamento'", value = "IN_PROGRESS"),
+                                    @ExampleObject(name = "endedExample", summary = "Status 'encerrado'", value = "ENDED"),
+                                    @ExampleObject(name = "openForEditsExample", summary = "Status 'aberto para edições'", value = "OPEN_FOR_EDITS")
+                            }
                     )
             },
             responses = {
@@ -387,7 +414,7 @@ public final class EditionOperations {
                             description = "Status da Edição atualizado com sucesso",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ExposingEditionDto.class),
+                                    schema = @Schema(implementation = ResponseEditionDto.class),
                                     examples = @ExampleObject(
                                             name = "editionExample",
                                             summary = "Exemplo de Edição",

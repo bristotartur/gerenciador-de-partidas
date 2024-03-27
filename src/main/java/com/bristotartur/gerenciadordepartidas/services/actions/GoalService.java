@@ -6,7 +6,6 @@ import com.bristotartur.gerenciadordepartidas.dtos.request.RequestGoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
@@ -62,12 +61,14 @@ public class GoalService {
      * @param matchId Identificador único da partida.
      * @param sport Modalidade esportiva da partida.
      * @param pageable Um {@link Pageable} contendo informações sobre a paginação.
+     * @throws NotFoundException Se nenhuma partida correspondente ao ID ou esporte fornecido for encontrada.
+     * @throws UnprocessableEntityException Se o tipo de esporte não suportar a operação relacionada a gols.
      *
      * @return Um {@link Page} contendo os gols relacionados a partida especificada.
      */
     public Page<Goal> findGoalsFromMatch(Long matchId, Sports sport, Pageable pageable) {
 
-        matchServiceMediator.findMatch(matchId, sport);
+        matchServiceMediator.findMatchForGoal(matchId, sport);
 
         var number = pageable.getPageNumber();
         var size = pageable.getPageSize();
@@ -156,9 +157,9 @@ public class GoalService {
      *
      * @throws NotFoundException Caso nenhum gol correspondente ao ID for encontrado ou
      * alguma entidade não corresponda aos IDs fornecidos por {@link RequestGoalDto}.
-     * @throws BadRequestException Caso a modalidade esportiva da partida fornecida não seja suportada para gols.
      * @throws ConflictException Caso tente-se atualizar um gol relacionado a uma partida que não está em andamento.
-     * @throws UnprocessableEntityException Caso o jogador associado ao gol não esteja relacionado a partida.
+     * @throws UnprocessableEntityException Caso a modalidade esportiva da partida fornecida não seja suportada para
+     * gols ou o jogador associado ao gol não esteja relacionado a partida.
      */
     public Goal replaceGoal(Long id, RequestGoalDto requestGoalDto) {
 

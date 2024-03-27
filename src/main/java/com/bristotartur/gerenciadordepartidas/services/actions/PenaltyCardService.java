@@ -3,7 +3,6 @@ package com.bristotartur.gerenciadordepartidas.services.actions;
 import com.bristotartur.gerenciadordepartidas.domain.actions.PenaltyCard;
 import com.bristotartur.gerenciadordepartidas.dtos.request.RequestPenaltyCardDto;
 import com.bristotartur.gerenciadordepartidas.enums.ExceptionMessages;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.ConflictException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
 import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
@@ -78,11 +77,12 @@ public class PenaltyCardService {
      *
      * @throws NotFoundException Caso alguma entidade não corresponda aos IDs fornecidos por {@link RequestPenaltyCardDto}.
      * @throws ConflictException Caso tente-se adicionar um cartão a uma partida que não está em andamento.
-     * @throws UnprocessableEntityException Caso o jogador associado ao cartão não esteja relacionado a partida.
+     * @throws UnprocessableEntityException Caso a modalidade esportiva da partida fornecida não seja suportada para
+     * cartões ou o jogador associado ao cartão não esteja relacionado a partida.
      */
     public PenaltyCard savePenaltyCard(RequestPenaltyCardDto requestPenaltyCardDto) {
 
-        var match = matchServiceMediator.findMatch(requestPenaltyCardDto.matchId(), requestPenaltyCardDto.sport());
+        var match = matchServiceMediator.findMatchForCard(requestPenaltyCardDto.matchId(), requestPenaltyCardDto.sport());
         var player = participantService.findParticipantById(requestPenaltyCardDto.playerId());
         ActionValidator.checkMatchForAction(match);
         ActionValidator.checkPlayerForAction(player, match);
@@ -124,10 +124,9 @@ public class PenaltyCardService {
      *
      * @throws NotFoundException Caso nenhum cartão correspondente ao ID for encontrado ou alguma
      * entidade não corresponda aos IDs fornecidos por {@link RequestPenaltyCardDto}.
-     * @throws BadRequestException Caso a modalidade esportiva da partida fornecida não seja suportada para cartões.
      * @throws ConflictException Caso a partida relacionada ao cartão não esteja em andamento.
-     * @throws UnprocessableEntityException Caso o jogador associado ao cartão não esteja relacionado a partida.
-     *
+     * @throws UnprocessableEntityException Caso a modalidade esportiva da partida fornecida não seja suportada para
+     * cartões ou o jogador associado ao cartão não esteja relacionado a partida.
      */
     public PenaltyCard replacePenaltyCard(Long id, RequestPenaltyCardDto requestPenaltyCardDto) {
 

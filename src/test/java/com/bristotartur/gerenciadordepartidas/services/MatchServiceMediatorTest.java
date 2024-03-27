@@ -10,8 +10,8 @@ import com.bristotartur.gerenciadordepartidas.enums.Modality;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.enums.Status;
 import com.bristotartur.gerenciadordepartidas.enums.Team;
-import com.bristotartur.gerenciadordepartidas.exceptions.BadRequestException;
 import com.bristotartur.gerenciadordepartidas.exceptions.NotFoundException;
+import com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException;
 import com.bristotartur.gerenciadordepartidas.repositories.MatchRepository;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchService;
 import com.bristotartur.gerenciadordepartidas.services.matches.MatchServiceMediator;
@@ -193,13 +193,13 @@ class MatchServiceMediatorTest {
     }
 
     @Test
-    @DisplayName("Should throw BadRequestException when invalid Sport is passed to find Match for any action")
-    void Should_ThrowBadRequestException_When_InvalidSportIsPassedToFindMatchForAnyAction() {
+    @DisplayName("Should throw UnprocessableEntityException when invalid Sport is passed to find Match for any action")
+    void Should_ThrowUnprocessableEntityException_When_InvalidSportIsPassedToFindMatchForAnyAction() {
 
         var randomId = getRandomLongId();
 
-        assertThrows(BadRequestException.class, () -> matchServiceMediator.findMatchForGoal(randomId, Sports.CHESS));
-        assertThrows(BadRequestException.class, () -> matchServiceMediator.findMatchForCard(randomId, Sports.CHESS));
+        assertThrows(UnprocessableEntityException.class, () -> matchServiceMediator.findMatchForGoal(randomId, Sports.CHESS));
+        assertThrows(UnprocessableEntityException.class, () -> matchServiceMediator.findMatchForCard(randomId, Sports.CHESS));
     }
 
 }

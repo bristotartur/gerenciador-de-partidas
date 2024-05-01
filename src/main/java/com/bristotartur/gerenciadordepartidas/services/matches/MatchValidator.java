@@ -96,7 +96,7 @@ public final class MatchValidator {
      * @apiNote Este método não realiza nenhuma validação prévia entre a relação do evento e do DTO,
      * assumindo que estejam relacionados.
      */
-    public static void checKMatchImportance(SportEvent event, RequestMatchDto requestMatchDto) {
+    public static void checkMatchImportance(SportEvent event, RequestMatchDto requestMatchDto) {
 
         var importance = requestMatchDto.matchImportance();
 

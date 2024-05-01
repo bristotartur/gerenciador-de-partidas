@@ -120,7 +120,7 @@ class MatchValidatorTest {
         var importance = Importance.NORMAL;
         var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
-        assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
+        assertThatThrownBy(() -> MatchValidator.checkMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(ExceptionMessages.INVALID_MATCH_IMPORTANCE.message.formatted(importance));
     }
@@ -147,11 +147,11 @@ class MatchValidatorTest {
         var importance = Importance.SEMIFINAL;
         var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
-        assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
+        assertThatThrownBy(() -> MatchValidator.checkMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(ExceptionMessages.INVALID_MATCH_IMPORTANCE.message.formatted(importance));
 
-        assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event2, dto))
+        assertThatThrownBy(() -> MatchValidator.checkMatchImportance(event2, dto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(ExceptionMessages.INVALID_MATCH_IMPORTANCE.message.formatted(importance));
     }
@@ -173,7 +173,7 @@ class MatchValidatorTest {
         var importance = Importance.THIRD_PLACE_PLAYOFF;
         var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
-        assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
+        assertThatThrownBy(() -> MatchValidator.checkMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(ExceptionMessages.INVALID_MATCH_IMPORTANCE.message.formatted(importance));
     }
@@ -196,7 +196,7 @@ class MatchValidatorTest {
         var importance = Importance.FINAL;
         var dto = RequestMatchDto.builder().matchImportance(importance).build();
 
-        assertThatThrownBy(() -> MatchValidator.checKMatchImportance(event, dto))
+        assertThatThrownBy(() -> MatchValidator.checkMatchImportance(event, dto))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessage(ExceptionMessages.INVALID_MATCH_IMPORTANCE.message.formatted(importance));
     }

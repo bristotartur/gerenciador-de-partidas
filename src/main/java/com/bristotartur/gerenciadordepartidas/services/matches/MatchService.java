@@ -279,7 +279,7 @@ public class MatchService {
 
         MatchValidator.checkTeamsForMatch(dto);
         MatchValidator.checkMatchForSportEvent(event, dto);
-        MatchValidator.checKMatchImportance(event, dto);
+        MatchValidator.checkMatchImportance(event, dto);
         MatchValidator.checkPlayersForMatch(players, dto);
     }
 

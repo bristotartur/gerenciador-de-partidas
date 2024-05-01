@@ -1,11 +1,13 @@
 package com.bristotartur.gerenciadordepartidas.controllers;
 
+import com.bristotartur.gerenciadordepartidas.docs.GoalOperations;
 import com.bristotartur.gerenciadordepartidas.domain.actions.Goal;
 import com.bristotartur.gerenciadordepartidas.dtos.request.RequestGoalDto;
 import com.bristotartur.gerenciadordepartidas.dtos.response.ResponseGoalDto;
 import com.bristotartur.gerenciadordepartidas.enums.Sports;
 import com.bristotartur.gerenciadordepartidas.mappers.GoalMapper;
 import com.bristotartur.gerenciadordepartidas.services.actions.GoalService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +28,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
+@Tag(name = "Goal")
 public class GoalController {
 
     private final GoalService goalService;
     private final GoalMapper goalMapper;
 
+    @GoalOperations.ListAllGoalsOperation
     @GetMapping
     public ResponseEntity<Page<ResponseGoalDto>> listAllGoals(Pageable pageable) {
 
@@ -43,6 +47,7 @@ public class GoalController {
         return ResponseEntity.ok().body(dtoPage);
     }
 
+    @GoalOperations.ListGoalsFromMatchOperation
     @GetMapping(path = "/from")
     public ResponseEntity<Page<ResponseGoalDto>> listGoalsFromMatch(@RequestParam("match") Long matchId,
                                                                     @RequestParam("type") String sportType,
@@ -57,6 +62,7 @@ public class GoalController {
         return ResponseEntity.ok().body(dtoPage);
     }
 
+    @GoalOperations.FindGoalByIdOperation
     @GetMapping(path = "/{id}")
     public ResponseEntity<ResponseGoalDto> findGoalById(@PathVariable Long id) {
 
@@ -66,6 +72,7 @@ public class GoalController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @GoalOperations.SaveGoalOperation
     @PostMapping
     public ResponseEntity<ResponseGoalDto> saveGoal(@RequestBody @Valid RequestGoalDto requestGoalDto) {
 
@@ -75,6 +82,7 @@ public class GoalController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @GoalOperations.DeleteGoalOperation
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteGoal(@PathVariable Long id) {
 
@@ -84,6 +92,7 @@ public class GoalController {
         return ResponseEntity.noContent().build();
     }
 
+    @GoalOperations.ReplaceGoalOperation
     @PutMapping(path = "/{id}")
     public ResponseEntity<ResponseGoalDto> replaceGoal(@PathVariable Long id,
                                                        @RequestBody @Valid RequestGoalDto requestGoalDto) {

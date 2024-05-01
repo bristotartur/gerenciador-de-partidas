@@ -15,7 +15,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         email = "arturdarosabristot@gmail.com"
                 )
         ),
-        servers = @Server(description = "Ambiente de desenvolvimento", url = "http://localhost:8080")
+        servers = {
+                @Server(description = "Ambiente de desenvolvimento", url = "http://localhost:8080"),
+                @Server(description = "Ambiente de produção", url = "http://localhost:8081")
+        }
 )
 public class OpenAPIConfig {
 

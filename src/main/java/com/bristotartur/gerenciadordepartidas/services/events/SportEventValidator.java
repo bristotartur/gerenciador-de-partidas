@@ -168,7 +168,7 @@ public final class SportEventValidator {
      * </ol>
      * Caso nenhuma destas condições seja cumprida, uma exceção será lançada.
      *
-     * @param originalEvent Instância de {@link SportEvent} que será analizada para encerrar.
+     * @param originalEvent Instância de {@link SportEvent} que será analisada para encerrar.
      * @throws UnprocessableEntityException Caso o evento não esteja apto para encerrar.
      */
     private static void checkMatchesToFinishEvent(SportEvent originalEvent) {

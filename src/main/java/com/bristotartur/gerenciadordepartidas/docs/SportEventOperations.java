@@ -378,7 +378,7 @@ public final class SportEventOperations {
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = ExceptionDetails.class),
                                     examples = @ExampleObject(
-                                            name = "conflictException",
+                                            name = "conflictExceptionExample",
                                             summary = "Exemplo de Conflict Exception",
                                             value = ExceptionResponseExamples.CONFLICT_RESPONSE_EXAMPLE
                                     )
@@ -511,7 +511,7 @@ public final class SportEventOperations {
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = ExceptionDetails.class),
                                     examples = @ExampleObject(
-                                            name = "conflictException",
+                                            name = "conflictExceptionExample",
                                             summary = "Exemplo de Conflict Exception",
                                             value = ExceptionResponseExamples.CONFLICT_RESPONSE_EXAMPLE
                                     )

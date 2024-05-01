@@ -28,7 +28,7 @@ public final class ExceptionResponseExamples {
 
     public static final String BAD_REQUEST_ON_VALIDATION_RESPONSE_EXAMPLE = """
             {
-                "title": "Bad Request.",
+                "title": "Bad Request Exception.",
                 "status": 400,
                 "details": "Detalhes da exceção.",
                 "developerMessage": "org.springframework.web.bind.MethodArgumentNotValidException",
@@ -60,7 +60,7 @@ public final class ExceptionResponseExamples {
 
     public static final String UNPROCESSABLE_ENTITY_RESPONSE_EXAMPLE = """
             {
-              "title": "Unprocessable Entity.",
+              "title": "Unprocessable Entity Exception.",
               "status": 422,
               "details": "Detalhes da exceção.",
               "developerMessage": "com.bristotartur.gerenciadordepartidas.exceptions.UnprocessableEntityException",
